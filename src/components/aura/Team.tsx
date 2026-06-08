@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { useRef } from "react";
 
 const capabilities = [
@@ -139,16 +139,16 @@ function FrameLayer({
   total,
 }: {
   index: number;
-  indexMV: ReturnType<typeof useTransform>;
+  indexMV: MotionValue<number>;
   frame: { label: string; accent: string };
   total: number;
 }) {
   // opacity peaks at index, fades out before next
-  const opacity = useTransform(indexMV, (v: number) => {
+  const opacity = useTransform<number, number>(indexMV, (v) => {
     const d = Math.abs(v - index);
     return Math.max(0, 1 - d * 1.4);
   });
-  const y = useTransform(indexMV, (v: number) => (v - index) * 30);
+  const y = useTransform<number, number>(indexMV, (v) => (v - index) * 30);
 
   return (
     <motion.div
