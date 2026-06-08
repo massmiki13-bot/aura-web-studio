@@ -1,0 +1,46 @@
+import { useRef, type ReactNode, type MouseEvent } from "react";
+import { motion } from "framer-motion";
+
+export function MagneticButton({
+  children,
+  className = "",
+  strength = 0.4,
+  as: As = "div",
+  ...rest
+}: {
+  children: ReactNode;
+  className?: string;
+  strength?: number;
+  as?: "div" | "a" | "button";
+  href?: string;
+  onClick?: () => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inner = useRef<HTMLDivElement>(null);
+
+  function handleMove(e: MouseEvent) {
+    if (!ref.current || !inner.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    inner.current.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+  }
+  function reset() {
+    if (inner.current) inner.current.style.transform = "translate(0,0)";
+  }
+
+  const Comp: any = motion[As as "div"];
+  return (
+    <Comp
+      ref={ref}
+      onMouseMove={handleMove}
+      onMouseLeave={reset}
+      className={className}
+      {...rest}
+    >
+      <div ref={inner} className="transition-transform duration-300 ease-out will-change-transform">
+        {children}
+      </div>
+    </Comp>
+  );
+}
