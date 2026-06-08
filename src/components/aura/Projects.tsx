@@ -7,7 +7,7 @@ const projects = [
     name: "La Cave Shisha Lounge",
     tag: "Hospitality / Lounge",
     desc: "Ambient purple glow, glassmorphic overlays e 3D smoke trails reattivi allo scroll.",
-    stack: ["React", "WebGL", "GSAP"],
+    stack: ["Vite", "React", "Framer"],
     bg: "radial-gradient(ellipse at 30% 30%, oklch(0.35 0.2 305) 0%, #050108 60%)",
     accent: "oklch(0.7 0.25 305)",
   },
@@ -16,7 +16,7 @@ const projects = [
     name: "Triclinium Cotoletteria",
     tag: "Restaurant / Street Pop",
     desc: "Street-pop yellow con asset di posate cinetiche e burst di particelle interattivi.",
-    stack: ["Next.js", "Lenis", "Framer"],
+    stack: ["Vite", "Tailwind", "Framer"],
     bg: "radial-gradient(ellipse at 70% 40%, oklch(0.85 0.2 95) 0%, #0a0700 70%)",
     accent: "oklch(0.92 0.2 95)",
   },
@@ -25,7 +25,7 @@ const projects = [
     name: "Enoteca da Aldo",
     tag: "Wine / Luxury",
     desc: "Dark-slate luxury con parallax tiles e menù in frosted glass premium.",
-    stack: ["Astro", "Three.js", "Tailwind"],
+    stack: ["React", "Tailwind", "Framer"],
     bg: "radial-gradient(ellipse at 50% 60%, oklch(0.25 0.04 250) 0%, #02040a 70%)",
     accent: "oklch(0.9 0.05 250)",
   },
@@ -34,9 +34,36 @@ const projects = [
     name: "Piccola Italia",
     tag: "Trattoria / Editorial",
     desc: "Editoriale tipografico, transizioni cinematiche e identità visiva su misura.",
-    stack: ["SvelteKit", "GSAP", "Sanity"],
+    stack: ["Vite", "React", "Framer"],
     bg: "radial-gradient(ellipse at 20% 70%, oklch(0.45 0.22 25) 0%, #080203 70%)",
     accent: "oklch(0.78 0.2 25)",
+  },
+  {
+    n: "05",
+    name: "Atelier Nova",
+    tag: "Fashion / E-commerce",
+    desc: "Placeholder — shop premium con quick-view animato, cart drawer fluido e lookbook scroll.",
+    stack: ["Vite", "React", "Framer"],
+    bg: "radial-gradient(ellipse at 60% 30%, oklch(0.4 0.18 340) 0%, #060106 65%)",
+    accent: "oklch(0.82 0.2 340)",
+  },
+  {
+    n: "06",
+    name: "Orbit Studio",
+    tag: "SaaS / Landing",
+    desc: "Placeholder — landing prodotto con hero 3D, pricing interattivo e onboarding animato.",
+    stack: ["Vite", "React", "Framer"],
+    bg: "radial-gradient(ellipse at 40% 50%, oklch(0.38 0.15 180) 0%, #00060a 70%)",
+    accent: "oklch(0.85 0.18 180)",
+  },
+  {
+    n: "07",
+    name: "Verde Botanica",
+    tag: "Wellness / Brand",
+    desc: "Placeholder — sito brand con palette organica, storytelling verticale e prenotazioni live.",
+    stack: ["Vite", "React", "Framer"],
+    bg: "radial-gradient(ellipse at 30% 60%, oklch(0.4 0.16 150) 0%, #02070a 70%)",
+    accent: "oklch(0.85 0.18 150)",
   },
 ];
 
@@ -50,7 +77,7 @@ export function Projects() {
     <section
       id="projects"
       ref={ref}
-      className="relative bg-black hidden md:block"
+      className="relative bg-black hidden lg:block overflow-hidden"
       style={{ height: `${projects.length * 100}vh` }}
     >
       <div className="sticky top-0 h-screen w-screen overflow-hidden">
@@ -110,27 +137,42 @@ export function Projects() {
 
 export function ProjectsMobile() {
   return (
-    <section className="md:hidden bg-black px-6 py-24 space-y-8">
-      <div className="space-y-3">
-        <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary">// Selected Work</p>
-        <h2 className="font-display text-4xl font-bold tracking-tighter text-white">Case studies cinematici.</h2>
+    <section id="projects-mobile" className="lg:hidden bg-black px-6 sm:px-10 py-24 space-y-10 overflow-hidden">
+      <div className="space-y-3 max-w-3xl">
+        <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary">// 02 — Selected Work</p>
+        <h2 className="font-display text-4xl sm:text-5xl font-bold tracking-tighter text-white">
+          Case studies <span className="text-gradient-aura italic">cinematici.</span>
+        </h2>
+        <p className="text-white/50 text-sm sm:text-base max-w-xl">
+          Una selezione di progetti reali e concept. Ogni layout è ricostruito da zero per il brand.
+        </p>
       </div>
-      <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory -mx-6 px-6 pb-4 scrollbar-hide">
-        {projects.map((p) => (
-          <div
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {projects.map((p, i) => (
+          <motion.div
             key={p.n}
-            className="snap-center flex-shrink-0 w-[80vw] h-[70vh] rounded-2xl p-6 flex flex-col justify-between"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: (i % 2) * 0.08, ease: [0.22, 1, 0.36, 1] }}
+            className="relative rounded-2xl p-6 aspect-[4/5] flex flex-col justify-between overflow-hidden border border-white/10"
             style={{ background: p.bg }}
           >
-            <div className="flex justify-between font-mono-spec text-[10px] uppercase tracking-widest text-white/60">
+            <div className="absolute inset-0 noise-bg opacity-30 pointer-events-none" />
+            <div className="relative flex justify-between font-mono-spec text-[10px] uppercase tracking-widest text-white/60">
               <span style={{ color: p.accent }}>● {p.n}</span>
-              <span>{p.tag}</span>
+              <span className="truncate ml-2">{p.tag}</span>
             </div>
-            <div>
-              <h3 className="font-display text-3xl font-bold tracking-tight text-white mb-3">{p.name}</h3>
-              <p className="text-white/60 text-sm">{p.desc}</p>
+            <div className="relative">
+              <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">{p.name}</h3>
+              <p className="text-white/60 text-sm line-clamp-3">{p.desc}</p>
+              <div className="flex flex-wrap gap-1.5 pt-3">
+                {p.stack.map((s) => (
+                  <span key={s} className="glass px-2 py-1 rounded-full font-mono-spec text-[9px] uppercase tracking-widest text-white/70">{s}</span>
+                ))}
+              </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>
