@@ -111,7 +111,7 @@ export function Contact() {
               className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-secondary resize-none"
             />
           </div>
-          <MagneticButton strength={0.35} as="button" className="w-full" disabled={loading}>
+          <MagneticButton strength={0.35} as="button" className="w-full">
             <div
               className="w-full rounded-full py-4 px-6 font-mono-spec text-xs uppercase tracking-[0.3em] text-black text-center"
               style={{ background: "var(--gradient-aura)", boxShadow: "var(--shadow-neon)", opacity: loading ? 0.6 : 1 }}
