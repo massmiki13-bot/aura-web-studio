@@ -1,29 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Nav } from "@/components/aura/Nav";
+import { Hero } from "@/components/aura/Hero";
+import { Projects, ProjectsMobile } from "@/components/aura/Projects";
+import { Team } from "@/components/aura/Team";
+import { Contact } from "@/components/aura/Contact";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Aura Web Studio — Creative Digital Solutions" },
+      { name: "description", content: "Tre menti, un unico ecosistema digitale. Studio creativo specializzato in esperienze web cinematiche, animazioni avanzate e UI/UX su misura." },
+      { property: "og:title", content: "Aura Web Studio — Creative Digital Solutions" },
+      { property: "og:description", content: "Esperienze web cinematiche, animazioni 60fps e design ad alto impatto. Aura Web Studio." },
+      { property: "og:type", content: "website" },
+      { name: "theme-color", content: "#000000" },
     ],
   }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="bg-black text-white">
+      <Nav />
+      <Hero />
+      <Projects />
+      <ProjectsMobile />
+      <Team />
+      <Contact />
+    </main>
   );
 }
