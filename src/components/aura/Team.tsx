@@ -40,7 +40,7 @@ export function Team() {
     <section id="team" ref={ref} className="relative bg-black py-32 md:py-48 overflow-hidden">
       <motion.div
         style={{ x: bgX }}
-        className="absolute top-1/2 -translate-y-1/2 left-0 whitespace-nowrap font-display text-[18vw] font-bold tracking-tighter text-white/4 pointer-events-none select-none"
+        className="absolute top-1/2 -translate-y-1/2 left-0 whitespace-nowrap font-display text-[18vw] font-bold tracking-tighter text-white/[0.04] pointer-events-none select-none"
       >
         ECOSYSTEM · ECOSYSTEM · ECOSYSTEM ·
       </motion.div>
@@ -138,7 +138,7 @@ function MorphingScreen({ frames }: { frames: { label: string; accent: string }[
           </div>
         </div>
 
-        <div className="relative aspect-4/3 w-full glass rounded-3xl overflow-hidden">
+        <div className="relative aspect-[4/3] w-full glass rounded-3xl overflow-hidden">
           <div className="absolute inset-0 noise-bg opacity-40 pointer-events-none" />
           {/* browser chrome */}
           <div className="absolute top-0 left-0 right-0 h-9 flex items-center gap-1.5 px-4 border-b border-white/10 bg-black/40 backdrop-blur z-20">
@@ -170,19 +170,16 @@ function FrameLayer({
   frame: { label: string; accent: string };
   total: number;
 }) {
-  const opacity = useTransform(indexMV, (v) => {
+  // opacity peaks at index, fades out before next
+  const opacity = useTransform<number, number>(indexMV, (v) => {
     const d = Math.abs(v - index);
-    return Math.max(0.15, 1 - d * 1.4);
+    return Math.max(0, 1 - d * 1.4);
   });
   const y = useTransform<number, number>(indexMV, (v) => (v - index) * 30);
 
   return (
     <motion.div
-      style={{
-        opacity,
-        y,
-        willChange: "transform, opacity",
-      }}
+      style={{ opacity, y }}
       className="absolute inset-0 pt-9 px-6 pb-6 flex flex-col gap-3"
     >
       <div className="flex items-center justify-between">
