@@ -178,7 +178,11 @@ function FrameLayer({
 
   return (
     <motion.div
-      style={{ opacity, y }}
+      style={{
+        opacity,
+        y,
+        willChange: "transform, opacity",
+      }}
       className="absolute inset-0 pt-9 px-6 pb-6 flex flex-col gap-3"
     >
       <div className="flex items-center justify-between">
