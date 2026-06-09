@@ -165,8 +165,8 @@ export function Projects() {
 
 export function ProjectsMobile() {
   return (
-    <section className="md:hidden bg-black px-6 py-24 space-y-8">
-      <div className="space-y-3">
+    <section className="md:hidden bg-black py-24 space-y-8 overflow-hidden">
+      <div className="px-6 space-y-3">
         <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary">
           // Selected Work
         </p>
@@ -174,26 +174,28 @@ export function ProjectsMobile() {
           Case studies cinematici.
         </h2>
       </div>
-      <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory -mx-6 px-6 pb-4 scrollbar-hide">
-        {projects.map((p) => (
-          <div
-            key={p.n}
-            onClick={() => window.open(p.domain, "_blank")}
-            className="snap-center shrink-0 w-[80vw] h-[70vh] rounded-2xl p-6 flex flex-col justify-between cursor-pointer hover:opacity-80 transition-opacity"
-            style={{ background: p.bg }}
-          >
-            <div className="flex justify-between font-mono-spec text-[10px] uppercase tracking-widest text-white/60">
-              <span style={{ color: p.accent }}>● {p.n}</span>
-              <span>{p.tag}</span>
+      <div className="overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+        <div className="flex gap-5 px-6 pb-4 w-max">
+          {projects.map((p) => (
+            <div
+              key={p.n}
+              onClick={() => window.open(p.domain, "_blank")}
+              className="snap-center shrink-0 w-[80vw] h-[70vh] rounded-2xl p-6 flex flex-col justify-between cursor-pointer hover:opacity-80 transition-opacity"
+              style={{ background: p.bg }}
+            >
+              <div className="flex justify-between font-mono-spec text-[10px] uppercase tracking-widest text-white/60">
+                <span style={{ color: p.accent }}>● {p.n}</span>
+                <span>{p.tag}</span>
+              </div>
+              <div>
+                <h3 className="font-display text-3xl font-bold tracking-tight text-white mb-3">
+                  {p.name}
+                </h3>
+                <p className="text-white/60 text-sm">{p.desc}</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-display text-3xl font-bold tracking-tight text-white mb-3">
-                {p.name}
-              </h3>
-              <p className="text-white/60 text-sm">{p.desc}</p>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

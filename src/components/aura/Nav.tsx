@@ -13,18 +13,24 @@ export function Nav() {
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex items-center justify-between mix-blend-difference">
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex items-center justify-between mix-blend-difference max-w-[100vw]">
         <a href="#hero" className="font-display text-lg font-bold tracking-tight text-white">
           AURA<span className="text-primary">.</span>
         </a>
         <nav className="hidden md:flex gap-10 font-mono-spec text-xs uppercase tracking-[0.2em] text-white">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="story-link hover:text-primary transition-colors">
+            <a
+              key={l.href}
+              href={l.href}
+              className="story-link hover:text-primary transition-colors"
+            >
               {l.label}
             </a>
           ))}
