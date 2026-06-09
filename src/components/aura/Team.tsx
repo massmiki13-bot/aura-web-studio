@@ -37,7 +37,7 @@ export function Team() {
   const bgX = useTransform(scrollYProgress, [0, 1], ["0%", "-40%"]);
 
   return (
-    <section id="team" ref={ref} className="relative bg-black py-32 md:py-48 overflow-hidden">
+    <section id="team" ref={ref} className="relative bg-black pt-32 pb-4 md:py-48 overflow-hidden">
       <motion.div
         style={{ x: bgX }}
         className="absolute top-1/2 -translate-y-1/2 left-0 whitespace-nowrap font-display text-[18vw] font-bold tracking-tighter text-white/[0.04] pointer-events-none select-none"

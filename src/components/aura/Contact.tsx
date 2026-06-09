@@ -38,7 +38,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="relative bg-black min-h-screen flex flex-col justify-center px-6 md:px-16 py-32"
+      className="relative bg-black min-h-screen flex flex-col justify-center px-6 md:px-16 py-4"
     >
       <div className="absolute inset-0 opacity-40 pointer-events-none">
         <div
