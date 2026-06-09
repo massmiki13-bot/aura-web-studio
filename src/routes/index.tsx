@@ -9,9 +9,17 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Aura Web Studio — Creative Digital Solutions" },
-      { name: "description", content: "Tre menti, un unico ecosistema digitale. Studio creativo specializzato in esperienze web cinematiche, animazioni avanzate e UI/UX su misura." },
+      {
+        name: "description",
+        content:
+          "Tre menti, un unico ecosistema digitale. Studio creativo specializzato in esperienze web cinematiche, animazioni avanzate e UI/UX su misura.",
+      },
       { property: "og:title", content: "Aura Web Studio — Creative Digital Solutions" },
-      { property: "og:description", content: "Esperienze web cinematiche, animazioni 60fps e design ad alto impatto. Aura Web Studio." },
+      {
+        property: "og:description",
+        content:
+          "Esperienze web cinematiche, animazioni 60fps e design ad alto impatto. Aura Web Studio.",
+      },
       { property: "og:type", content: "website" },
       { name: "theme-color", content: "#000000" },
     ],
@@ -24,9 +32,13 @@ function Index() {
     <main className="bg-black text-white">
       <Nav />
       <Hero />
-      <Projects />
+      <div style={{ contain: "layout style paint" }}>
+        <Projects />
+      </div>
       <ProjectsMobile />
-      <Team />
+      <div style={{ contain: "layout style paint" }}>
+        <Team />
+      </div>
       <Contact />
     </main>
   );
