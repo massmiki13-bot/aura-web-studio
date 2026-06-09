@@ -67,7 +67,7 @@ export function generateMetaTags(overrides?: {
 
   return [
     { charSet: "utf-8" },
-    { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+    { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" },
     { httpEquiv: "x-ua-compatible", content: "ie=edge" },
     { name: "title", content: title },
     { name: "description", content: description },
