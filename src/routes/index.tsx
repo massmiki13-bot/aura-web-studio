@@ -3,7 +3,7 @@ import { Nav } from "@/components/aura/Nav";
 import { Hero } from "@/components/aura/Hero";
 import { Projects, ProjectsMobile } from "@/components/aura/Projects";
 import { Team } from "@/components/aura/Team";
-import { Contact } from "@/components/aura/Contact";
+import { Contact, Footer } from "@/components/aura/Contact";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,14 +32,11 @@ function Index() {
     <main className="bg-black text-white">
       <Nav />
       <Hero />
-      <div style={{ contain: "layout style paint" }}>
-        <Projects />
-      </div>
+      <Projects />
       <ProjectsMobile />
-      <div style={{ contain: "layout style paint" }}>
-        <Team />
-      </div>
+      <Team />
       <Contact />
+      <Footer />
     </main>
   );
 }

@@ -38,7 +38,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="relative bg-black min-h-screen flex flex-col justify-center px-6 md:px-16 py-32 overflow-hidden"
+      className="relative bg-black min-h-screen flex flex-col justify-center px-6 md:px-16 py-32"
     >
       <div className="absolute inset-0 opacity-40 pointer-events-none">
         <div
@@ -180,8 +180,14 @@ export function Contact() {
           </button>
         </motion.form>
       </div>
+    </section>
+  );
+}
 
-      <footer className="relative mt-32 max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6 font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
+export function Footer() {
+  return (
+    <footer className="bg-black px-6 md:px-16 py-16 border-t border-white/10">
+      <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6 font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
         <div className="space-y-2">
           <p className="text-white/60">© 2026 Aura Web Studio</p>
           <p>Creative Digital Solutions · Made in Italy</p>
@@ -197,7 +203,7 @@ export function Contact() {
             GitHub
           </a>
         </div>
-      </footer>
-    </section>
+      </div>
+    </footer>
   );
 }
