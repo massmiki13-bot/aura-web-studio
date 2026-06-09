@@ -47,16 +47,12 @@ export function Team() {
 
       <div className="relative px-6 md:px-16 max-w-7xl mx-auto">
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-6"
         >
           // 03 — The Trio
         </motion.p>
         <motion.h2
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           className="font-display text-4xl md:text-7xl font-bold leading-[0.95] tracking-tighter text-white max-w-5xl"
@@ -82,8 +78,6 @@ export function Team() {
           {capabilities.map((c, i) => (
             <motion.div
               key={c.k}
-              initial={{ opacity: 0, rotateX: -25, y: 60 }}
-              whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.8, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
               style={{ transformPerspective: 1200 }}
