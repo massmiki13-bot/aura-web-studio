@@ -165,7 +165,7 @@ export function Projects() {
 
 export function ProjectsMobile() {
   return (
-    <section className="md:hidden bg-black py-24 space-y-8 overflow-hidden">
+    <section className="md:hidden bg-black py-24 space-y-8 overflow-x-hidden">
       <div className="px-6 space-y-3">
         <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary">
           // Selected Work
