@@ -172,10 +172,14 @@ function FrameLayer({
 }) {
   // opacity peaks at index, fades out before next
   const opacity = useTransform<number, number>(indexMV, (v) => {
-    const d = Math.abs(v - index);
+    const clamped = Math.max(0, Math.min(total - 0.001, v));
+    const d = Math.abs(clamped - index);
     return Math.max(0, 1 - d * 1.4);
   });
-  const y = useTransform<number, number>(indexMV, (v) => (v - index) * 30);
+  const y = useTransform<number, number>(indexMV, (v) => {
+    const clamped = Math.max(0, Math.min(total - 0.001, v));
+    return (clamped - index) * 30;
+  });
 
   return (
     <motion.div
