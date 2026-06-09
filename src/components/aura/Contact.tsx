@@ -141,7 +141,12 @@ export function Contact() {
               className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-secondary resize-none"
             />
           </div>
-          <MagneticButton strength={0.35} as="button" type="submit" className="w-full">
+          <MagneticButton
+            strength={0.35}
+            as="button"
+            type="submit"
+            className="w-full hidden md:block"
+          >
             <div
               className="w-full rounded-full py-4 px-6 font-mono-spec text-xs uppercase tracking-[0.3em] text-black text-center"
               style={{
@@ -157,6 +162,22 @@ export function Contact() {
                   : "Lancia il progetto →"}
             </div>
           </MagneticButton>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full md:hidden rounded-full py-4 px-6 font-mono-spec text-xs uppercase tracking-[0.3em] text-black text-center transition-opacity"
+            style={{
+              background: "var(--gradient-aura)",
+              boxShadow: "var(--shadow-neon)",
+              opacity: loading ? 0.6 : 1,
+            }}
+          >
+            {loading
+              ? "Invio in corso…"
+              : sent
+                ? "Inviato ✓ — manda un altro"
+                : "Lancia il progetto →"}
+          </button>
         </motion.form>
       </div>
 
