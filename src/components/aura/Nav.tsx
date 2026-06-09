@@ -20,7 +20,7 @@ export function Nav() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex items-center justify-between mix-blend-difference max-w-[100vw]">
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex items-center justify-between max-w-[100vw] bg-black/40 backdrop-blur-md" style={{ willChange: "transform" }}>
         <a href="#hero" className="font-display text-lg font-bold tracking-tight text-white">
           AURA<span className="text-primary">.</span>
         </a>
@@ -39,6 +39,7 @@ export function Nav() {
           aria-label="Menu"
           onClick={() => setOpen((v) => !v)}
           className="md:hidden relative w-10 h-10 flex flex-col items-center justify-center gap-1.5"
+          style={{ willChange: "transform" }}
         >
           <motion.span
             animate={open ? { rotate: 45, y: 4 } : { rotate: 0, y: 0 }}

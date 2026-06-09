@@ -9,6 +9,11 @@ interface MagneticButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   href?: string;
 }
 
+function isTouchDevice() {
+  if (typeof window === "undefined") return false;
+  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+}
+
 export function MagneticButton({
   children,
   className = "",
@@ -21,6 +26,9 @@ export function MagneticButton({
   const inner = useRef<HTMLDivElement>(null);
 
   function handleMove(e: MouseEvent) {
+    // Disable magnetic effect on touch devices — mouseMove fires inconsistently
+    // and can leave the button stuck in a translated position
+    if (isTouchDevice()) return;
     if (!ref.current || !inner.current) return;
     const rect = ref.current.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;

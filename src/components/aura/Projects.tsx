@@ -95,8 +95,8 @@ export function Projects() {
       className="relative bg-black hidden md:block"
       style={{ height: `${projects.length * 100}vh` }}
     >
-      <div className="sticky top-0 h-screen w-screen max-sm:overflow-hidden">
-        <motion.div style={{ x }} className="flex h-full">
+      <div className="sticky top-0 h-screen w-screen overflow-hidden" style={{ willChange: "transform", transform: "translateZ(0)" }}>
+        <motion.div style={{ x, willChange: "transform" }} className="flex h-full">
           {projects.map((p, i) => (
             <div
               key={p.n}

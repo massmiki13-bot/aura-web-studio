@@ -43,11 +43,11 @@ export function Contact() {
       <div className="absolute inset-0 opacity-40 pointer-events-none">
         <div
           className="absolute top-1/4 -left-40 w-125 h-125 rounded-full blur-[120px]"
-          style={{ background: "oklch(0.85 0.18 200 / 0.3)" }}
+          style={{ background: "var(--glow-cyan)" }}
         />
         <div
           className="absolute bottom-1/4 -right-40 w-125 h-125 rounded-full blur-[120px]"
-          style={{ background: "oklch(0.62 0.26 305 / 0.3)" }}
+          style={{ background: "var(--glow-purple)" }}
         />
       </div>
 
@@ -86,6 +86,7 @@ export function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
+          style={{ willChange: "transform, opacity" }}
           className="glass rounded-3xl p-6 md:p-10 space-y-6"
         >
           <div className="relative">

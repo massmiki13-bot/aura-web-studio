@@ -39,7 +39,7 @@ export function Team() {
   return (
     <section id="team" ref={ref} className="relative bg-black pt-32 pb-4 md:py-48 overflow-hidden">
       <motion.div
-        style={{ x: bgX }}
+        style={{ x: bgX, willChange: "transform" }}
         className="absolute top-1/2 -translate-y-1/2 left-0 whitespace-nowrap font-display text-[18vw] font-bold tracking-tighter text-white/[0.04] pointer-events-none select-none"
       >
         ECOSYSTEM · ECOSYSTEM · ECOSYSTEM ·
@@ -47,13 +47,18 @@ export function Team() {
 
       <div className="relative px-6 md:px-16 max-w-7xl mx-auto">
         <motion.p
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
           className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-6"
         >
           // 03 — The Trio
         </motion.p>
         <motion.h2
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           className="font-display text-4xl md:text-7xl font-bold leading-[0.95] tracking-tighter text-white max-w-5xl"
         >
@@ -63,7 +68,7 @@ export function Team() {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.7, delay: 0.15 }}
           className="mt-8 text-white/55 text-base md:text-lg max-w-2xl"
         >
@@ -78,9 +83,11 @@ export function Team() {
           {capabilities.map((c, i) => (
             <motion.div
               key={c.k}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.8, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-              style={{ transformPerspective: 1200 }}
+              style={{ transformPerspective: 1200, willChange: "transform, opacity" }}
               className="group glass rounded-2xl p-8 md:p-10 hover:border-primary/40 transition-colors"
             >
               <div className="flex items-start justify-between mb-8">
@@ -177,7 +184,7 @@ function FrameLayer({
 
   return (
     <motion.div
-      style={{ opacity, y }}
+      style={{ opacity, y, willChange: "transform, opacity" }}
       className="absolute inset-0 pt-9 px-6 pb-6 flex flex-col gap-3"
     >
       <div className="flex items-center justify-between">
