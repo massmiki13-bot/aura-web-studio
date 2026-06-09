@@ -1,20 +1,22 @@
-import { useRef, type ReactNode, type MouseEvent } from "react";
+import { useRef, type ReactNode, type MouseEvent, type ButtonHTMLAttributes } from "react";
 import { motion } from "framer-motion";
+
+interface MagneticButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
+  className?: string;
+  strength?: number;
+  as?: "div" | "a" | "button";
+  href?: string;
+}
 
 export function MagneticButton({
   children,
   className = "",
   strength = 0.4,
   as: As = "div",
+  type = "button",
   ...rest
-}: {
-  children: ReactNode;
-  className?: string;
-  strength?: number;
-  as?: "div" | "a" | "button";
-  href?: string;
-  onClick?: () => void;
-}) {
+}: MagneticButtonProps) {
   const ref = useRef<HTMLDivElement>(null);
   const inner = useRef<HTMLDivElement>(null);
 
@@ -36,6 +38,7 @@ export function MagneticButton({
       onMouseMove={handleMove}
       onMouseLeave={reset}
       className={className}
+      type={As === "button" ? type : undefined}
       {...rest}
     >
       <div ref={inner} className="transition-transform duration-300 ease-out will-change-transform">

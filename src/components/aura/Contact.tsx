@@ -36,26 +36,44 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="relative bg-black min-h-screen flex flex-col justify-center px-6 md:px-16 py-32 overflow-hidden">
+    <section
+      id="contact"
+      className="relative bg-black min-h-screen flex flex-col justify-center px-6 md:px-16 py-32 overflow-hidden"
+    >
       <div className="absolute inset-0 opacity-40 pointer-events-none">
-        <div className="absolute top-1/4 -left-40 w-[500px] h-[500px] rounded-full blur-[120px]" style={{ background: "oklch(0.85 0.18 200 / 0.3)" }} />
-        <div className="absolute bottom-1/4 -right-40 w-[500px] h-[500px] rounded-full blur-[120px]" style={{ background: "oklch(0.62 0.26 305 / 0.3)" }} />
+        <div
+          className="absolute top-1/4 -left-40 w-125 h-125 rounded-full blur-[120px]"
+          style={{ background: "oklch(0.85 0.18 200 / 0.3)" }}
+        />
+        <div
+          className="absolute bottom-1/4 -right-40 w-125 h-125 rounded-full blur-[120px]"
+          style={{ background: "oklch(0.62 0.26 305 / 0.3)" }}
+        />
       </div>
 
       <div className="relative max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div>
-          <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-6">// 04 — Get in touch</p>
+          <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-6">
+            // 04 — Get in touch
+          </p>
           <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tighter text-white mb-6">
-            Pronto a rendere <span className="text-gradient-aura italic">unico</span> il tuo business?
+            Pronto a rendere <span className="text-gradient-aura italic">unico</span> il tuo
+            business?
           </h2>
           <p className="text-white/50 text-base md:text-lg max-w-md mb-8">
-            Raccontaci il tuo progetto. Ti rispondiamo entro 24 ore con una prima idea su come svilupparlo.
+            Raccontaci il tuo progetto. Ti rispondiamo entro 24 ore con una prima idea su come
+            svilupparlo.
           </p>
           <div className="glass rounded-2xl p-5 flex items-center gap-4">
             <span className="text-2xl">📞</span>
             <div>
-              <p className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40">Chiamaci</p>
-              <a href="tel:+393457454180" className="font-mono-spec text-base text-white hover:text-primary transition-colors">
+              <p className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40">
+                Chiamaci
+              </p>
+              <a
+                href="tel:+393457454180"
+                className="font-mono-spec text-base text-white hover:text-primary transition-colors"
+              >
                 345 7454180
               </a>
             </div>
@@ -71,7 +89,9 @@ export function Contact() {
           className="glass rounded-3xl p-6 md:p-10 space-y-6"
         >
           <div className="relative">
-            <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">Il tuo nome</label>
+            <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+              Il tuo nome
+            </label>
             <input
               type="text"
               value={name}
@@ -81,11 +101,15 @@ export function Contact() {
               maxLength={120}
               required
               className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-primary"
-              style={focus === "name" ? { boxShadow: "0 4px 30px -10px oklch(0.85 0.18 200 / 0.5)" } : {}}
+              style={
+                focus === "name" ? { boxShadow: "0 4px 30px -10px oklch(0.85 0.18 200 / 0.5)" } : {}
+              }
             />
           </div>
           <div className="relative">
-            <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">Email</label>
+            <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+              Email
+            </label>
             <input
               type="email"
               value={email}
@@ -95,11 +119,17 @@ export function Contact() {
               maxLength={200}
               required
               className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-primary"
-              style={focus === "email" ? { boxShadow: "0 4px 30px -10px oklch(0.85 0.18 200 / 0.5)" } : {}}
+              style={
+                focus === "email"
+                  ? { boxShadow: "0 4px 30px -10px oklch(0.85 0.18 200 / 0.5)" }
+                  : {}
+              }
             />
           </div>
           <div className="relative">
-            <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">Il tuo progetto</label>
+            <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+              Il tuo progetto
+            </label>
             <textarea
               rows={4}
               value={message}
@@ -111,12 +141,20 @@ export function Contact() {
               className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-secondary resize-none"
             />
           </div>
-          <MagneticButton strength={0.35} as="button" className="w-full">
+          <MagneticButton strength={0.35} as="button" type="submit" className="w-full">
             <div
               className="w-full rounded-full py-4 px-6 font-mono-spec text-xs uppercase tracking-[0.3em] text-black text-center"
-              style={{ background: "var(--gradient-aura)", boxShadow: "var(--shadow-neon)", opacity: loading ? 0.6 : 1 }}
+              style={{
+                background: "var(--gradient-aura)",
+                boxShadow: "var(--shadow-neon)",
+                opacity: loading ? 0.6 : 1,
+              }}
             >
-              {loading ? "Invio in corso…" : sent ? "Inviato ✓ — manda un altro" : "Lancia il progetto →"}
+              {loading
+                ? "Invio in corso…"
+                : sent
+                  ? "Inviato ✓ — manda un altro"
+                  : "Lancia il progetto →"}
             </div>
           </MagneticButton>
         </motion.form>
@@ -128,9 +166,15 @@ export function Contact() {
           <p>Creative Digital Solutions · Made in Italy</p>
         </div>
         <div className="flex gap-6">
-          <a href="#" className="hover:text-primary">Instagram</a>
-          <a href="#" className="hover:text-primary">Behance</a>
-          <a href="#" className="hover:text-primary">GitHub</a>
+          <a href="#" className="hover:text-primary">
+            Instagram
+          </a>
+          <a href="#" className="hover:text-primary">
+            Behance
+          </a>
+          <a href="#" className="hover:text-primary">
+            GitHub
+          </a>
         </div>
       </footer>
     </section>
