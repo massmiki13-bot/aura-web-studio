@@ -170,10 +170,9 @@ function FrameLayer({
   frame: { label: string; accent: string };
   total: number;
 }) {
-  // opacity peaks at index, fades out before next
-  const opacity = useTransform<number, number>(indexMV, (v) => {
+  const opacity = useTransform(indexMV, (v) => {
     const d = Math.abs(v - index);
-    return Math.max(0, 1 - d * 1.4);
+    return Math.max(0.15, 1 - d * 1.4);
   });
   const y = useTransform<number, number>(indexMV, (v) => (v - index) * 30);
 
