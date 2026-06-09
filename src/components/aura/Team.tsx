@@ -2,10 +2,26 @@ import { motion, useScroll, useTransform, type MotionValue } from "framer-motion
 import { useRef } from "react";
 
 const capabilities = [
-  { t: "Landing Page", d: "Da zero, su misura del brand. Hero cinematici, micro-interazioni e copy che converte.", k: "01" },
-  { t: "Siti Vetrina & Brand", d: "Identità digitale completa, multi-pagina, ottimizzata per SEO e velocità.", k: "02" },
-  { t: "E-commerce & Shop", d: "Cataloghi, carrello, pagamenti e gestione ordini integrati. Da boutique a marketplace.", k: "03" },
-  { t: "Web App Custom", d: "Booking, dashboard, gestionali. Funzionalità su misura, niente template.", k: "04" },
+  {
+    t: "Landing Page",
+    d: "Da zero, su misura del brand. Hero cinematici, micro-interazioni e copy che converte.",
+    k: "01",
+  },
+  {
+    t: "Siti Vetrina & Brand",
+    d: "Identità digitale completa, multi-pagina, ottimizzata per SEO e velocità.",
+    k: "02",
+  },
+  {
+    t: "E-commerce & Shop",
+    d: "Cataloghi, carrello, pagamenti e gestione ordini integrati. Da boutique a marketplace.",
+    k: "03",
+  },
+  {
+    t: "Web App Custom",
+    d: "Booking, dashboard, gestionali. Funzionalità su misura, niente template.",
+    k: "04",
+  },
 ];
 
 const morphFrames = [
@@ -24,7 +40,7 @@ export function Team() {
     <section id="team" ref={ref} className="relative bg-black py-32 md:py-48 overflow-hidden">
       <motion.div
         style={{ x: bgX }}
-        className="absolute top-1/2 -translate-y-1/2 left-0 whitespace-nowrap font-display text-[18vw] font-bold tracking-tighter text-white/[0.04] pointer-events-none select-none"
+        className="absolute top-1/2 -translate-y-1/2 left-0 whitespace-nowrap font-display text-[18vw] font-bold tracking-tighter text-white/4 pointer-events-none select-none"
       >
         ECOSYSTEM · ECOSYSTEM · ECOSYSTEM ·
       </motion.div>
@@ -55,12 +71,14 @@ export function Team() {
           transition={{ duration: 0.7, delay: 0.15 }}
           className="mt-8 text-white/55 text-base md:text-lg max-w-2xl"
         >
-          Niente template. Niente compromessi. Ogni progetto nasce dalle tue esigenze: landing che converte, vetrine eleganti, e-commerce performanti o web app custom — sempre con la stessa cura cinematica.
+          Niente template. Niente compromessi. Ogni progetto nasce dalle tue esigenze: landing che
+          converte, vetrine eleganti, e-commerce performanti o web app custom — sempre con la stessa
+          cura cinematica.
         </motion.p>
 
         <MorphingScreen frames={morphFrames} />
 
-        <div className="mt-24 grid md:grid-cols-2 gap-6">
+        <div className="mt-24 grid md:grid-cols-2 gap-6 select-none">
           {capabilities.map((c, i) => (
             <motion.div
               key={c.k}
@@ -72,12 +90,13 @@ export function Team() {
               className="group glass rounded-2xl p-8 md:p-10 hover:border-primary/40 transition-colors"
             >
               <div className="flex items-start justify-between mb-8">
-                <span className="font-mono-spec text-xs uppercase tracking-widest text-white/40">/ {c.k}</span>
-                <div className="h-10 w-10 rounded-full border border-white/15 flex items-center justify-center group-hover:border-primary group-hover:glow-cyan transition-all">
-                  <span className="text-white/60 group-hover:text-primary">→</span>
-                </div>
+                <span className="font-mono-spec text-xs uppercase tracking-widest text-white/40">
+                  / {c.k}
+                </span>
               </div>
-              <h3 className="font-display text-2xl md:text-3xl font-semibold tracking-tight text-white mb-3">{c.t}</h3>
+              <h3 className="font-display text-2xl md:text-3xl font-semibold tracking-tight text-white mb-3">
+                {c.t}
+              </h3>
               <p className="text-white/60 leading-relaxed">{c.d}</p>
             </motion.div>
           ))}
@@ -97,30 +116,38 @@ function MorphingScreen({ frames }: { frames: { label: string; accent: string }[
     <div ref={wrap} className="mt-20 relative">
       <div className="grid md:grid-cols-2 gap-10 items-center">
         <div className="space-y-4">
-          <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary">// scroll = morph</p>
+          <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary">
+            // scroll = morph
+          </p>
           <h3 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-white">
             Una sola filosofia, <span className="text-gradient-aura italic">infinite forme</span>.
           </h3>
           <p className="text-white/55">
-            Scrolla e guarda come la stessa interfaccia diventa landing, vetrina, shop o web app. È così che lavoriamo: una base solida, modellata su di te.
+            Scrolla e guarda come la stessa interfaccia diventa landing, vetrina, shop o web app. È
+            così che lavoriamo: una base solida, modellata su di te.
           </p>
           <div className="flex flex-wrap gap-2 pt-2">
             {frames.map((f) => (
-              <span key={f.label} className="glass rounded-full px-3 py-1.5 font-mono-spec text-[10px] uppercase tracking-widest text-white/70">
+              <span
+                key={f.label}
+                className="glass rounded-full px-3 py-1.5 font-mono-spec text-[10px] uppercase tracking-widest text-white/70"
+              >
                 {f.label}
               </span>
             ))}
           </div>
         </div>
 
-        <div className="relative aspect-[4/3] w-full glass rounded-3xl overflow-hidden">
+        <div className="relative aspect-4/3 w-full glass rounded-3xl overflow-hidden">
           <div className="absolute inset-0 noise-bg opacity-40 pointer-events-none" />
           {/* browser chrome */}
           <div className="absolute top-0 left-0 right-0 h-9 flex items-center gap-1.5 px-4 border-b border-white/10 bg-black/40 backdrop-blur z-20">
             <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
             <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
             <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-            <span className="ml-3 font-mono-spec text-[10px] uppercase tracking-widest text-white/40">aura.studio</span>
+            <span className="ml-3 font-mono-spec text-[10px] uppercase tracking-widest text-white/40">
+              aura.studio
+            </span>
           </div>
 
           {frames.map((f, i) => (
@@ -172,7 +199,10 @@ function FrameLayer({
           <div className="text-center space-y-2">
             <div className="h-4 w-48 mx-auto rounded-full bg-white/40" />
             <div className="h-2 w-32 mx-auto rounded-full bg-white/15" />
-            <div className="mt-3 inline-block h-6 w-24 rounded-full" style={{ background: frame.accent }} />
+            <div
+              className="mt-3 inline-block h-6 w-24 rounded-full"
+              style={{ background: frame.accent }}
+            />
           </div>
         </div>
       )}
@@ -186,8 +216,14 @@ function FrameLayer({
       {index === 2 && (
         <div className="flex-1 grid grid-cols-3 gap-2">
           {Array.from({ length: 6 }).map((_, j) => (
-            <div key={j} className="rounded-lg bg-white/5 border border-white/10 p-2 flex flex-col justify-between">
-              <div className="aspect-square rounded-md" style={{ background: frame.accent, opacity: 0.4 }} />
+            <div
+              key={j}
+              className="rounded-lg bg-white/5 border border-white/10 p-2 flex flex-col justify-between"
+            >
+              <div
+                className="aspect-square rounded-md"
+                style={{ background: frame.accent, opacity: 0.4 }}
+              />
               <div className="space-y-1">
                 <div className="h-1.5 w-10 rounded bg-white/40" />
                 <div className="h-1.5 w-6 rounded" style={{ background: frame.accent }} />
@@ -206,7 +242,10 @@ function FrameLayer({
           <div className="flex-1 grid grid-cols-2 gap-2">
             <div className="rounded-lg bg-white/5 border border-white/10 p-2 flex flex-col gap-1.5">
               <div className="h-2 w-16 rounded bg-white/30" />
-              <div className="flex-1 rounded" style={{ background: `linear-gradient(135deg, ${frame.accent}, transparent)` }} />
+              <div
+                className="flex-1 rounded"
+                style={{ background: `linear-gradient(135deg, ${frame.accent}, transparent)` }}
+              />
             </div>
             <div className="rounded-lg bg-white/5 border border-white/10 p-2 space-y-1.5">
               <div className="h-2 w-12 rounded bg-white/30" />
@@ -222,7 +261,10 @@ function FrameLayer({
         </div>
       )}
       <div className="flex items-center justify-between pt-1">
-        <span className="font-mono-spec text-[10px] uppercase tracking-widest" style={{ color: frame.accent }}>
+        <span
+          className="font-mono-spec text-[10px] uppercase tracking-widest"
+          style={{ color: frame.accent }}
+        >
           / {String(index + 1).padStart(2, "0")} {frame.label}
         </span>
         <span className="font-mono-spec text-[10px] uppercase tracking-widest text-white/30">
