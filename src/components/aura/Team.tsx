@@ -141,7 +141,7 @@ function MorphingScreen({ frames }: { frames: { label: string; accent: string }[
         <div className="relative aspect-4/3 w-full glass rounded-3xl overflow-hidden">
           <div className="absolute inset-0 noise-bg opacity-40 pointer-events-none" />
           {/* browser chrome */}
-          <div className="absolute top-0 left-0 right-0 h-9 flex items-center gap-1.5 px-4 border-b border-white/10 bg-black/80 z-20">
+          <div className="absolute top-0 left-0 right-0 h-9 flex items-center gap-1.5 px-4 border-b border-white/10 bg-black/40 backdrop-blur z-20">
             <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
             <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
             <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
