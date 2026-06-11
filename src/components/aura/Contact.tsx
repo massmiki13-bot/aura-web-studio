@@ -40,7 +40,7 @@ export function Contact() {
       id="contact"
       className="relative bg-black min-h-screen flex flex-col justify-center px-6 md:px-16 py-4"
     >
-      <div className="absolute inset-0 opacity-40 pointer-events-none">
+      <div className="overflow-hidden absolute inset-0 opacity-40 pointer-events-none">
         <div
           className="absolute top-1/4 -left-40 w-125 h-125 rounded-full blur-[120px]"
           style={{ background: "var(--glow-cyan)" }}

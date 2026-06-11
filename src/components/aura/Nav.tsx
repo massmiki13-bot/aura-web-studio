@@ -20,7 +20,10 @@ export function Nav() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex items-center justify-between max-w-[100vw] bg-black/40 backdrop-blur-md" style={{ willChange: "transform" }}>
+      <header
+        className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex items-center justify-between max-w-screen bg-black/40 backdrop-blur-md"
+        style={{ willChange: "transform" }}
+      >
         <a href="#hero" className="font-display text-lg font-bold tracking-tight text-white">
           AURA<span className="text-primary">.</span>
         </a>
