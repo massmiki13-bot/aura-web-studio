@@ -1,43 +1,26 @@
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { useRef } from "react";
-
-const capabilities = [
-  {
-    t: "Landing Page",
-    d: "Da zero, su misura del brand. Hero cinematici, micro-interazioni e copy che converte.",
-    k: "01",
-  },
-  {
-    t: "Siti Vetrina & Brand",
-    d: "Identità digitale completa, multi-pagina, ottimizzata per SEO e velocità.",
-    k: "02",
-  },
-  {
-    t: "E-commerce & Shop",
-    d: "Cataloghi, carrello, pagamenti e gestione ordini integrati. Da boutique a marketplace.",
-    k: "03",
-  },
-  {
-    t: "Web App Custom",
-    d: "Booking, dashboard, gestionali. Funzionalità su misura, niente template.",
-    k: "04",
-  },
-];
-
-const morphFrames = [
-  { label: "Landing", accent: "oklch(0.85 0.18 200)" },
-  { label: "Vetrina", accent: "oklch(0.78 0.22 280)" },
-  { label: "Shop", accent: "oklch(0.82 0.2 340)" },
-  { label: "Web App", accent: "oklch(0.85 0.18 150)" },
-];
+import { Link } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 
 export function Team() {
+  const { t } = useTranslation();
+  const morphFrames = [
+    { label: t("product.frames.landing"), accent: "oklch(0.85 0.18 200)" },
+    { label: t("product.frames.showcase"), accent: "oklch(0.78 0.22 280)" },
+    { label: t("product.frames.shop"), accent: "oklch(0.82 0.2 340)" },
+    { label: t("product.frames.webapp"), accent: "oklch(0.85 0.18 150)" },
+  ];
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const bgX = useTransform(scrollYProgress, [0, 1], ["0%", "-40%"]);
 
   return (
-    <section id="team" ref={ref} className="relative bg-black pt-32 pb-4 md:py-48 overflow-hidden">
+    <section
+      id="team"
+      ref={ref}
+      className="relative bg-black pt-32 pb-4 md:pt-48 md:pb-16 overflow-hidden"
+    >
       <motion.div
         style={{ x: bgX, willChange: "transform" }}
         className="absolute top-1/2 -translate-y-1/2 left-0 whitespace-nowrap font-display text-[18vw] font-bold tracking-tighter text-white/[0.04] pointer-events-none select-none"
@@ -53,7 +36,7 @@ export function Team() {
           transition={{ duration: 0.6 }}
           className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-6"
         >
-          // 03 — The Trio
+          {t("product.label")}
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -62,8 +45,11 @@ export function Team() {
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           className="font-display text-4xl md:text-7xl font-bold leading-[0.95] tracking-tighter text-white max-w-5xl"
         >
-          Costruiamo siti <span className="text-gradient-aura italic">su misura</span>.<br />
-          Dalla landing allo shop.
+          {t("product.headingPre")}
+          <span className="text-gradient-aura italic">{t("product.headingHighlight")}</span>
+          {t("product.headingPost")}
+          <br />
+          {t("product.headingLine2")}
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -72,42 +58,78 @@ export function Team() {
           transition={{ duration: 0.7, delay: 0.15 }}
           className="mt-8 text-white/55 text-base md:text-lg max-w-2xl"
         >
-          Niente template. Niente compromessi. Ogni progetto nasce dalle tue esigenze: landing che
-          converte, vetrine eleganti, e-commerce performanti o web app custom — sempre con la stessa
-          cura cinematica.
+          {t("product.paragraph")}
         </motion.p>
 
         <MorphingScreen frames={morphFrames} />
 
-        <div className="mt-24 grid md:grid-cols-2 gap-6 select-none">
-          {capabilities.map((c, i) => (
-            <motion.div
-              key={c.k}
+        <section
+          id="pricing-cta"
+          className="relative pt-32 pb-24 md:pt-96 overflow-hidden flex flex-col justify-center px-6 md:px-16 mt-44"
+        >
+          <div className="relative max-w-5xl mx-auto w-full text-center flex flex-col items-center z-10">
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6 }}
+              className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-6"
+            >
+              {t("product.pricingLabel")}
+            </motion.p>
+            <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.8, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-              style={{ transformPerspective: 1200, willChange: "transform, opacity" }}
-              className="group glass rounded-2xl p-8 md:p-10 hover:border-primary/40 transition-colors"
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display text-4xl md:text-7xl font-bold leading-[0.95] tracking-tighter text-white max-w-3xl"
             >
-              <div className="flex items-start justify-between mb-8">
-                <span className="font-mono-spec text-xs uppercase tracking-widest text-white/40">
-                  / {c.k}
-                </span>
-              </div>
-              <h3 className="font-display text-2xl md:text-3xl font-semibold tracking-tight text-white mb-3">
-                {c.t}
-              </h3>
-              <p className="text-white/60 leading-relaxed">{c.d}</p>
+              {t("product.pricingHeadingLine1")}
+              <br />
+              {t("product.pricingHeadingPre")}
+              <span className="text-gradient-aura italic pr-3">
+                {t("product.pricingHeadingHighlight")}
+              </span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+              className="mt-8 text-white/55 text-base md:text-lg max-w-2xl leading-relaxed font-light"
+            >
+              {t("product.pricingParagraph")}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.7, delay: 0.25 }}
+              className="mt-12 w-full max-w-xs"
+            >
+              <Link to="/pricing" className="block w-full cursor-pointer">
+                <button
+                  type="submit"
+                  className="w-full cursor-pointer hover:shadow-(--shadow-neon) transition-shadow duration-300 rounded-full py-4 px-6 font-mono-spec text-xs uppercase tracking-[0.3em] text-black text-center transition-opacity"
+                  style={{
+                    background: "var(--gradient-aura)",
+                    boxShadow: "",
+                  }}
+                >
+                  {t("product.pricingCta")}
+                </button>
+              </Link>
             </motion.div>
-          ))}
-        </div>
+          </div>
+        </section>
       </div>
     </section>
   );
 }
 
 function MorphingScreen({ frames }: { frames: { label: string; accent: string }[] }) {
+  const { t } = useTranslation();
   const wrap = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: wrap, offset: ["start end", "end start"] });
   // Map scroll progress to active frame index
@@ -118,15 +140,13 @@ function MorphingScreen({ frames }: { frames: { label: string; accent: string }[
       <div className="grid md:grid-cols-2 gap-10 items-center">
         <div className="space-y-4">
           <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary">
-            // scroll = morph
+            {t("product.morphLabel")}
           </p>
           <h3 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-white">
-            Una sola filosofia, <span className="text-gradient-aura italic">infinite forme</span>.
+            {t("product.morphTitlePre")}
+            <span className="text-gradient-aura italic">{t("product.morphTitleHighlight")}</span>.
           </h3>
-          <p className="text-white/55">
-            Scrolla e guarda come la stessa interfaccia diventa landing, vetrina, shop o web app. È
-            così che lavoriamo: una base solida, modellata su di te.
-          </p>
+          <p className="text-white/55">{t("product.morphParagraph")}</p>
           <div className="flex flex-wrap gap-2 pt-2">
             {frames.map((f) => (
               <span

@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import i18n, { getStoredLanguage } from "../i18n";
 import { Toaster } from "@/components/ui/sonner";
 import {
   generateMetaTags,
@@ -126,6 +127,14 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  // Restore the visitor's preferred language after hydration (SSR renders the default).
+  useEffect(() => {
+    const stored = getStoredLanguage();
+    if (stored && stored !== i18n.language) {
+      void i18n.changeLanguage(stored);
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 const projects = [
   {
@@ -83,6 +84,7 @@ const projects = [
 ];
 
 export function Projects() {
+  const { t } = useTranslation();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   // shift across (n-1) panels
@@ -116,7 +118,9 @@ export function Projects() {
                   >
                     {p.name}
                   </h2>
-                  <p className="max-w-lg text-white/70 text-base md:text-lg">{p.desc}</p>
+                  <p className="max-w-lg text-white/70 text-base md:text-lg">
+                    {t(`projects.items.${p.n}`, p.desc)}
+                  </p>
                   <div className="flex gap-2 pt-4">
                     {p.stack.map((s) => (
                       <span
@@ -144,16 +148,16 @@ export function Projects() {
                     />
                     <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end font-mono-spec text-[10px] uppercase tracking-widest text-white/60">
                       <span>case_study/{p.n}</span>
-                      <span>live →</span>
+                      <span>{t("projects.live")}</span>
                     </div>
                   </Link>
                 </div>
               </div>
               <div className="absolute bottom-8 left-10 right-10 flex justify-between items-center font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
                 <span>
-                  Project {i + 1} / {projects.length}
+                  {t("projects.project")} {i + 1} / {projects.length}
                 </span>
-                <span>Aura — Case Studies</span>
+                <span>{t("projects.caseStudies")}</span>
               </div>
             </div>
           ))}
@@ -164,14 +168,15 @@ export function Projects() {
 }
 
 export function ProjectsMobile() {
+  const { t } = useTranslation();
   return (
     <section className="md:hidden bg-black py-24 space-y-8 overflow-x-hidden">
       <div className="px-6 space-y-3">
         <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary">
-          // Selected Work
+          {t("projects.selectedWork")}
         </p>
         <h2 className="font-display text-4xl font-bold tracking-tighter text-white">
-          Case studies cinematici.
+          {t("projects.mobileTitle")}
         </h2>
       </div>
       <div className="overflow-x-auto snap-x snap-mandatory scrollbar-hide">
@@ -191,7 +196,7 @@ export function ProjectsMobile() {
                 <h3 className="font-display text-3xl font-bold tracking-tight text-white mb-3">
                   {p.name}
                 </h3>
-                <p className="text-white/60 text-sm">{p.desc}</p>
+                <p className="text-white/60 text-sm">{t(`projects.items.${p.n}`, p.desc)}</p>
               </div>
             </div>
           ))}

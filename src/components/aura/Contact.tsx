@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MagneticButton } from "./MagneticButton";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export function Contact() {
+  const { t } = useTranslation();
   const [focus, setFocus] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -16,7 +19,7 @@ export function Contact() {
     e.preventDefault();
     if (loading) return;
     if (!name.trim() || !email.trim() || !message.trim()) {
-      toast.error("Compila tutti i campi");
+      toast.error(t("contact.errFill"));
       return;
     }
     setLoading(true);
@@ -25,14 +28,14 @@ export function Contact() {
       .insert({ name: name.trim(), email: email.trim(), message: message.trim() });
     setLoading(false);
     if (error) {
-      toast.error("Invio non riuscito. Controlla i dati e riprova.");
+      toast.error(t("contact.errSend"));
       return;
     }
     setSent(true);
     setName("");
     setEmail("");
     setMessage("");
-    toast.success("Richiesta inviata. Ti rispondiamo a breve.");
+    toast.success(t("contact.success"));
   };
 
   return (
@@ -54,30 +57,30 @@ export function Contact() {
       <div className="relative max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div>
           <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-6">
-            // 04 — Get in touch
+            {t("contact.label")}
           </p>
           <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tighter text-white mb-6">
-            Pronto a rendere <span className="text-gradient-aura italic">unico</span> il tuo
-            business?
+            {t("contact.headingPre")}
+            <span className="text-gradient-aura italic pr-2">{t("contact.headingHighlight")}</span>
+            {t("contact.headingPost")}
           </h2>
           <p className="text-white/50 text-base md:text-lg max-w-md mb-8">
-            Raccontaci il tuo progetto. Ti rispondiamo entro 24 ore con una prima idea su come
-            svilupparlo.
+            {t("contact.paragraph")}
           </p>
-          <div className="glass rounded-2xl p-5 flex items-center gap-4">
-            <span className="text-2xl">📞</span>
-            <div>
+          <Link
+            to="/team"
+            className="glass rounded-2xl p-5 flex items-center gap-4 group hover:border-primary/30 border border-transparent transition-colors cursor-pointer"
+          >
+            <div className="flex-1">
               <p className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40">
-                Chiamaci
+                {t("contact.teamLabel")}
               </p>
-              <a
-                href="tel:+393457454180"
-                className="font-mono-spec text-base text-white hover:text-primary transition-colors"
-              >
-                345 7454180
-              </a>
+              <span className="font-mono-spec text-base text-white group-hover:text-primary transition-colors">
+                {t("contact.teamCta")}
+              </span>
             </div>
-          </div>
+            <ArrowRight className="h-4 w-4 text-white/40 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+          </Link>
         </div>
 
         <motion.form
@@ -91,7 +94,7 @@ export function Contact() {
         >
           <div className="relative">
             <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
-              Il tuo nome
+              {t("contact.formName")}
             </label>
             <input
               type="text"
@@ -102,14 +105,11 @@ export function Contact() {
               maxLength={120}
               required
               className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-primary"
-              style={
-                focus === "name" ? { boxShadow: "0 4px 30px -10px oklch(0.85 0.18 200 / 0.5)" } : {}
-              }
             />
           </div>
           <div className="relative">
             <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
-              Email
+              {t("contact.formEmail")}
             </label>
             <input
               type="email"
@@ -120,16 +120,11 @@ export function Contact() {
               maxLength={200}
               required
               className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-primary"
-              style={
-                focus === "email"
-                  ? { boxShadow: "0 4px 30px -10px oklch(0.85 0.18 200 / 0.5)" }
-                  : {}
-              }
             />
           </div>
           <div className="relative">
             <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
-              Il tuo progetto
+              {t("contact.formProject")}
             </label>
             <textarea
               rows={4}
@@ -142,42 +137,18 @@ export function Contact() {
               className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-secondary resize-none"
             />
           </div>
-          <MagneticButton
-            strength={0.35}
-            as="button"
-            type="submit"
-            className="w-full hidden md:block"
-          >
-            <div
-              className="w-full rounded-full py-4 px-6 font-mono-spec text-xs uppercase tracking-[0.3em] text-black text-center"
-              style={{
-                background: "var(--gradient-aura)",
-                boxShadow: "var(--shadow-neon)",
-                opacity: loading ? 0.6 : 1,
-              }}
-            >
-              {loading
-                ? "Invio in corso…"
-                : sent
-                  ? "Inviato ✓ — manda un altro"
-                  : "Lancia il progetto →"}
-            </div>
-          </MagneticButton>
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full md:hidden rounded-full py-4 px-6 font-mono-spec text-xs uppercase tracking-[0.3em] text-black text-center transition-opacity"
+            className="w-full cursor-pointer hover:shadow-(--shadow-neon) transition-shadow duration-300 rounded-full py-4 px-6 font-mono-spec text-xs uppercase tracking-[0.3em] text-black text-center transition-opacity"
             style={{
               background: "var(--gradient-aura)",
-              boxShadow: "var(--shadow-neon)",
+              boxShadow: "",
               opacity: loading ? 0.6 : 1,
             }}
           >
-            {loading
-              ? "Invio in corso…"
-              : sent
-                ? "Inviato ✓ — manda un altro"
-                : "Lancia il progetto →"}
+            {loading ? t("contact.btnLoading") : sent ? t("contact.btnSent") : t("contact.btnIdle")}
           </button>
         </motion.form>
       </div>
@@ -186,24 +157,81 @@ export function Contact() {
 }
 
 export function Footer() {
+  const { t } = useTranslation();
   return (
     <footer className="bg-black px-6 md:px-16 py-16 border-t border-white/10">
-      <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6 font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
-        <div className="space-y-2">
-          <p className="text-white/60">© 2026 Aura Web Studio</p>
-          <p>Creative Digital Solutions · Made in Italy</p>
+      <div className="max-w-7xl mx-auto w-full grid gap-12 md:grid-cols-4 font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
+        {/* Brand */}
+        <div className="space-y-3 md:col-span-2">
+          <a href="/#hero" className="font-display text-xl font-bold tracking-tight text-white">
+            AURA<span className="text-primary">.</span>
+          </a>
+          <p className="text-white/60 normal-case tracking-normal text-xs">{t("footer.tagline")}</p>
         </div>
-        <div className="flex gap-6">
-          <a href="#" className="hover:text-primary">
-            Instagram
-          </a>
-          <a href="#" className="hover:text-primary">
-            Behance
-          </a>
-          <a href="#" className="hover:text-primary">
-            GitHub
-          </a>
+
+        {/* Explore */}
+        <div className="space-y-3">
+          <p className="text-white/50">{t("footer.explore")}</p>
+          <ul className="space-y-2.5">
+            <li>
+              <a href="/#projects" className="hover:text-primary transition-colors">
+                {t("nav.work")}
+              </a>
+            </li>
+            <li>
+              <a href="/#team" className="hover:text-primary transition-colors">
+                {t("nav.product")}
+              </a>
+            </li>
+            <li>
+              <Link to="/pricing" className="hover:text-primary transition-colors">
+                {t("pricing.title")}
+              </Link>
+            </li>
+            <li>
+              <Link to="/team" className="hover:text-primary transition-colors">
+                {t("nav.team")}
+              </Link>
+            </li>
+            <li>
+              <a href="/#contact" className="hover:text-primary transition-colors">
+                {t("nav.contact")}
+              </a>
+            </li>
+          </ul>
         </div>
+
+        {/* Legal & Social */}
+        <div className="space-y-3">
+          <p className="text-white/50">{t("footer.legal")}</p>
+          <ul className="space-y-2.5">
+            <li>
+              <a href="#" className="hover:text-primary transition-colors">
+                {t("footer.privacy")}
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-primary transition-colors">
+                {t("footer.terms")}
+              </a>
+            </li>
+            <li className="pt-2 flex gap-4">
+              <a href="#" className="hover:text-primary transition-colors">
+                IG
+              </a>
+              <a href="#" className="hover:text-primary transition-colors">
+                BE
+              </a>
+              <a href="#" className="hover:text-primary transition-colors">
+                GH
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto w-full mt-12 pt-6 border-t border-white/10 font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
+        © 2026 Aura Web Studio
       </div>
     </footer>
   );

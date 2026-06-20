@@ -11,8 +11,6 @@ export const Route = createFileRoute("/")({
       { title: "Aura Web Studio — Creative Digital Solutions" },
       {
         name: "description",
-        content:
-          "Tre menti, un unico ecosistema digitale. Studio creativo specializzato in esperienze web cinematiche, animazioni avanzate e UI/UX su misura.",
       },
       { property: "og:title", content: "Aura Web Studio — Creative Digital Solutions" },
       {

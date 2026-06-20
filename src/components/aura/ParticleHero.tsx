@@ -14,6 +14,10 @@ export function ParticleHero() {
     let width = 0;
     let height = 0;
     let dpr = 1;
+    let visible = true;
+    let last = 0;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     type P = { x: number; y: number; ox: number; oy: number; vx: number; vy: number; r: number; c: string };
     let particles: P[] = [];
@@ -37,9 +41,10 @@ export function ParticleHero() {
 
     function build() {
       const mobile = isMobile();
-      // Cap particles: 60 on mobile, up to 180 on desktop
-      const maxParticles = mobile ? 60 : 180;
-      const density = Math.min(maxParticles, Math.floor((width * height) / 9000));
+      // Cap particles: 40 on mobile, up to 180 on desktop
+      const maxParticles = mobile ? 40 : 180;
+      const divisor = mobile ? 16000 : 9000;
+      const density = Math.min(maxParticles, Math.floor((width * height) / divisor));
       particles = Array.from({ length: density }, () => {
         const x = Math.random() * width;
         const y = Math.random() * height;
@@ -52,10 +57,24 @@ export function ParticleHero() {
       });
     }
 
-    function tick() {
+    function tick(now: number) {
+      raf = requestAnimationFrame(tick);
+
+      // Pause work entirely when the hero is scrolled out of view.
+      if (!visible) {
+        last = now;
+        return;
+      }
+
+      const mobile = isMobile();
+      // Cap to ~30fps on mobile to leave the main thread free for smooth scrolling.
+      if (mobile) {
+        if (now - last < 33) return;
+        last = now;
+      }
+
       ctx!.clearRect(0, 0, width, height);
       const m = mouseRef.current;
-      const mobile = isMobile();
 
       for (const p of particles) {
         // Skip mouse interaction on mobile (touch events are unreliable for this)
@@ -102,8 +121,6 @@ export function ParticleHero() {
           }
         }
       }
-
-      raf = requestAnimationFrame(tick);
     }
 
     function onMove(e: PointerEvent) {
@@ -115,12 +132,37 @@ export function ParticleHero() {
     function onLeave() { mouseRef.current.active = false; }
 
     resize();
-    tick();
+
+    if (reduceMotion) {
+      // Draw a single static frame and skip the animation loop entirely.
+      ctx!.clearRect(0, 0, width, height);
+      for (const p of particles) {
+        ctx!.beginPath();
+        ctx!.fillStyle = p.c;
+        ctx!.globalAlpha = 0.85;
+        ctx!.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx!.fill();
+      }
+      window.addEventListener("resize", resize);
+      return () => window.removeEventListener("resize", resize);
+    }
+
+    // Only animate while the hero is actually on screen.
+    const io = new IntersectionObserver(
+      (entries) => {
+        visible = entries[0]?.isIntersecting ?? true;
+      },
+      { threshold: 0 },
+    );
+    io.observe(canvas);
+
+    raf = requestAnimationFrame(tick);
     window.addEventListener("resize", resize);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerleave", onLeave);
     return () => {
       cancelAnimationFrame(raf);
+      io.disconnect();
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerleave", onLeave);
