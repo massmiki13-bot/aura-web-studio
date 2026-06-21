@@ -109,6 +109,7 @@ var PostgrestBuilder = class {
   * {@link https://github.com/supabase/supabase-js/issues/92}
   *
   * @category Database
+  * @subcategory Using modifiers
   */
   throwOnError() {
     this.shouldThrowOnError = true;
@@ -170,9 +171,20 @@ var PostgrestBuilder = class {
     return this;
   }
   /**
-  * Set an HTTP header for the request.
+  * Set an HTTP header on this single PostgREST request, overriding any header
+  * with the same name set on the client.
+  *
+  * This is an advanced escape hatch for one-off needs (passing a custom
+  * `Authorization` for a single query, attaching a tracing header, etc.).
+  * Most callers do not need it: configure client-wide headers via the
+  * `headers` option when constructing the client, and authentication via
+  * Supabase Auth.
+  *
+  * @param name - HTTP header name
+  * @param value - HTTP header value
   *
   * @category Database
+  * @subcategory Using modifiers
   */
   setHeader(name, value) {
     this.headers = new Headers(this.headers);
@@ -181,6 +193,7 @@ var PostgrestBuilder = class {
   }
   /**
   * @category Database
+  * @subcategory Using modifiers
   *
   * Configure retry behavior for this request.
   *
@@ -383,6 +396,7 @@ ${cause.stack}`;
   * @deprecated Use overrideTypes<yourType, { merge: false }>() method at the end of your call chain instead
   *
   * @category Database
+  * @subcategory Using modifiers
   */
   returns() {
     return this;
@@ -486,6 +500,9 @@ ${cause.stack}`;
   }
 };
 var PostgrestTransformBuilder = class extends PostgrestBuilder {
+  throwOnError() {
+    return super.throwOnError();
+  }
   /**
   * Perform a SELECT on the query result.
   *
@@ -1110,6 +1127,7 @@ var PostgrestTransformBuilder = class extends PostgrestBuilder {
   * Return `data` as an object in [GeoJSON](https://geojson.org) format.
   *
   * @category Database
+  * @subcategory Using modifiers
   */
   geojson() {
     this.headers.set("Accept", "application/geo+json");
@@ -1226,11 +1244,33 @@ var PostgrestTransformBuilder = class extends PostgrestBuilder {
     else return this;
   }
   /**
-  * Rollback the query.
+  * Dry-run this request: execute the query but discard the changes.
   *
-  * `data` will still be returned, but the query is not committed.
+  * Server-side, PostgREST runs the query inside a transaction and rolls it back
+  * instead of committing. The response still contains the data that *would* have
+  * been returned — `RETURNING` clauses execute and RLS, triggers, and constraints
+  * are all evaluated — but no row is actually inserted, updated, or deleted.
+  *
+  * This affects only the single request it is chained to. The JS caller has no
+  * handle on the transaction: supabase-js does not group multiple queries into
+  * one transaction. For multi-statement transactional logic, use a database
+  * function (`supabase.rpc(...)`).
+  *
+  * Sets the `Prefer: tx=rollback` header. See PostgREST's docs on transaction
+  * preferences for the underlying mechanism.
   *
   * @category Database
+  * @subcategory Using modifiers
+  *
+  * @example Validate an insert without persisting
+  * ```ts
+  * const { data, error } = await supabase
+  *   .from('countries')
+  *   .insert({ name: 'France' })
+  *   .select()
+  *   .rollback()
+  * // `data` shows what would have been inserted; nothing is saved.
+  * ```
   */
   rollback() {
     this.headers.append("Prefer", "tx=rollback");
@@ -1285,6 +1325,7 @@ var PostgrestTransformBuilder = class extends PostgrestBuilder {
   * @param rows - The maximum number of rows that can be affected
   *
   * @category Database
+  * @subcategory Using modifiers
   */
   maxAffected(rows) {
     this.headers.append("Prefer", "handling=strict");
@@ -1294,6 +1335,9 @@ var PostgrestTransformBuilder = class extends PostgrestBuilder {
 };
 const PostgrestReservedCharsRegexp = /* @__PURE__ */ new RegExp("[,()]");
 var PostgrestFilterBuilder = class extends PostgrestTransformBuilder {
+  throwOnError() {
+    return super.throwOnError();
+  }
   /**
   * Match only rows where `column` is equal to `value`.
   *

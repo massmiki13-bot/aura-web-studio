@@ -1334,7 +1334,7 @@ var StorageFileApi = class extends BaseApiClient {
     return query;
   }
 };
-const version = "2.108.0";
+const version = "2.108.2";
 const DEFAULT_HEADERS = { "X-Client-Info": `storage-js/${version}` };
 var StorageBucketApi = class extends BaseApiClient {
   constructor(url, headers = {}, fetch$1, opts) {

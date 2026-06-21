@@ -19,7 +19,7 @@ import "async_hooks";
 import "stream";
 import "../_libs/isbot.mjs";
 import "../_libs/use-sync-external-store.mjs";
-const appCss = "/assets/styles-wj0wvfva.css";
+const appCss = "/assets/styles-BUQEcDjF.css";
 function reportLovableError(error, context = {}) {
   if (typeof window === "undefined") return;
   window.__lovableEvents?.captureException?.(
@@ -935,7 +935,7 @@ function RootComponent() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(Toaster, { theme: "dark", position: "bottom-right" })
   ] });
 }
-const $$splitComponentImporter$4 = () => import("./team-DpeyTlpb.mjs");
+const $$splitComponentImporter$4 = () => import("./team-BsIOjKMS.mjs");
 const Route$4 = createFileRoute("/team")({
   head: () => ({
     meta: [{
@@ -950,7 +950,7 @@ const Route$4 = createFileRoute("/team")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$4, "component")
 });
-const $$splitComponentImporter$3 = () => import("./pricing-yd_tgnSH.mjs");
+const $$splitComponentImporter$3 = () => import("./pricing-DirK1Fed.mjs");
 const Route$3 = createFileRoute("/pricing")({
   head: () => ({
     meta: [{
@@ -990,7 +990,7 @@ const Route$1 = createFileRoute("/admin")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-const $$splitComponentImporter = () => import("./index-CMvMe99a.mjs");
+const $$splitComponentImporter = () => import("./index-ClS7k_qZ.mjs");
 const Route = createFileRoute("/")({
   head: () => ({
     meta: [{

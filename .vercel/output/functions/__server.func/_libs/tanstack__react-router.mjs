@@ -119,14 +119,15 @@ var dummyMatchContext = reactExports.createContext(void 0);
 function useMatch(opts) {
   const router = useRouter();
   const nearestMatchId = reactExports.useContext(opts.from ? dummyMatchContext : matchContext);
-  const key = opts.from ?? nearestMatchId;
-  const matchStore = key ? opts.from ? router.stores.getRouteMatchStore(key) : router.stores.matchStores.get(key) : void 0;
+  const matchStore = opts.from ? router.stores.getRouteMatchStore(opts.from) : router.stores.matchStores.get(nearestMatchId);
   {
     const match = matchStore?.get();
-    if ((opts.shouldThrow ?? true) && !match) {
-      invariant();
+    if (!match) {
+      if (opts.shouldThrow ?? true) {
+        invariant();
+      }
+      return;
     }
-    if (match === void 0) return;
     return opts.select ? opts.select(match) : match;
   }
 }
@@ -637,9 +638,9 @@ function MatchView({ router, matchId, resetKey, matchState }) {
         })
       })
     })
-  }), matchState.parentRouteId === rootRouteId ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [/* @__PURE__ */ jsxRuntimeExports.jsx(OnRendered, { resetKey }), router.options.scrollRestoration && isServer ? /* @__PURE__ */ jsxRuntimeExports.jsx(ScrollRestoration, {}) : null] }) : null] });
+  }), matchState.parentRouteId === rootRouteId ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [/* @__PURE__ */ jsxRuntimeExports.jsx(OnRendered, {}), router.options.scrollRestoration && isServer ? /* @__PURE__ */ jsxRuntimeExports.jsx(ScrollRestoration, {}) : null] }) : null] });
 }
-function OnRendered({ resetKey }) {
+function OnRendered() {
   useRouter();
   return null;
 }
@@ -1081,12 +1082,16 @@ async function waitForReadyOrAbort(ready, signal) {
     cleanup();
   }
 }
+var isAbortError = (request, error) => request.signal.aborted && error === request.signal.reason || error instanceof Error && error.name === "AbortError";
 var renderRouterToStream = async ({ request, router, responseHeaders, children }) => {
   if (typeof ReactDOMServer.renderToReadableStream === "function") {
     const stream = await ReactDOMServer.renderToReadableStream(children, {
       signal: request.signal,
       nonce: router.options.ssr?.nonce,
-      progressiveChunkSize: Number.POSITIVE_INFINITY
+      progressiveChunkSize: Number.POSITIVE_INFINITY,
+      onError: (error, info) => {
+        if (!isAbortError(request, error)) console.error("Error in renderToReadableStream:", error, info);
+      }
     });
     if (isbot(request.headers.get("User-Agent"))) await waitForReadyOrAbort(stream.allReady, request.signal);
     const responseStream = transformReadableStreamWithRouter(router, stream, { onAbort: () => stream.cancel().catch(() => {
@@ -1140,7 +1145,7 @@ var renderRouterToStream = async ({ request, router, responseHeaders, children }
           pipeable.pipe(reactAppPassthrough);
         } },
         onError: (error, info) => {
-          console.error("Error in renderToPipeableStream:", error, info);
+          if (!isAbortError(request, error)) console.error("Error in renderToPipeableStream:", error, info);
           abortPipeable(error, { defaultError: true });
         }
       });

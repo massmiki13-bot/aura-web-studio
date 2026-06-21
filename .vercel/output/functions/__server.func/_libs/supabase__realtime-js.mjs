@@ -111,7 +111,7 @@ Suggested solution: ${env.workaround}`;
     }
   }
 }
-const version = "2.108.0";
+const version = "2.108.2";
 const DEFAULT_VERSION = `realtime-js/${version}`;
 const VSN_1_0_0 = "1.0.0";
 const VSN_2_0_0 = "2.0.0";
@@ -1094,6 +1094,9 @@ class RealtimeChannel {
     const response = await this._fetchWithTimeout(url.toString(), options, (_a = opts.timeout) !== null && _a !== void 0 ? _a : this.timeout);
     if (response.status === 202) {
       return { success: true };
+    }
+    if (response.status === 404) {
+      return Promise.reject(new Error("httpSend() requires Realtime server v2.97.0 or newer; the endpoint returned 404. Update your Supabase CLI to a recent version, or upgrade the Realtime server in your self-hosted setup. See https://github.com/supabase/supabase-js/blob/master/packages/core/realtime-js/migrations/httpsend-server-version.md"));
     }
     let errorMessage = response.statusText;
     try {

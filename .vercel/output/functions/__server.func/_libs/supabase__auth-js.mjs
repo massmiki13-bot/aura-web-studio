@@ -1,8 +1,9 @@
 import { __rest } from "tslib";
-const version = "2.108.0";
+const version = "2.108.2";
 const AUTO_REFRESH_TICK_DURATION_MS = 30 * 1e3;
 const AUTO_REFRESH_TICK_THRESHOLD = 3;
 const EXPIRY_MARGIN_MS = AUTO_REFRESH_TICK_THRESHOLD * AUTO_REFRESH_TICK_DURATION_MS;
+const REFRESH_FAILURE_COOLDOWN_MS = 2 * AUTO_REFRESH_TICK_DURATION_MS;
 const GOTRUE_URL = "http://localhost:9999";
 const STORAGE_KEY = "supabase.auth.token";
 const DEFAULT_HEADERS = { "X-Client-Info": `gotrue-js/${version}` };
@@ -592,7 +593,24 @@ const _getErrorMessage = (err) => {
   }
   return JSON.stringify(err);
 };
-const NETWORK_ERROR_CODES = [502, 503, 504, 520, 521, 522, 523, 524, 530];
+const NETWORK_ERROR_CODES = [
+  500,
+  501,
+  502,
+  503,
+  504,
+  520,
+  521,
+  522,
+  523,
+  524,
+  525,
+  526,
+  527,
+  528,
+  529,
+  530
+];
 async function handleError(error) {
   var _a;
   if (!looksLikeFetchResponse(error)) {
@@ -2672,6 +2690,7 @@ class GoTrueClient {
     this.autoRefreshTickTimeout = null;
     this.visibilityChangedCallback = null;
     this.refreshingDeferred = null;
+    this.lastRefreshFailure = null;
     this._sessionRemovalEpoch = 0;
     this.initializePromise = null;
     this.detectSessionInUrl = true;
@@ -2773,6 +2792,9 @@ class GoTrueClient {
       }
       (_c = this.broadcastChannel) === null || _c === void 0 ? void 0 : _c.addEventListener("message", async (event) => {
         this._debug("received broadcast notification from other tab or client", event);
+        if (event.data.event === "TOKEN_REFRESHED" || event.data.event === "SIGNED_IN") {
+          this.lastRefreshFailure = null;
+        }
         try {
           await this._notifyAllSubscribers(event.data.event, event.data.session, false);
         } catch (error) {
@@ -2813,9 +2835,20 @@ class GoTrueClient {
     return this;
   }
   /**
-   * Initializes the client session either from the url or from storage.
-   * This method is automatically called when instantiating the client, but should also be called
-   * manually when checking for an error from an auth redirect (oauth, magiclink, password recovery, etc).
+   * Initialize the auth client by loading the session from storage or
+   * detecting it from the URL after an OAuth, magic-link, or password-recovery
+   * redirect.
+   *
+   * **Most callers do not need to invoke this directly.** The client calls it
+   * automatically during construction, and to react to sign-in events (including
+   * post-redirect events) you should subscribe to `onAuthStateChange` rather
+   * than awaiting `initialize()`.
+   *
+   * You only need to call it manually when you have opted out of the automatic
+   * call by passing `skipAutoInitialize: true` — for example, in an SSR context
+   * where you need to control initialization timing. In that case, awaiting
+   * `initialize()` returns the resolved session result (or any error encountered
+   * while detecting it from the URL).
    *
    * @category Auth
    */
@@ -4869,6 +4902,13 @@ class GoTrueClient {
       }
       const { data: session, error } = await this._callRefreshToken(currentSession.refresh_token);
       if (error) {
+        const accessTokenStillValid = !!(currentSession.expires_at && currentSession.expires_at * 1e3 > Date.now());
+        if (accessTokenStillValid) {
+          const stillStored = await getItemAsync(this.storage, this.storageKey);
+          if (stillStored && stillStored.refresh_token === currentSession.refresh_token) {
+            return this._returnResult({ data: { session: currentSession }, error: null });
+          }
+        }
         return this._returnResult({ data: { session: null }, error });
       }
       return this._returnResult({ data: { session }, error: null });
@@ -6316,10 +6356,6 @@ class GoTrueClient {
               this._debug(debugName, "refresh discarded by commit guard", error);
             } else {
               this._debug(debugName, "refresh failed", error);
-              if (!isAuthRetryableFetchError(error)) {
-                this._debug(debugName, "refresh failed with a non-retryable error, removing the session", error);
-                await this._removeSession();
-              }
             }
           }
         }
@@ -6355,6 +6391,10 @@ class GoTrueClient {
     }
     if (this.refreshingDeferred) {
       return this.refreshingDeferred.promise;
+    }
+    if (this.lastRefreshFailure && this.lastRefreshFailure.refreshToken === refreshToken && Date.now() < this.lastRefreshFailure.expiresAt) {
+      this._debug("#_callRefreshToken()", "returning cached failure (cooldown active)");
+      return this.lastRefreshFailure.result;
     }
     const debugName = `#_callRefreshToken()`;
     this._debug(debugName, "begin");
@@ -6399,6 +6439,7 @@ class GoTrueClient {
       }
       await this._notifyAllSubscribers("TOKEN_REFRESHED", data.session);
       const result = { data: data.session, error: null };
+      this.lastRefreshFailure = null;
       this.refreshingDeferred.resolve(result);
       return result;
     } catch (error) {
@@ -6406,8 +6447,19 @@ class GoTrueClient {
       if (isAuthError(error)) {
         const result = { data: null, error };
         if (!isAuthRetryableFetchError(error)) {
-          await this._removeSession();
+          const storedNow = await getItemAsync(this.storage, this.storageKey);
+          const accessTokenStillValid = !!((storedNow === null || storedNow === void 0 ? void 0 : storedNow.expires_at) && storedNow.expires_at * 1e3 > Date.now());
+          if (accessTokenStillValid) {
+            this._debug(debugName, "proactive refresh failed, access token still valid — preserving session");
+          } else {
+            await this._removeSession();
+          }
         }
+        this.lastRefreshFailure = {
+          refreshToken,
+          result,
+          expiresAt: Date.now() + REFRESH_FAILURE_COOLDOWN_MS
+        };
         (_a = this.refreshingDeferred) === null || _a === void 0 ? void 0 : _a.resolve(result);
         return result;
       }
@@ -6472,6 +6524,7 @@ class GoTrueClient {
   async _removeSession() {
     this._sessionRemovalEpoch += 1;
     this._debug("#_removeSession()");
+    this.lastRefreshFailure = null;
     this.suppressGetSessionWarning = false;
     await removeItemAsync(this.storage, this.storageKey);
     await removeItemAsync(this.storage, this.storageKey + "-code-verifier");

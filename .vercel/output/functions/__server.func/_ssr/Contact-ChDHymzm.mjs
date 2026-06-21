@@ -1,6 +1,6 @@
 import { r as reactExports, j as jsxRuntimeExports } from "../_libs/react.mjs";
 import { L as Link } from "../_libs/tanstack__react-router.mjs";
-import { L as LANGUAGES, p as persistLanguage } from "./router-DFDAN8IL.mjs";
+import { L as LANGUAGES, p as persistLanguage } from "./router-WnPp5t4E.mjs";
 import { s as supabase } from "./client-CS_abGrP.mjs";
 import { t as toast } from "../_libs/sonner.mjs";
 import { u as useTranslation } from "../_libs/react-i18next.mjs";

@@ -1,6 +1,6 @@
 import { j as jsxRuntimeExports } from "../_libs/react.mjs";
 import { L as Link } from "../_libs/tanstack__react-router.mjs";
-import { N as Nav, F as Footer } from "./Contact-DRv9VHNb.mjs";
+import { N as Nav, F as Footer } from "./Contact-ChDHymzm.mjs";
 import "../_libs/i18next.mjs";
 import "../_libs/sonner.mjs";
 import { u as useTranslation } from "../_libs/react-i18next.mjs";
@@ -19,7 +19,7 @@ import "crypto";
 import "async_hooks";
 import "stream";
 import "../_libs/isbot.mjs";
-import "./router-DFDAN8IL.mjs";
+import "./router-WnPp5t4E.mjs";
 import "../_libs/tanstack__query-core.mjs";
 import "../_libs/tanstack__react-query.mjs";
 import "../_libs/use-sync-external-store.mjs";

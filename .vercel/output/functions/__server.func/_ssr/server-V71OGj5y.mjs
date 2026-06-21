@@ -81,7 +81,7 @@ function getResponse() {
 }
 var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 async function getStartManifest(matchedRoutes) {
-  const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-C1cTN6sH.mjs");
+  const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-COtbM8JV.mjs");
   const startManifest = tsrStartManifest();
   let routes = startManifest.routes;
   routes[rootRouteId];
@@ -1158,8 +1158,8 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
   const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-    import("./router-DFDAN8IL.mjs").then((n) => n.r),
-    import("./start-COGfEw20.mjs"),
+    import("./router-WnPp5t4E.mjs").then((n) => n.r),
+    import("./start-CuPRU3lu.mjs"),
     import("./empty-plugin-adapters-BFgPZ6_d.mjs")
   ]);
   return {
@@ -1368,7 +1368,7 @@ function createStartHandler(cbOrOptions) {
           manifest: manifest2,
           getRequestAssets: () => getStartContext({ throwIfNotFound: false })?.requestAssets
         });
-        routerInstance.update({ additionalContext: { serverContext } });
+        routerInstance.options.additionalContext = { serverContext };
         await routerInstance.load();
         if (routerInstance.state.redirect) return normalizeSsrResponse(routerInstance.state.redirect);
         earlyHints?.collectDynamic(routerInstance.stores.matches.get());
