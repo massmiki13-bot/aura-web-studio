@@ -14,8 +14,10 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import i18n, { getStoredLanguage } from "../i18n";
 import { Toaster } from "@/components/ui/sonner";
 import {
-  generateMetaTags,
-  generateLinkTags,
+  rootMeta,
+  rootLinks,
+  buildTitle,
+  SITE_CONFIG,
   generateOrganizationSchema,
   generateWebsiteSchema,
 } from "../lib/seo";
@@ -82,13 +84,18 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
-    meta: [...generateMetaTags()],
+    meta: [
+      // Site-wide defaults; individual routes override title/description/canonical.
+      { title: buildTitle() },
+      { name: "description", content: SITE_CONFIG.description },
+      ...rootMeta(),
+    ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      ...generateLinkTags(),
+      ...rootLinks(),
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
@@ -113,7 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="it">
       <head>
         <HeadContent />
       </head>

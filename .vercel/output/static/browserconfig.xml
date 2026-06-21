@@ -2,17 +2,8 @@
 <browserconfig>
   <msapplication>
     <tile>
-      <square70x70logo src="/mstile-70x70.png"/>
       <square150x150logo src="/mstile-150x150.png"/>
-      <square310x310logo src="/mstile-310x310.png"/>
-      <wide310x150logo src="/mstile-310x150.png"/>
       <TileColor>#000000</TileColor>
     </tile>
-    <notification>
-      <polling-uri src="/browserconfig-notification.xml"/>
-      <polling-uri-frequency>480</polling-uri-frequency>
-      <cycling-uri src="/browserconfig-notification-cycle.xml"/>
-      <cycling-uri-frequency>60</cycling-uri-frequency>
-    </notification>
   </msapplication>
 </browserconfig>

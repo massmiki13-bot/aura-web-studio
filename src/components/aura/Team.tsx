@@ -144,7 +144,10 @@ function MorphingScreen({ frames }: { frames: { label: string; accent: string }[
           </p>
           <h3 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-white">
             {t("product.morphTitlePre")}
-            <span className="text-gradient-aura italic">{t("product.morphTitleHighlight")}</span>.
+            <span className="text-gradient-aura italic pr-2">
+              {t("product.morphTitleHighlight")}
+            </span>
+            .
           </h3>
           <p className="text-white/55">{t("product.morphParagraph")}</p>
           <div className="flex flex-wrap gap-2 pt-2">

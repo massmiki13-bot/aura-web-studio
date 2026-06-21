@@ -4,23 +4,17 @@ import { ArrowLeft, Phone, Mail, FileText } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Nav } from "@/components/aura/Nav";
 import { Footer } from "@/components/aura/Contact";
-import { generateMetaTags } from "@/lib/seo";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/team")({
-  head: () => ({
-    meta: [
-      { title: "Team — Aura Web Studio" },
-      {
-        name: "description",
-        content:
-          "Le persone dietro ad Aura Web Studio. Conosci il trio e contattaci direttamente: telefono, PEC ed email.",
-      },
-      ...generateMetaTags({
-        title: "Team — Aura Web Studio",
-        description: "Le persone dietro ad Aura Web Studio.",
-      }),
-    ].flat(),
-  }),
+  head: () =>
+    pageSeo({
+      title: "Team",
+      path: "/team",
+      type: "profile",
+      description:
+        "Le persone dietro ad Aura Web Studio. Conosci il trio e contattaci direttamente: telefono, PEC ed email.",
+    }),
   component: TeamPage,
 });
 

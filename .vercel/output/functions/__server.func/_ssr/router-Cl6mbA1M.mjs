@@ -19,7 +19,7 @@ import "async_hooks";
 import "stream";
 import "../_libs/isbot.mjs";
 import "../_libs/use-sync-external-store.mjs";
-const appCss = "/assets/styles-BUQEcDjF.css";
+const appCss = "/assets/styles-DvJNoCD-.css";
 function reportLovableError(error, context = {}) {
   if (typeof window === "undefined") return;
   window.__lovableEvents?.captureException?.(
@@ -652,22 +652,26 @@ const Toaster = ({ ...props }) => {
     }
   );
 };
+const RAW_BASE_URL = "https://showoff-project.vercel.app";
 const SITE_CONFIG = {
-  baseUrl: "https://aura-webstudio.com",
-  title: "Aura Web Studio — Creative Digital Solutions Made in Italy",
-  description: "Award-winning web design and development studio. We craft cinematic digital experiences for Italian hospitality, restaurants, and lifestyle brands using React, Framer Motion, and cutting-edge web technologies.",
+  baseUrl: RAW_BASE_URL.replace(/\/+$/, ""),
+  name: "Aura Web Studio",
+  /** Title shown for the homepage and used as the brand suffix on subpages. */
+  defaultTitle: "Aura Web Studio — Creative Digital Solutions Made in Italy",
+  titleSuffix: "Aura Web Studio",
+  description: "Studio creativo di web design e sviluppo. Realizziamo esperienze digitali cinematiche per hospitality, ristoranti e brand lifestyle italiani con React, Framer Motion e tecnologie web all'avanguardia.",
   keywords: [
     "web design",
-    "web development",
+    "sviluppo web",
+    "agenzia digitale",
     "React",
     "Framer Motion",
-    "digital agency",
-    "Italy",
-    "hospitality",
-    "restaurant website",
-    "luxury web design",
-    "cinematic web experience",
-    "creative digital solutions"
+    "siti per ristoranti",
+    "siti hospitality",
+    "web design di lusso",
+    "esperienze web cinematiche",
+    "Bolzano",
+    "Italia"
   ],
   author: "Aura Web Studio",
   company: "Aura Web Studio",
@@ -676,112 +680,120 @@ const SITE_CONFIG = {
   social: {
     instagram: "https://instagram.com/aurawebstudio",
     behance: "https://behance.net/aurawebstudio",
-    github: "https://github.com/aurawebstudio",
-    twitter: "@aurawebstudio"
+    github: "https://github.com/aurawebstudio"
   },
   location: {
-    country: "Italy",
+    country: "IT",
     city: "Bolzano",
     region: "Trentino-Alto Adige"
   },
   locale: "it_IT",
-  alternateLocales: ["en_US", "de_DE"],
-  ogImage: "https://aura-webstudio.com/og-image.png",
-  ogImageAlt: "Aura Web Studio - Creative Digital Solutions",
+  alternateLocales: ["en_US", "de_DE", "es_ES"],
+  ogImagePath: "/og-image.png",
+  ogImageAlt: "Aura Web Studio — Creative Digital Solutions",
   ogImageWidth: 1200,
   ogImageHeight: 630
 };
-function generateMetaTags(overrides) {
-  const title = overrides?.title || SITE_CONFIG.title;
-  const description = overrides?.description || SITE_CONFIG.description;
-  const canonical = overrides?.canonical || SITE_CONFIG.baseUrl;
-  const ogImage = overrides?.ogImage || SITE_CONFIG.ogImage;
-  const ogTitle = overrides?.ogTitle || title;
-  const ogDescription = overrides?.ogDescription || description;
-  return [
+function absoluteUrl(path = "/") {
+  if (/^https?:\/\//.test(path)) return path;
+  return `${SITE_CONFIG.baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
+}
+function buildTitle(pageTitle) {
+  if (!pageTitle) return SITE_CONFIG.defaultTitle;
+  return `${pageTitle} — ${SITE_CONFIG.titleSuffix}`;
+}
+function rootMeta() {
+  const meta = [
     { charSet: "utf-8" },
     {
       name: "viewport",
-      content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+      content: "width=device-width, initial-scale=1, viewport-fit=cover"
     },
-    { httpEquiv: "x-ua-compatible", content: "ie=edge" },
-    { name: "title", content: title },
-    { name: "description", content: description },
     { name: "keywords", content: SITE_CONFIG.keywords.join(", ") },
     { name: "author", content: SITE_CONFIG.author },
     { name: "creator", content: SITE_CONFIG.company },
-    { name: "subject", content: SITE_CONFIG.description },
+    { name: "publisher", content: SITE_CONFIG.company },
     {
       name: "robots",
       content: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
     },
     { name: "googlebot", content: "index, follow" },
-    { name: "google-site-verification", content: "" },
-    // Add your Google verification code
-    { name: "msvalidate.01", content: "" },
-    // Add your Bing verification code
     { name: "theme-color", content: "#000000" },
     { name: "color-scheme", content: "dark light" },
-    { name: "mobile-web-app-capable", content: "yes" },
-    { name: "mobile-web-app-status-bar-style", content: "black-translucent" },
+    { name: "format-detection", content: "telephone=no" },
+    { name: "application-name", content: SITE_CONFIG.name },
     { name: "apple-mobile-web-app-capable", content: "yes" },
     { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
     { name: "apple-mobile-web-app-title", content: "Aura Studio" },
-    { name: "application-name", content: "Aura Studio" },
-    { name: "msapplication-starturl", content: "/" },
+    { name: "mobile-web-app-capable", content: "yes" },
     { name: "msapplication-TileColor", content: "#000000" },
     { name: "msapplication-config", content: "/browserconfig.xml" },
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:site", content: SITE_CONFIG.social.twitter },
-    { name: "twitter:creator", content: SITE_CONFIG.social.twitter },
-    { name: "twitter:title", content: ogTitle },
-    { name: "twitter:description", content: ogDescription },
-    { name: "twitter:image", content: ogImage },
-    { property: "og:type", content: overrides?.type || "website" },
-    { property: "og:url", content: canonical },
-    { property: "og:title", content: ogTitle },
-    { property: "og:description", content: ogDescription },
-    { property: "og:image", content: ogImage },
-    { property: "og:image:width", content: SITE_CONFIG.ogImageWidth.toString() },
-    { property: "og:image:height", content: SITE_CONFIG.ogImageHeight.toString() },
-    { property: "og:image:alt", content: SITE_CONFIG.ogImageAlt },
+    // Open Graph / Twitter site-level
+    { property: "og:site_name", content: SITE_CONFIG.name },
     { property: "og:locale", content: SITE_CONFIG.locale },
-    SITE_CONFIG.alternateLocales.map((locale) => ({
+    ...SITE_CONFIG.alternateLocales.map((locale) => ({
       property: "og:locale:alternate",
       content: locale
-    }))
+    })),
+    { name: "twitter:card", content: "summary_large_image" }
   ];
+  return meta;
 }
-function generateLinkTags() {
+function rootLinks() {
   return [
-    { rel: "canonical", href: SITE_CONFIG.baseUrl },
-    { rel: "alternate", hrefLang: "en", href: `${SITE_CONFIG.baseUrl}/en` },
-    { rel: "alternate", hrefLang: "de", href: `${SITE_CONFIG.baseUrl}/de` },
-    { rel: "alternate", hrefLang: "x-default", href: SITE_CONFIG.baseUrl },
-    { rel: "preconnect", href: "https://fonts.googleapis.com" },
-    { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-    { rel: "dns-prefetch", href: "https://cdn.jsdelivr.net" },
     { rel: "icon", href: "/favicon.ico", sizes: "any" },
     { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-    { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+    { rel: "icon", href: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+    { rel: "icon", href: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+    { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
     { rel: "manifest", href: "/manifest.webmanifest" },
+    { rel: "preconnect", href: "https://fonts.googleapis.com" },
+    { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
     { rel: "sitemap", type: "application/xml", href: "/sitemap.xml" }
   ];
+}
+function pageSeo(options = {}) {
+  const title = buildTitle(options.title);
+  const description = options.description ?? SITE_CONFIG.description;
+  const url = absoluteUrl(options.path ?? "/");
+  const image = absoluteUrl(options.image ?? SITE_CONFIG.ogImagePath);
+  const type = options.type ?? "website";
+  const meta = [
+    { title },
+    { name: "description", content: description },
+    { property: "og:type", content: type },
+    { property: "og:url", content: url },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:image", content: image },
+    { property: "og:image:width", content: String(SITE_CONFIG.ogImageWidth) },
+    { property: "og:image:height", content: String(SITE_CONFIG.ogImageHeight) },
+    { property: "og:image:alt", content: SITE_CONFIG.ogImageAlt },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+    { name: "twitter:image", content: image },
+    { name: "twitter:image:alt", content: SITE_CONFIG.ogImageAlt }
+  ];
+  if (options.noindex) {
+    meta.push({ name: "robots", content: "noindex, nofollow" });
+  }
+  const links = options.noindex ? [] : [{ rel: "canonical", href: url }];
+  return { meta, links };
 }
 function generateOrganizationSchema() {
   return {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": SITE_CONFIG.baseUrl,
+    "@type": "ProfessionalService",
+    "@id": `${SITE_CONFIG.baseUrl}/#organization`,
     name: SITE_CONFIG.company,
     url: SITE_CONFIG.baseUrl,
     email: SITE_CONFIG.companyEmail,
     telephone: SITE_CONFIG.phone,
     description: SITE_CONFIG.description,
-    image: SITE_CONFIG.ogImage,
+    image: absoluteUrl(SITE_CONFIG.ogImagePath),
     logo: {
       "@type": "ImageObject",
-      url: `${SITE_CONFIG.baseUrl}/logo.svg`,
+      url: absoluteUrl("/logo.svg"),
       width: 512,
       height: 512
     },
@@ -793,23 +805,19 @@ function generateOrganizationSchema() {
     },
     areaServed: [
       { "@type": "Country", name: "Italy" },
-      { "@type": "Country", name: "European Union" }
+      { "@type": "AdministrativeArea", name: "European Union" }
     ],
-    priceRange: "$$$",
+    priceRange: "€€€",
     contactPoint: {
       "@type": "ContactPoint",
-      contactType: "Customer Service",
+      contactType: "customer service",
       telephone: SITE_CONFIG.phone,
       email: SITE_CONFIG.companyEmail,
-      availableLanguage: ["it", "en", "de"]
+      availableLanguage: ["it", "en", "de", "es"]
     },
     sameAs: [SITE_CONFIG.social.instagram, SITE_CONFIG.social.behance, SITE_CONFIG.social.github],
-    knowsLanguage: [
-      { "@type": "Language", name: "Italian" },
-      { "@type": "Language", name: "English" },
-      { "@type": "Language", name: "German" }
-    ],
-    workingHoursSpecification: [
+    knowsLanguage: ["it", "en", "de", "es"],
+    openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
         dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
@@ -823,17 +831,12 @@ function generateWebsiteSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: SITE_CONFIG.company,
+    "@id": `${SITE_CONFIG.baseUrl}/#website`,
+    name: SITE_CONFIG.name,
     url: SITE_CONFIG.baseUrl,
     description: SITE_CONFIG.description,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${SITE_CONFIG.baseUrl}/search?q={search_term_string}`
-      },
-      "query-input": "required name=search_term_string"
-    }
+    inLanguage: ["it", "en", "de", "es"],
+    publisher: { "@id": `${SITE_CONFIG.baseUrl}/#organization` }
   };
 }
 function NotFoundComponent() {
@@ -885,13 +888,18 @@ function ErrorComponent({ error, reset }) {
 }
 const Route$5 = createRootRouteWithContext()({
   head: () => ({
-    meta: [...generateMetaTags()],
+    meta: [
+      // Site-wide defaults; individual routes override title/description/canonical.
+      { title: buildTitle() },
+      { name: "description", content: SITE_CONFIG.description },
+      ...rootMeta()
+    ],
     links: [
       {
         rel: "stylesheet",
         href: appCss
       },
-      ...generateLinkTags(),
+      ...rootLinks(),
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
@@ -914,7 +922,7 @@ const Route$5 = createRootRouteWithContext()({
   errorComponent: ErrorComponent
 });
 function RootShell({ children }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("html", { lang: "en", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("html", { lang: "it", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("head", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(HeadContent, {}) }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("body", { children: [
       children,
@@ -935,81 +943,49 @@ function RootComponent() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(Toaster, { theme: "dark", position: "bottom-right" })
   ] });
 }
-const $$splitComponentImporter$4 = () => import("./team-BsIOjKMS.mjs");
+const $$splitComponentImporter$4 = () => import("./team-DDopYI-9.mjs");
 const Route$4 = createFileRoute("/team")({
-  head: () => ({
-    meta: [{
-      title: "Team — Aura Web Studio"
-    }, {
-      name: "description",
-      content: "Le persone dietro ad Aura Web Studio. Conosci il trio e contattaci direttamente: telefono, PEC ed email."
-    }, ...generateMetaTags({
-      title: "Team — Aura Web Studio",
-      description: "Le persone dietro ad Aura Web Studio."
-    })].flat()
+  head: () => pageSeo({
+    title: "Team",
+    path: "/team",
+    type: "profile",
+    description: "Le persone dietro ad Aura Web Studio. Conosci il trio e contattaci direttamente: telefono, PEC ed email."
   }),
   component: lazyRouteComponent($$splitComponentImporter$4, "component")
 });
-const $$splitComponentImporter$3 = () => import("./pricing-DirK1Fed.mjs");
+const $$splitComponentImporter$3 = () => import("./pricing-DLFzfmVW.mjs");
 const Route$3 = createFileRoute("/pricing")({
-  head: () => ({
-    meta: [{
-      title: "Piani e Prezzi — Aura Web Studio"
-    }, {
-      name: "description",
-      content: "Scegli il piano ideale per portare il tuo business online. Tariffe trasparenti per landing page, siti vetrina ed e-commerce custom."
-    }, ...generateMetaTags({
-      title: "Piani e Prezzi — Aura Web Studio",
-      description: "Scegli il piano ideale per il tuo business online. Tariffe trasparenti e soluzioni su misura."
-    })].flat()
+  head: () => pageSeo({
+    title: "Piani e Prezzi",
+    path: "/pricing",
+    description: "Scegli il piano ideale per portare il tuo business online. Tariffe trasparenti per landing page, siti vetrina ed e-commerce custom."
   }),
   component: lazyRouteComponent($$splitComponentImporter$3, "component")
 });
 const $$splitComponentImporter$2 = () => import("./auth-DpO2o6Gb.mjs");
 const Route$2 = createFileRoute("/auth")({
-  head: () => ({
-    meta: [{
-      title: "Admin Login — Aura Web Studio"
-    }, {
-      name: "robots",
-      content: "noindex"
-    }]
+  head: () => pageSeo({
+    title: "Admin Login",
+    path: "/auth",
+    noindex: true
   }),
   component: lazyRouteComponent($$splitComponentImporter$2, "component")
 });
 const $$splitComponentImporter$1 = () => import("./admin-btOgjRJK.mjs");
 const Route$1 = createFileRoute("/admin")({
   ssr: false,
-  head: () => ({
-    meta: [{
-      title: "Admin · Messaggi — Aura Web Studio"
-    }, {
-      name: "robots",
-      content: "noindex"
-    }]
+  head: () => pageSeo({
+    title: "Admin · Messaggi",
+    path: "/admin",
+    noindex: true
   }),
   component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-const $$splitComponentImporter = () => import("./index-ClS7k_qZ.mjs");
+const $$splitComponentImporter = () => import("./index-BiStYSuY.mjs");
 const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [{
-      title: "Aura Web Studio — Creative Digital Solutions"
-    }, {
-      name: "description"
-    }, {
-      property: "og:title",
-      content: "Aura Web Studio — Creative Digital Solutions"
-    }, {
-      property: "og:description",
-      content: "Esperienze web cinematiche, animazioni 60fps e design ad alto impatto. Aura Web Studio."
-    }, {
-      property: "og:type",
-      content: "website"
-    }, {
-      name: "theme-color",
-      content: "#000000"
-    }]
+  head: () => pageSeo({
+    path: "/",
+    description: "Studio creativo di web design e sviluppo: esperienze web cinematiche, animazioni a 60fps e design ad alto impatto per brand italiani dell'hospitality e del lifestyle."
   }),
   component: lazyRouteComponent($$splitComponentImporter, "component")
 });

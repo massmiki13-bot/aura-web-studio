@@ -1,19 +1,9 @@
-# Aura Web Studio - Search Engine Crawling Instructions
+# Aura Web Studio — crawling instructions
+# NOTE: update the Sitemap URL below if the production domain changes.
+
 User-agent: *
 Allow: /
-Disallow: /admin/
-Disallow: /api/
-Disallow: /.env
-Disallow: /private/
+Disallow: /admin
+Disallow: /auth
 
-# Specific crawlers
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 0
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-# Sitemap location
-Sitemap: https://aura-webstudio.com/sitemap.xml
+Sitemap: https://showoff-project.vercel.app/sitemap.xml

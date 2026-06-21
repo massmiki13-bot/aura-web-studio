@@ -4,24 +4,15 @@ import { Hero } from "@/components/aura/Hero";
 import { Projects, ProjectsMobile } from "@/components/aura/Projects";
 import { Team } from "@/components/aura/Team";
 import { Contact, Footer } from "@/components/aura/Contact";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Aura Web Studio — Creative Digital Solutions" },
-      {
-        name: "description",
-      },
-      { property: "og:title", content: "Aura Web Studio — Creative Digital Solutions" },
-      {
-        property: "og:description",
-        content:
-          "Esperienze web cinematiche, animazioni 60fps e design ad alto impatto. Aura Web Studio.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "theme-color", content: "#000000" },
-    ],
-  }),
+  head: () =>
+    pageSeo({
+      path: "/",
+      description:
+        "Studio creativo di web design e sviluppo: esperienze web cinematiche, animazioni a 60fps e design ad alto impatto per brand italiani dell'hospitality e del lifestyle.",
+    }),
   component: Index,
 });
 

@@ -1,11 +1,11 @@
 import { j as jsxRuntimeExports, r as reactExports } from "../_libs/react.mjs";
-import { N as Nav, C as Contact, F as Footer } from "./Contact-ChDHymzm.mjs";
+import { N as Nav, C as Contact, F as Footer } from "./Contact-BJqXKUAv.mjs";
 import { L as Link } from "../_libs/tanstack__react-router.mjs";
 import "../_libs/i18next.mjs";
 import "../_libs/sonner.mjs";
 import { u as useTranslation } from "../_libs/react-i18next.mjs";
 import { u as useScroll, a as useTransform, m as motion } from "../_libs/framer-motion.mjs";
-import "./router-WnPp5t4E.mjs";
+import "./router-Cl6mbA1M.mjs";
 import "../_libs/tanstack__query-core.mjs";
 import "../_libs/tanstack__react-query.mjs";
 import "../_libs/tanstack__router-core.mjs";

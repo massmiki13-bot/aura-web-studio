@@ -2,10 +2,11 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
-  head: () => ({ meta: [{ title: "Admin · Messaggi — Aura Web Studio" }, { name: "robots", content: "noindex" }] }),
+  head: () => pageSeo({ title: "Admin · Messaggi", path: "/admin", noindex: true }),
   component: AdminPage,
 });
 

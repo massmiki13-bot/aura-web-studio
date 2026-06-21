@@ -4,24 +4,16 @@ import { Check, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Footer } from "@/components/aura/Contact";
 import { Nav } from "@/components/aura/Nav";
-import { generateMetaTags } from "@/lib/seo";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/pricing")({
-  head: () => ({
-    meta: [
-      { title: "Piani e Prezzi — Aura Web Studio" },
-      {
-        name: "description",
-        content:
-          "Scegli il piano ideale per portare il tuo business online. Tariffe trasparenti per landing page, siti vetrina ed e-commerce custom.",
-      },
-      ...generateMetaTags({
-        title: "Piani e Prezzi — Aura Web Studio",
-        description:
-          "Scegli il piano ideale per il tuo business online. Tariffe trasparenti e soluzioni su misura.",
-      }),
-    ].flat(),
-  }),
+  head: () =>
+    pageSeo({
+      title: "Piani e Prezzi",
+      path: "/pricing",
+      description:
+        "Scegli il piano ideale per portare il tuo business online. Tariffe trasparenti per landing page, siti vetrina ed e-commerce custom.",
+    }),
   component: PricingPage,
 });
 
