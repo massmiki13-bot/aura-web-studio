@@ -46,7 +46,7 @@ export function Team() {
           className="font-display text-4xl md:text-7xl font-bold leading-[0.95] tracking-tighter text-white max-w-5xl"
         >
           {t("product.headingPre")}
-          <span className="text-gradient-aura italic">{t("product.headingHighlight")}</span>
+          <span className="text-gradient-aura italic pr-5">{t("product.headingHighlight")}</span>
           {t("product.headingPost")}
           <br />
           {t("product.headingLine2")}
@@ -87,7 +87,7 @@ export function Team() {
               {t("product.pricingHeadingLine1")}
               <br />
               {t("product.pricingHeadingPre")}
-              <span className="text-gradient-aura italic pr-3">
+              <span className="text-gradient-aura italic pr-5">
                 {t("product.pricingHeadingHighlight")}
               </span>
             </motion.h2>
