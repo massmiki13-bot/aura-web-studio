@@ -18,6 +18,11 @@ export default defineConfig({
     plugins: [
       nitro({
         preset: "vercel",
+        // Bundle tslib into the function instead of leaving it as an external
+        // `import "tslib"`. Nitro's file-trace copies an incomplete tslib (missing
+        // tslib.es6.mjs), so Vercel's ESM resolver throws at runtime
+        // (ERR_MODULE_NOT_FOUND: Cannot find package 'tslib').
+        noExternals: ["tslib"],
       }),
     ],
   },
