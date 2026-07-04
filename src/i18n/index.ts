@@ -134,7 +134,7 @@ const resources = {
           desc: "Un canone mensile è richiesto per ogni progetto, indipendentemente dal piano scelto qui sopra. Mantiene il tuo sito sicuro, veloce e sempre aggiornato.",
           from: "da",
           perMonth: "/ mese",
-          upTo: "Fino a €200,00 / mese in base a complessità e traffico.",
+          upTo: "Fino a €500,00 / mese in base a complessità e traffico.",
           included: "INCLUSO",
           items: [
             "Monitoraggio e ottimizzazione SEO",
@@ -279,7 +279,7 @@ const resources = {
           desc: "Ein monatlicher Beitrag ist für jedes Projekt erforderlich, unabhängig vom oben gewählten Paket. Er hält deine Website sicher, schnell und stets aktuell.",
           from: "ab",
           perMonth: "/ Monat",
-          upTo: "Bis zu €200,00 / Monat je nach Umfang und Traffic.",
+          upTo: "Bis zu €500,00 / Monat je nach Umfang und Traffic.",
           included: "INKLUSIVE",
           items: [
             "SEO-Monitoring & Optimierung",
@@ -424,7 +424,7 @@ const resources = {
           desc: "A recurring monthly plan is required for every project, regardless of the package chosen above. It keeps your site secure, fast and always up to date.",
           from: "from",
           perMonth: "/ month",
-          upTo: "Up to €200,00 / month depending on scope and traffic.",
+          upTo: "Up to €500,00 / month depending on scope and traffic.",
           included: "INCLUDED",
           items: [
             "SEO monitoring & optimization",
@@ -569,7 +569,7 @@ const resources = {
           desc: "Se requiere una cuota mensual para cada proyecto, independientemente del paquete elegido arriba. Mantiene tu sitio seguro, rápido y siempre actualizado.",
           from: "desde",
           perMonth: "/ mes",
-          upTo: "Hasta €200,00 / mes según alcance y tráfico.",
+          upTo: "Hasta €500,00 / mes según alcance y tráfico.",
           included: "INCLUIDO",
           items: [
             "Monitorización y optimización SEO",

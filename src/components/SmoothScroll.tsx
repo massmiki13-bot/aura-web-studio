@@ -1,0 +1,55 @@
+import { useEffect } from "react";
+import Lenis from "lenis";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+
+/**
+ * Drives the whole site with Lenis smooth scroll, synced to GSAP's ticker
+ * so ScrollTrigger-based reveals stay perfectly in step with the scroll.
+ * Disabled under prefers-reduced-motion to respect accessibility settings.
+ */
+export function SmoothScroll() {
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    lenis.on("scroll", ScrollTrigger.update);
+
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+    gsap.ticker.lagSmoothing(0);
+
+    // Lenis drives scroll via its own transform, so plain hash links (nav
+    // anchors, "#contact" CTAs) need to go through lenis.scrollTo — a native
+    // scrollIntoView/location.hash jump would desync the visual scroll
+    // position from window.scrollY.
+    const onClick = (e: MouseEvent) => {
+      const anchor = (e.target as HTMLElement).closest("a[href*='#']");
+      if (!anchor) return;
+      const href = anchor.getAttribute("href") ?? "";
+      const hashIndex = href.indexOf("#");
+      if (hashIndex === -1) return;
+      const path = href.slice(0, hashIndex);
+      if (path && path !== window.location.pathname) return; // cross-page hash link, let the router navigate
+      const id = href.slice(hashIndex + 1);
+      const target = id ? document.getElementById(id) : document.body;
+      if (!target) return;
+      e.preventDefault();
+      lenis.scrollTo(target, { offset: 0 });
+    };
+    document.addEventListener("click", onClick);
+
+    return () => {
+      lenis.destroy();
+      gsap.ticker.remove(lenis.raf);
+      document.removeEventListener("click", onClick);
+    };
+  }, []);
+
+  return null;
+}

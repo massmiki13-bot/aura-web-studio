@@ -70,9 +70,9 @@ export function Nav() {
   const [open, setOpen] = useState(false);
 
   const links = [
-    { label: t("nav.home"), href: "/#hero", type: "hash" as const },
+    { label: t("nav.services", "Servizi"), href: "/#services", type: "hash" as const },
     { label: t("nav.work"), href: "/#projects", type: "hash" as const },
-    { label: t("nav.product"), href: "/#team", type: "hash" as const },
+    { label: t("nav.pricing", "Prezzi"), href: "/pricing", type: "route" as const },
     { label: t("nav.team"), href: "/team", type: "route" as const },
     { label: t("nav.contact"), href: "/#contact", type: "hash" as const },
   ];
@@ -91,7 +91,7 @@ export function Nav() {
         style={{ willChange: "transform" }}
       >
         <a href="/#hero" className="font-display text-lg font-bold tracking-tight text-white">
-          AURA<span className="text-primary">.</span>
+          AURA<span className="text-accent">.</span>
         </a>
         <nav className="hidden md:flex items-center gap-10 font-mono-spec text-xs uppercase tracking-[0.2em] text-white">
           {links.map((l) =>
@@ -114,6 +114,12 @@ export function Nav() {
             ),
           )}
           <LanguageSwitcher />
+          <a
+            href="/#contact"
+            className="inline-flex items-center rounded-full border border-white/15 px-5 py-2 text-[11px] uppercase tracking-widest text-white/80 hover:border-white/40 hover:text-white transition-colors"
+          >
+            {t("nav.cta", "Richiedi preventivo")}
+          </a>
         </nav>
         <button
           aria-label="Menu"

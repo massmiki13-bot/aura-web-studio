@@ -1,207 +1,351 @@
-import { Link } from "@tanstack/react-router";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { VolumetricStudio } from "@/components/ui/volumetric-studio";
 
-const projects = [
+export type ProjectCategory = "hospitality" | "beauty" | "automotive" | "other";
+
+type Project = {
+  id: string;
+  name: string;
+  category: ProjectCategory;
+  descKey: string;
+  desc: string;
+  domain: string | null;
+  image: string | null;
+  bg: string;
+};
+
+const projects: Project[] = [
   {
-    n: "01",
+    id: "la-cave",
     name: "La Cave Shisha Lounge",
-    tag: "Nightlife / Luxury",
-    desc: "Luxury shisha bar dark mode experience featuring glowing gold accents, glassmorphic overlays, and scroll-reactive 3D smoke trails.",
-    stack: ["Vite", "React", "Framer"],
+    category: "hospitality",
+    descKey: "01",
+    desc: "Esperienza dark mode per uno shisha bar di lusso, con accenti dorati luminosi e overlay glassmorphici.",
     domain: "https://la-cave-eosin.vercel.app",
-    bg: "radial-gradient(ellipse at 30% 30%, oklch(0.35 0.2 305) 0%, #050108 60%)",
-    accent: "oklch(0.7 0.25 305)",
     image: "/projects/la_cave.png",
+    bg: "radial-gradient(ellipse at 30% 30%, oklch(0.22 0.02 305) 0%, #050108 60%)",
   },
   {
-    n: "02",
+    id: "triclinium",
     name: "Triclinium Cotoletteria",
-    tag: "Food / Street Food",
-    desc: "Vibrant street-pop aesthetic driven by dynamic scroll effects, kinetic cutlery assets, and interactive particle bursts.",
-    stack: ["Vite", "Tailwind", "Framer"],
+    category: "hospitality",
+    descKey: "02",
+    desc: "Estetica street-pop vibrante guidata da effetti di scroll dinamici e particelle interattive.",
     domain: "https://triclinium-cotoletteria.vercel.app",
-    bg: "radial-gradient(ellipse at 70% 40%, oklch(0.85 0.2 95) 0%, #0a0700 70%)",
-    accent: "oklch(0.92 0.2 95)",
     image: "/projects/triclinium.png",
+    bg: "radial-gradient(ellipse at 70% 40%, oklch(0.25 0.03 95) 0%, #0a0700 70%)",
   },
   {
-    n: "03",
+    id: "enoteca-aldo",
     name: "Enoteca da Aldo",
-    tag: "Wine / Luxury",
-    desc: "Dark-slate luxury layout enhanced by smooth parallax tiles and a premium frosted glass navigation menu.",
-    stack: ["React", "Tailwind", "Framer"],
+    category: "hospitality",
+    descKey: "03",
+    desc: "Layout di lusso dark-slate impreziosito da fluide piastrelle in parallax.",
     domain: "https://aldo-s-glass-wine-bar.vercel.app",
-    bg: "radial-gradient(ellipse at 50% 60%, oklch(0.25 0.04 250) 0%, #02040a 70%)",
-    accent: "oklch(0.9 0.05 250)",
     image: "/projects/enoteca_da_aldo.png",
+    bg: "radial-gradient(ellipse at 50% 60%, oklch(0.2 0.01 250) 0%, #02040a 70%)",
   },
   {
-    n: "04",
+    id: "piccola-italia",
     name: "Piccola Italia",
-    tag: "Restaurant / Corporate",
-    desc: "Italian-Indian fusion restaurant experience built on an editorial dark mode with premium gold accents and cinematic transitions.",
-    stack: ["Vite", "React", "Framer"],
+    category: "hospitality",
+    descKey: "04",
+    desc: "Ristorante fusion italo-indiano su un dark mode editoriale con accenti premium.",
     domain: "https://namastepiccolaitalia.it",
-    bg: "radial-gradient(ellipse at 20% 70%, oklch(0.45 0.22 25) 0%, #080203 70%)",
-    accent: "oklch(0.78 0.2 25)",
     image: "/projects/piccola_italia.png",
+    bg: "radial-gradient(ellipse at 20% 70%, oklch(0.25 0.03 25) 0%, #080203 70%)",
   },
   {
-    n: "05",
-    name: "S.nail & Saloon - beauty studio",
-    tag: "Fashion / Corporate",
-    desc: "Elegant light mode beauty studio showcase with fluid animations, custom cosmetics branding, and micro-interactions.",
-    stack: ["Vite", "React", "Framer"],
+    id: "osteria-da-marco",
+    name: "Osteria da Marco",
+    category: "hospitality",
+    descKey: "08",
+    desc: "Osteria storica a Bolzano: cucina italiana autentica, prenotazione tavolo e menu digitale.",
+    domain: null,
+    image: null,
+    bg: "radial-gradient(ellipse at 40% 40%, oklch(0.22 0.03 60) 0%, #0a0602 70%)",
+  },
+  {
+    id: "central-merano",
+    name: "Central — Food & Beverage",
+    category: "hospitality",
+    descKey: "09",
+    desc: "Bar & restaurant nel cuore di Merano: colazione, business lunch e cocktail d'autore.",
+    domain: null,
+    image: null,
+    bg: "radial-gradient(ellipse at 60% 50%, oklch(0.2 0.02 40) 0%, #060402 70%)",
+  },
+  {
+    id: "snail-saloon",
+    name: "S.nail & Saloon",
+    category: "beauty",
+    descKey: "05",
+    desc: "Vetrina per beauty studio in light mode elegante con branding cosmetico custom.",
     domain: "https://s-nail-beauty-studio.vercel.app",
-    bg: "radial-gradient(ellipse at 60% 30%, oklch(0.4 0.18 340) 0%, #060106 65%)",
-    accent: "oklch(0.82 0.2 340)",
     image: "/projects/snail&saloon.png",
+    bg: "radial-gradient(ellipse at 60% 30%, oklch(0.2 0.02 340) 0%, #060106 65%)",
   },
   {
-    n: "06",
-    name: "Be Beauty - beauty centre",
-    tag: "Fashion / Corporate",
-    desc: "Sophisticated light mode wellness interface featuring refined layouts, fluid animations, and a seamless user-friendly booking flow.",
-    stack: ["Vite", "React", "Framer"],
+    id: "be-beauty",
+    name: "Be Beauty",
+    category: "beauty",
+    descKey: "06",
+    desc: "Interfaccia wellness raffinata con flusso di prenotazione intuitivo.",
     domain: "https://be-beauty-wellness.vercel.app",
-    bg: "radial-gradient(ellipse at 40% 50%, oklch(0.38 0.15 180) 0%, #00060a 70%)",
-    accent: "oklch(0.85 0.18 180)",
     image: "/projects/bebeauty_saloon.png",
+    bg: "radial-gradient(ellipse at 40% 50%, oklch(0.2 0.02 180) 0%, #00060a 70%)",
   },
   {
-    n: "07",
-    name: "Markz3D - 3D FiveM maps and scripts",
-    tag: "Gaming / Portfolio",
-    desc: "FiveM modding online shop and portfolio engineered with immersive dark and neon-blue tones, fluid animations, and interactive product grids.",
-    stack: ["Vite", "React", "Framer"],
+    id: "sahal-barber",
+    name: "Sahal Barber Studio",
+    category: "beauty",
+    descKey: "10",
+    desc: "Barbershop moderno con prenotazione online e galleria tagli.",
+    domain: null,
+    image: null,
+    bg: "radial-gradient(ellipse at 50% 40%, oklch(0.2 0.02 210) 0%, #04060a 70%)",
+  },
+  {
+    id: "lala-hair",
+    name: "Lala Hair Studio",
+    category: "beauty",
+    descKey: "11",
+    desc: "Salone di parrucchieri con presentazione servizi e team.",
+    domain: null,
+    image: null,
+    bg: "radial-gradient(ellipse at 55% 45%, oklch(0.2 0.02 320) 0%, #0a0208 70%)",
+  },
+  {
+    id: "nils-automotive",
+    name: "Nils Automotive",
+    category: "automotive",
+    descKey: "12",
+    desc: "Concessionaria auto in stile Ferrari con configuratore 3D a hotspot.",
+    domain: null,
+    image: null,
+    bg: "radial-gradient(ellipse at 45% 35%, oklch(0.2 0.03 25) 0%, #0a0100 70%)",
+  },
+  {
+    id: "autoservice-foppa",
+    name: "Autoservice Foppa",
+    category: "automotive",
+    descKey: "13",
+    desc: "Officina meccanica dal 1947: prenotazione tagliandi e servizi.",
+    domain: null,
+    image: null,
+    bg: "radial-gradient(ellipse at 35% 55%, oklch(0.2 0.02 230) 0%, #02040a 70%)",
+  },
+  {
+    id: "markz3d",
+    name: "Markz3D",
+    category: "other",
+    descKey: "07",
+    desc: "Shop online e portfolio per modding FiveM con griglie prodotto interattive.",
     domain: "https://www.markz3d.com",
-    bg: "radial-gradient(ellipse at 30% 60%, oklch(0.4 0.16 150) 0%, #02070a 70%)",
-    accent: "oklch(0.85 0.18 150)",
     image: "/projects/markz3d.png",
+    bg: "radial-gradient(ellipse at 30% 60%, oklch(0.2 0.02 150) 0%, #02070a 70%)",
   },
 ];
 
-export function Projects() {
+const categories: { key: "all" | ProjectCategory; label: string }[] = [
+  { key: "all", label: "Tutti" },
+  { key: "hospitality", label: "Ristorazione & Hospitality" },
+  { key: "beauty", label: "Beauty & Wellness" },
+  { key: "automotive", label: "Automotive" },
+  { key: "other", label: "Altro" },
+];
+
+function ProjectCard({ project }: { project: Project }) {
   const { t } = useTranslation();
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  // shift across (n-1) panels
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", `-${(projects.length - 1) * 100}vw`]);
+  const Wrapper = project.domain ? "a" : "div";
+  const wrapperProps = project.domain
+    ? { href: project.domain, target: "_blank", rel: "noreferrer" }
+    : {};
 
   return (
-    <section
-      id="projects"
-      ref={ref}
-      className="relative bg-black hidden md:block"
-      style={{ height: `${projects.length * 100}vh` }}
+    <Wrapper
+      {...wrapperProps}
+      className={`group relative block w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] transition-transform duration-500 hover:-translate-y-1 ${
+        project.domain ? "cursor-pointer" : "cursor-default"
+      }`}
+      style={{ background: project.bg }}
     >
-      <div className="sticky top-0 h-screen w-screen overflow-hidden" style={{ willChange: "transform", transform: "translateZ(0)" }}>
-        <motion.div style={{ x, willChange: "transform" }} className="flex h-full">
-          {projects.map((p, i) => (
-            <div
-              key={p.n}
-              className="relative h-screen w-screen shrink-0 flex items-center"
-              style={{ background: p.bg }}
+      {project.image && (
+        <img
+          src={project.image}
+          alt={project.name}
+          draggable={false}
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover opacity-70 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-out"
+        />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+
+      <div className="absolute top-5 left-5 right-5 flex items-center justify-between font-mono-spec text-[10px] uppercase tracking-widest text-white/50">
+        <span>{categories.find((c) => c.key === project.category)?.label}</span>
+        {project.domain ? (
+          <ArrowUpRight className="h-4 w-4 text-white/40 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+        ) : (
+          <span className="text-white/30">{t("projects.comingSoon", "Presto online")}</span>
+        )}
+      </div>
+
+      <div className="absolute bottom-5 left-5 right-5">
+        <h3 className="font-display text-xl md:text-2xl font-semibold tracking-tight text-white mb-1.5">
+          {project.name}
+        </h3>
+        <p className="text-white/50 text-xs md:text-sm font-light leading-relaxed line-clamp-2">
+          {t(`projects.items.${project.descKey}`, project.desc)}
+        </p>
+      </div>
+    </Wrapper>
+  );
+}
+
+const DRAG_THRESHOLD = 48;
+const WHEEL_THRESHOLD = 12;
+const STEP_COOLDOWN = 550;
+
+/**
+ * The projects live inside a single spotlight-lit "studio" (VolumetricStudio):
+ * one case study at a time sits front-and-center under the middle beam. A
+ * leftward drag/scroll fades + slides the current card out to the left while
+ * the next one slides in from the right to take its place — like flipping
+ * through slides in the light, never more than one on screen.
+ */
+function ProjectsCarousel({ projects: items }: { projects: Project[] }) {
+  const [index, setIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const locked = useRef(false);
+  const dragStart = useRef<{ x: number; y: number } | null>(null);
+  const didDrag = useRef(false);
+
+  const step = (dir: 1 | -1) => {
+    if (locked.current) return;
+    locked.current = true;
+    setDirection(dir);
+    setIndex((i) => (i + dir + items.length) % items.length);
+    setTimeout(() => {
+      locked.current = false;
+    }, STEP_COOLDOWN);
+  };
+
+  const onWheel = (e: React.WheelEvent) => {
+    // Only a horizontal gesture (trackpad swipe / shift-scroll) advances the
+    // carousel — plain vertical scrolling must keep scrolling the page, so a
+    // visitor can pass over the section without getting stuck cycling cards.
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || Math.abs(e.deltaX) < WHEEL_THRESHOLD) return;
+    e.preventDefault();
+    step(e.deltaX > 0 ? 1 : -1);
+  };
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    dragStart.current = { x: e.clientX, y: e.clientY };
+    didDrag.current = false;
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragStart.current) return;
+    if (Math.abs(e.clientX - dragStart.current.x) > 8) didDrag.current = true;
+  };
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (!dragStart.current) return;
+    const dx = e.clientX - dragStart.current.x;
+    dragStart.current = null;
+    if (Math.abs(dx) > DRAG_THRESHOLD) step(dx < 0 ? 1 : -1);
+  };
+  const onClickCapture = (e: React.MouseEvent) => {
+    if (didDrag.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      didDrag.current = false;
+    }
+  };
+
+  const active = items[index];
+
+  return (
+    <div className="relative">
+      <VolumetricStudio className="min-h-0 h-[560px] sm:h-[620px] md:h-[680px] rounded-3xl border border-white/10">
+        <div
+          onWheel={onWheel}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerLeave={onPointerUp}
+          onClickCapture={onClickCapture}
+          className="pointer-events-auto relative h-full w-full flex items-end justify-center overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y pb-12 sm:pb-16 md:pb-24"
+        >
+          <AnimatePresence initial={false} custom={direction} mode="popLayout">
+            <motion.div
+              key={active.id}
+              custom={direction}
+              variants={{
+                enter: (dir: number) => ({ x: dir > 0 ? 140 : -140, opacity: 0 }),
+                center: { x: 0, opacity: 1 },
+                exit: (dir: number) => ({ x: dir > 0 ? -140 : 140, opacity: 0 }),
+              }}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ x: { type: "spring", stiffness: 260, damping: 30 }, opacity: { duration: 0.45 } }}
+              className="relative aspect-[3/4]"
+              style={{ width: "clamp(200px, 22vw, 280px)" }}
             >
-              <div className="absolute inset-0 noise-bg opacity-30" />
-              <div className="relative z-10 px-10 md:px-24 w-full grid grid-cols-12 gap-8 items-center">
-                <div className="col-span-7 space-y-6">
-                  <div className="flex items-center gap-4 font-mono-spec text-xs uppercase tracking-[0.3em] text-white/50">
-                    <span style={{ color: p.accent }}>● {p.n}</span>
-                    <span>{p.tag}</span>
-                  </div>
-                  <h2
-                    onClick={() => window.open(p.domain, "_blank")}
-                    className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tighter text-white cursor-pointer hover:opacity-80 transition-opacity"
-                  >
-                    {p.name}
-                  </h2>
-                  <p className="max-w-lg text-white/70 text-base md:text-lg">
-                    {t(`projects.items.${p.n}`, p.desc)}
-                  </p>
-                  <div className="flex gap-2 pt-4">
-                    {p.stack.map((s) => (
-                      <span
-                        key={s}
-                        className="glass px-3 py-1.5 rounded-full font-mono-spec text-[10px] uppercase tracking-widest text-white/80"
-                      >
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <div className="col-span-5 relative w-full h-[40vh] hidden md:block">
-                  <Link
-                    className="absolute inset-0 rounded-2xl glass overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
-                    to={p.domain}
-                    target="_blank"
-                    style={{ boxShadow: `0 30px 80px -20px ${p.accent}` }}
-                  >
-                    <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
-                    <div
-                      className="absolute inset-0 opacity-40"
-                      style={{
-                        background: `radial-gradient(circle at 50% 50%, ${p.accent} 0%, transparent 70%)`,
-                      }}
-                    />
-                    <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end font-mono-spec text-[10px] uppercase tracking-widest text-white/60">
-                      <span>case_study/{p.n}</span>
-                      <span>{t("projects.live")}</span>
-                    </div>
-                  </Link>
-                </div>
-              </div>
-              <div className="absolute bottom-8 left-10 right-10 flex justify-between items-center font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
-                <span>
-                  {t("projects.project")} {i + 1} / {projects.length}
-                </span>
-                <span>{t("projects.caseStudies")}</span>
-              </div>
-            </div>
-          ))}
-        </motion.div>
+              <ProjectCard project={active} />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </VolumetricStudio>
+
+      <div className="mt-6 flex items-center justify-between">
+        <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
+          {"// Trascina o scorri per esplorare"}
+        </p>
+        <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
+          {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export function Projects() {
+  const { t } = useTranslation();
+
+  return (
+    <section id="projects" className="relative bg-black py-32 md:py-48">
+      <div className="max-w-[1600px] mx-auto px-6 md:px-16">
+        <div className="mb-16 max-w-2xl">
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="font-mono-spec text-[11px] uppercase tracking-[0.35em] text-muted-foreground mb-6"
+          >
+            {t("projects.selectedWork", "// Lavori selezionati")}
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter leading-[1.02]"
+          >
+            {t("projects.mobileTitle", "Progetti reali, per settori reali.")}
+          </motion.h2>
+        </div>
+
+        <ProjectsCarousel projects={projects} />
       </div>
     </section>
   );
 }
 
 export function ProjectsMobile() {
-  const { t } = useTranslation();
-  return (
-    <section className="md:hidden bg-black py-24 space-y-8 overflow-x-hidden">
-      <div className="px-6 space-y-3">
-        <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary">
-          {t("projects.selectedWork")}
-        </p>
-        <h2 className="font-display text-4xl font-bold tracking-tighter text-white">
-          {t("projects.mobileTitle")}
-        </h2>
-      </div>
-      <div className="overflow-x-auto snap-x snap-mandatory scrollbar-hide">
-        <div className="flex gap-5 px-6 pb-4 w-max">
-          {projects.map((p) => (
-            <div
-              key={p.n}
-              onClick={() => window.open(p.domain, "_blank")}
-              className="snap-center shrink-0 w-[80vw] h-[70vh] rounded-2xl p-6 flex flex-col justify-between cursor-pointer hover:opacity-80 transition-opacity"
-              style={{ background: p.bg }}
-            >
-              <div className="flex justify-between font-mono-spec text-[10px] uppercase tracking-widest text-white/60">
-                <span style={{ color: p.accent }}>● {p.n}</span>
-                <span>{p.tag}</span>
-              </div>
-              <div>
-                <h3 className="font-display text-3xl font-bold tracking-tight text-white mb-3">
-                  {p.name}
-                </h3>
-                <p className="text-white/60 text-sm">{t(`projects.items.${p.n}`, p.desc)}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return null;
 }

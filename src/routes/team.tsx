@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Nav } from "@/components/aura/Nav";
 import { Footer } from "@/components/aura/Contact";
 import { pageSeo } from "@/lib/seo";
+import { SparklesCanvas } from "@/components/ui/sparkles-canvas";
 
 export const Route = createFileRoute("/team")({
   head: () =>
@@ -28,7 +29,7 @@ const members = [
     phone: "+39 345 7454180",
     pec: "nome.cognome@pec.it",
     email: "nome@aurawebstudio.it",
-    accent: "oklch(0.85 0.18 200)",
+    accent: "oklch(0.85 0.005 260)",
   },
   {
     name: "Nome",
@@ -38,7 +39,7 @@ const members = [
     phone: "+39 000 0000000",
     pec: "nome.cognome@pec.it",
     email: "nome@aurawebstudio.it",
-    accent: "oklch(0.78 0.22 280)",
+    accent: "oklch(0.75 0.005 260)",
   },
   {
     name: "Nome",
@@ -48,7 +49,7 @@ const members = [
     phone: "+39 000 0000000",
     pec: "nome.cognome@pec.it",
     email: "nome@aurawebstudio.it",
-    accent: "oklch(0.82 0.2 340)",
+    accent: "oklch(0.65 0.005 260)",
   },
 ];
 
@@ -76,6 +77,32 @@ function TeamPage() {
           className="absolute bottom-[10%] right-[-25%] w-[700px] h-[700px] rounded-full blur-[180px]"
           style={{ background: "var(--glow-purple)" }}
         />
+      </div>
+
+      {/* Ambient grid + sparkles + soft white light wash across the whole
+          page (not just the header), same treatment as the pricing page but
+          stretched full-height with a gentle top/bottom fade instead of a
+          tight radial mask. */}
+      <div
+        className="absolute inset-0 overflow-hidden pointer-events-none z-0"
+        style={{
+          maskImage: "linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)",
+          WebkitMaskImage: "linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)",
+        }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{ background: "radial-gradient(60% 45% at 50% 12%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 45%, transparent 75%)" }}
+        />
+        <div
+          className="absolute inset-0 opacity-50"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, rgba(255,255,255,0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
+            backgroundSize: "70px 80px",
+          }}
+        />
+        <SparklesCanvas className="absolute inset-0" count={320} />
       </div>
 
       <div className="relative max-w-7xl mx-auto w-full px-6 md:px-16 pt-32 pb-24 z-10 flex-1">
@@ -127,7 +154,10 @@ function TeamPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 + index * 0.1, ease: [0.22, 1, 0.36, 1] }}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="relative glass rounded-[2rem] p-8 flex flex-col overflow-hidden border border-white/10"
+              // Solid background instead of the shared translucent .glass
+              // utility — the page-wide sparkle/grid backdrop would
+              // otherwise show (blurred) through the cards.
+              className="relative bg-neutral-950 rounded-[2rem] p-8 flex flex-col overflow-hidden border border-white/10"
             >
               {/* Photo */}
               <div
@@ -137,6 +167,8 @@ function TeamPage() {
                 <img
                   src={m.image}
                   alt={`${m.name} ${m.surname}`}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";

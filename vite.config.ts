@@ -25,5 +25,13 @@ export default defineConfig({
         noExternals: ["tslib"],
       }),
     ],
+    // @react-three/drei is only reachable through a lazily-split route chunk
+    // (VolumetricStudio), so Vite's cold-start dep scanner never sees it and
+    // instead discovers + optimizes it "on demand" on first request — which
+    // races with that same request and 404s on the freshly-hashed dep file.
+    // Pre-declaring it here makes it part of the initial optimize run instead.
+    optimizeDeps: {
+      include: ["@react-three/fiber", "@react-three/drei/core/SpotLight", "three"],
+    },
   },
 });

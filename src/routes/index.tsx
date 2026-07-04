@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Nav } from "@/components/aura/Nav";
 import { Hero } from "@/components/aura/Hero";
-import { Projects, ProjectsMobile } from "@/components/aura/Projects";
+import { Services } from "@/components/aura/Services";
+import { Projects } from "@/components/aura/Projects";
 import { Team } from "@/components/aura/Team";
 import { Contact, Footer } from "@/components/aura/Contact";
 import { pageSeo } from "@/lib/seo";
@@ -21,8 +22,8 @@ function Index() {
     <main className="bg-black text-white">
       <Nav />
       <Hero />
+      <Services />
       <Projects />
-      <ProjectsMobile />
       <Team />
       <Contact />
       <Footer />

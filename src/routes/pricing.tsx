@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { Footer } from "@/components/aura/Contact";
 import { Nav } from "@/components/aura/Nav";
 import { pageSeo } from "@/lib/seo";
+import { SparklesCanvas } from "@/components/ui/sparkles-canvas";
+import { WordRevealHeading } from "@/components/ui/word-reveal-heading";
 
 export const Route = createFileRoute("/pricing")({
   head: () =>
@@ -54,6 +56,29 @@ function PricingPage() {
         />
       </div>
 
+      {/* Ambient grid + sparkles behind the header, radially masked like the
+          reference — kept to plain white/theme tokens, no new colors. */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[420px] overflow-hidden pointer-events-none z-0"
+        style={{ maskImage: "radial-gradient(60% 60% at 50% 0%, black, transparent 85%)", WebkitMaskImage: "radial-gradient(60% 60% at 50% 0%, black, transparent 85%)" }}
+      >
+        {/* Soft white light wash behind the grid/sparkles — makes the whole
+            header area feel diffused/glowing instead of a flat black box. */}
+        <div
+          className="absolute inset-0"
+          style={{ background: "radial-gradient(50% 55% at 50% 15%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 45%, transparent 75%)" }}
+        />
+        <div
+          className="absolute inset-0 opacity-50"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, rgba(255,255,255,0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
+            backgroundSize: "70px 80px",
+          }}
+        />
+        <SparklesCanvas className="absolute inset-0" count={180} />
+      </div>
+
       <div className="relative max-w-7xl mx-auto w-full px-6 md:px-16 pt-32 pb-24 z-10 flex-1">
         {/* Navigation & Back Button */}
         <div className="mb-12">
@@ -66,15 +91,11 @@ function PricingPage() {
         </div>
 
         {/* Header Title Section */}
-        <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+        <div className="relative z-10 text-center max-w-3xl mx-auto mb-20 space-y-4">
+          <WordRevealHeading
+            text={t("pricing.title")}
             className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.05]"
-          >
-            {t("pricing.title")}
-          </motion.h1>
+          />
         </div>
 
         {/* Pricing Cards Grid */}

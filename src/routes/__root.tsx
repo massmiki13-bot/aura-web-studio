@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import i18n, { getStoredLanguage } from "../i18n";
 import { Toaster } from "@/components/ui/sonner";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import {
   rootMeta,
   rootLinks,
@@ -145,6 +146,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <SmoothScroll />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <Toaster theme="dark" position="bottom-right" />
