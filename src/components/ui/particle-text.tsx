@@ -16,6 +16,36 @@ const WORD_INTERVAL = 3800;
 const PIXEL_STEP = 3;
 const ARRIVE_MIN = 900;
 const ARRIVE_MAX = 1500;
+// Upper bound on live dots — the sampled coords are shuffled, so slicing is a
+// uniform subsample and very wide viewports just get slightly sparser text
+// instead of an unbounded per-frame draw count.
+const MAX_DOTS = 6000;
+
+/**
+ * Pre-rendered dot-with-glow sprite. The original effect drew every dot with
+ * canvas shadowBlur, which re-runs a Gaussian blur per draw call — with
+ * thousands of dots per frame that alone could eat the whole frame budget on
+ * modest CPUs. One drawImage of this sprite per dot gives the same soft-glow
+ * look for a fraction of the cost. The sprite is white; per-dot color is
+ * approximated via globalAlpha from the color's luminance, which is visually
+ * equivalent for this near-white palette under "lighter" compositing.
+ */
+function makeGlowSprite(): HTMLCanvasElement {
+  const size = 64;
+  const sprite = document.createElement("canvas");
+  sprite.width = size;
+  sprite.height = size;
+  const c = sprite.getContext("2d")!;
+  const half = size / 2;
+  const g = c.createRadialGradient(half, half, 0, half, half, half);
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.22, "rgba(255,255,255,0.95)");
+  g.addColorStop(0.45, "rgba(255,255,255,0.28)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  c.fillStyle = g;
+  c.fillRect(0, 0, size, size);
+  return sprite;
+}
 
 function easeOutCubic(t: number) {
   return 1 - (1 - t) ** 3;
@@ -161,7 +191,8 @@ export function ParticleText({ words, className = "" }: { words: string[]; class
         const j = Math.floor(Math.random() * (i + 1));
         [coords[i], coords[j]] = [coords[j], coords[i]];
       }
-      return coords;
+      // Post-shuffle slice = uniform random subsample, so density stays even.
+      return coords.length > MAX_DOTS ? coords.slice(0, MAX_DOTS) : coords;
     }
 
     function nextWord(word: string) {
@@ -223,12 +254,12 @@ export function ParticleText({ words, className = "" }: { words: string[]; class
     window.addEventListener("resize", onResize);
     resize();
 
+    const sprite = makeGlowSprite();
+
     let raf = 0;
     const loop = (now: number) => {
       ctx.clearRect(0, 0, w, h);
       ctx.globalCompositeOperation = "lighter";
-      ctx.shadowBlur = 6;
-      ctx.shadowColor = "rgba(255,255,255,0.25)";
 
       for (const d of dots) {
         const { x, y, color } = d.base(now);
@@ -245,12 +276,17 @@ export function ParticleText({ words, className = "" }: { words: string[]; class
             dy += (mdy / mdist) * strength;
           }
         }
-        ctx.fillStyle = `rgba(${color.r | 0},${color.g | 0},${color.b | 0},0.9)`;
-        ctx.fillRect(dx - d.size * 0.5, dy - d.size * 0.5, d.size, d.size);
+        // Luminance → alpha stands in for per-dot color (see makeGlowSprite).
+        const luma = (0.299 * color.r + 0.587 * color.g + 0.114 * color.b) / 255;
+        // Sprite core ≈ inner quarter, so 4× size keeps the solid center at
+        // the original square's footprint with the glow extending beyond it.
+        const drawSize = d.size * 4;
+        ctx.globalAlpha = 0.9 * luma;
+        ctx.drawImage(sprite, dx - drawSize * 0.5, dy - drawSize * 0.5, drawSize, drawSize);
       }
 
+      ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = "source-over";
-      ctx.shadowBlur = 0;
 
       if (now - lastWordTime > WORD_INTERVAL) {
         wordIndex = (wordIndex + 1) % words.length;

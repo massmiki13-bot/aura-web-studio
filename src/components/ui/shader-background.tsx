@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { rafDebounce } from "@/lib/utils";
 
 /**
@@ -8,194 +8,27 @@ import { rafDebounce } from "@/lib/utils";
  * project supplies its own copy and doesn't use styled-jsx (Vite, not
  * Next.js). The shader's palette was recolored from warm orange/amber to a
  * neutral silver/graphite tone to match the site's monochrome theme.
+ *
+ * Rendering strategy — the effect is two very different workloads glued
+ * together, so it's split into two passes instead of paying for both at one
+ * compromise resolution:
+ *
+ *  1. clouds pass — fbm noise sampled ~15×/pixel, but the output is soft and
+ *     low-frequency. Rendered at ¼ resolution into a linearly-filtered
+ *     texture; the upscale is invisible.
+ *  2. star pass — thin bright points/streaks that alias and shimmer unless
+ *     rendered sharp. Runs at up to 1.5× devicePixelRatio (pixel-budgeted),
+ *     samples the clouds texture, and dithers the output to kill 8-bit
+ *     banding in the dark gradients.
+ *
+ * If the offscreen framebuffer can't be created, it falls back to the
+ * original single-pass shader at a conservative resolution. The loop also
+ * stops entirely while `paused` (the hero hides this layer for most of its
+ * pinned scroll span) or when scrolled out of view.
  */
-class WebGLRenderer {
-  private canvas: HTMLCanvasElement;
-  private gl: WebGL2RenderingContext;
-  private program: WebGLProgram | null = null;
-  private vs: WebGLShader | null = null;
-  private fs: WebGLShader | null = null;
-  private buffer: WebGLBuffer | null = null;
-  private scale: number;
-  private shaderSource: string;
-  private mouseMove = [0, 0];
-  private mouseCoords = [0, 0];
-  private pointerCoords = [0, 0];
-  private nbrOfPointers = 0;
-  private uniforms: Record<string, WebGLUniformLocation | null> = {};
 
-  private vertexSrc = `#version 300 es
-precision highp float;
-in vec4 position;
-void main(){gl_Position=position;}`;
-
-  private vertices = [-1, 1, -1, -1, 1, 1, 1, -1];
-
-  constructor(canvas: HTMLCanvasElement, scale: number, shaderSource: string) {
-    this.canvas = canvas;
-    this.scale = scale;
-    this.gl = canvas.getContext("webgl2")!;
-    this.gl.viewport(0, 0, canvas.width * scale, canvas.height * scale);
-    this.shaderSource = shaderSource;
-  }
-
-  updateMove(deltas: number[]) {
-    this.mouseMove = deltas;
-  }
-  updateMouse(coords: number[]) {
-    this.mouseCoords = coords;
-  }
-  updatePointerCoords(coords: number[]) {
-    this.pointerCoords = coords;
-  }
-  updatePointerCount(nbr: number) {
-    this.nbrOfPointers = nbr;
-  }
-  updateScale(scale: number) {
-    this.scale = scale;
-    this.gl.viewport(0, 0, this.canvas.width * scale, this.canvas.height * scale);
-  }
-
-  private compile(shader: WebGLShader, source: string) {
-    const gl = this.gl;
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      console.error("Shader compilation error:", gl.getShaderInfoLog(shader));
-    }
-  }
-
-  reset() {
-    const gl = this.gl;
-    if (this.program && !gl.getProgramParameter(this.program, gl.DELETE_STATUS)) {
-      if (this.vs) {
-        gl.detachShader(this.program, this.vs);
-        gl.deleteShader(this.vs);
-      }
-      if (this.fs) {
-        gl.detachShader(this.program, this.fs);
-        gl.deleteShader(this.fs);
-      }
-      gl.deleteProgram(this.program);
-    }
-  }
-
-  setup() {
-    const gl = this.gl;
-    this.vs = gl.createShader(gl.VERTEX_SHADER)!;
-    this.fs = gl.createShader(gl.FRAGMENT_SHADER)!;
-    this.compile(this.vs, this.vertexSrc);
-    this.compile(this.fs, this.shaderSource);
-    this.program = gl.createProgram()!;
-    gl.attachShader(this.program, this.vs);
-    gl.attachShader(this.program, this.fs);
-    gl.linkProgram(this.program);
-    if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
-      console.error(gl.getProgramInfoLog(this.program));
-    }
-  }
-
-  init() {
-    const gl = this.gl;
-    const program = this.program!;
-
-    this.buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
-
-    const position = gl.getAttribLocation(program, "position");
-    gl.enableVertexAttribArray(position);
-    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
-
-    this.uniforms = {
-      resolution: gl.getUniformLocation(program, "resolution"),
-      time: gl.getUniformLocation(program, "time"),
-      move: gl.getUniformLocation(program, "move"),
-      touch: gl.getUniformLocation(program, "touch"),
-      pointerCount: gl.getUniformLocation(program, "pointerCount"),
-      pointers: gl.getUniformLocation(program, "pointers"),
-    };
-  }
-
-  render(now = 0) {
-    const gl = this.gl;
-    const program = this.program;
-    if (!program || gl.getProgramParameter(program, gl.DELETE_STATUS)) return;
-
-    gl.clearColor(0, 0, 0, 1);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.useProgram(program);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-
-    gl.uniform2f(this.uniforms.resolution, this.canvas.width, this.canvas.height);
-    gl.uniform1f(this.uniforms.time, now * 1e-3);
-    gl.uniform2f(this.uniforms.move, this.mouseMove[0], this.mouseMove[1]);
-    gl.uniform2f(this.uniforms.touch, this.mouseCoords[0], this.mouseCoords[1]);
-    gl.uniform1i(this.uniforms.pointerCount, this.nbrOfPointers);
-    gl.uniform2fv(this.uniforms.pointers, this.pointerCoords);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  }
-}
-
-class PointerHandler {
-  private scale: number;
-  private active = false;
-  private pointers = new Map<number, number[]>();
-  private lastCoords = [0, 0];
-  private moves = [0, 0];
-
-  constructor(element: HTMLCanvasElement, scale: number) {
-    this.scale = scale;
-    const map = (el: HTMLCanvasElement, s: number, x: number, y: number) => [x * s, el.height - y * s];
-
-    element.addEventListener("pointerdown", (e) => {
-      this.active = true;
-      this.pointers.set(e.pointerId, map(element, this.scale, e.clientX, e.clientY));
-    });
-    element.addEventListener("pointerup", (e) => {
-      if (this.pointers.size === 1) this.lastCoords = this.first;
-      this.pointers.delete(e.pointerId);
-      this.active = this.pointers.size > 0;
-    });
-    element.addEventListener("pointerleave", (e) => {
-      if (this.pointers.size === 1) this.lastCoords = this.first;
-      this.pointers.delete(e.pointerId);
-      this.active = this.pointers.size > 0;
-    });
-    element.addEventListener("pointermove", (e) => {
-      if (!this.active) return;
-      this.lastCoords = [e.clientX, e.clientY];
-      this.pointers.set(e.pointerId, map(element, this.scale, e.clientX, e.clientY));
-      this.moves = [this.moves[0] + e.movementX, this.moves[1] + e.movementY];
-    });
-  }
-
-  get count() {
-    return this.pointers.size;
-  }
-  get move() {
-    return this.moves;
-  }
-  get coords() {
-    return this.pointers.size > 0 ? Array.from(this.pointers.values()).flat() : [0, 0];
-  }
-  get first() {
-    return this.pointers.values().next().value ?? this.lastCoords;
-  }
-}
-
-// Neutral silver/graphite palette in place of the original warm orange tones,
-// so the effect reads as premium/monochrome instead of clashing with the
-// site's black-and-white theme.
-const SHADER_SOURCE = `#version 300 es
-precision highp float;
-out vec4 O;
-uniform vec2 resolution;
-uniform float time;
-#define FC gl_FragCoord.xy
-#define T time
-#define R resolution
-#define MN min(R.x,R.y)
+// Shared noise library (identical math to the original single-pass shader).
+const GLSL_NOISE = /* glsl */ `
 float rnd(vec2 p) {
   p=fract(p*vec2(12.9898,78.233));
   p+=dot(p,p+34.56);
@@ -206,6 +39,9 @@ float noise(in vec2 p) {
   float a=rnd(i), b=rnd(i+vec2(1,0)), c=rnd(i+vec2(0,1)), d=rnd(i+1.);
   return mix(mix(a,b,u.x),mix(c,d,u.x),u.y);
 }
+`;
+
+const GLSL_CLOUDS = /* glsl */ `
 float fbm(vec2 p) {
   float t=.0, a=1.; mat2 m=mat2(1.,-.5,.2,1.2);
   for (int i=0; i<5; i++) { t+=a*noise(p); p*=2.*m; a*=.5; }
@@ -221,6 +57,78 @@ float clouds(vec2 p) {
   }
   return t;
 }
+`;
+
+const VERTEX_SRC = `#version 300 es
+precision highp float;
+layout(location=0) in vec4 position;
+void main(){gl_Position=position;}`;
+
+// Pass 1: clouds only, at ¼ resolution. Coordinates are normalized against
+// the *main* resolution so each texel matches what the single-pass shader
+// would have computed at the corresponding full-res pixel.
+const CLOUDS_PASS_SRC = `#version 300 es
+precision highp float;
+out vec4 O;
+uniform vec2 resolution;
+uniform vec2 lowResolution;
+uniform float time;
+${GLSL_NOISE}
+${GLSL_CLOUDS}
+void main(void) {
+  vec2 fc=gl_FragCoord.xy/lowResolution*resolution;
+  vec2 uv=(fc-.5*resolution)/min(resolution.x,resolution.y);
+  vec2 st=uv*vec2(2,1);
+  float bg=clouds(vec2(st.x+time*.5,-st.y));
+  O=vec4(bg,bg,bg,1.);
+}`;
+
+// Pass 2: the star loop at full (hi-DPI) resolution, clouds from texture.
+const STARS_PASS_SRC = `#version 300 es
+precision highp float;
+out vec4 O;
+uniform vec2 resolution;
+uniform float time;
+uniform sampler2D cloudsTex;
+#define FC gl_FragCoord.xy
+#define T time
+#define R resolution
+#define MN min(R.x,R.y)
+${GLSL_NOISE}
+void main(void) {
+  vec2 uv=(FC-.5*R)/MN;
+  float bg=texture(cloudsTex,FC/R).r;
+  vec3 col=vec3(0);
+  uv*=1.-.3*(sin(T*.2)*.5+.5);
+  for (float i=1.; i<12.; i++) {
+    uv+=.1*cos(i*vec2(.1+.01*i, .8)+i*i+T*.5+.1*uv.x);
+    vec2 p=uv;
+    float d=length(p);
+    col+=.00125/d;
+    float b=noise(i+p+bg*1.731);
+    col+=.002*b/length(max(p,vec2(b*p.x*.02,p.y)));
+    col=mix(col,vec3(bg*.22,bg*.22,bg*.25),d);
+  }
+  float luma=dot(col, vec3(0.299,0.587,0.114));
+  col=vec3(luma)*vec3(0.82,0.85,0.95);
+  // Ordered-noise dither: ±0.5/255 breaks up the visible banding that 8-bit
+  // output produces in the near-black cloud gradients.
+  col+=(rnd(FC+fract(T))-.5)/255.;
+  O=vec4(col,1);
+}`;
+
+// Fallback: the original single-pass shader (clouds + stars per pixel).
+const SINGLE_PASS_SRC = `#version 300 es
+precision highp float;
+out vec4 O;
+uniform vec2 resolution;
+uniform float time;
+#define FC gl_FragCoord.xy
+#define T time
+#define R resolution
+#define MN min(R.x,R.y)
+${GLSL_NOISE}
+${GLSL_CLOUDS}
 void main(void) {
   vec2 uv=(FC-.5*R)/MN,st=uv*vec2(2,1);
   vec3 col=vec3(0);
@@ -240,44 +148,253 @@ void main(void) {
   O=vec4(col,1);
 }`;
 
-export function ShaderBackground({ className = "" }: { className?: string }) {
+// Pixel budgets. Two-pass affords a much higher star budget because the
+// per-pixel cost dropped ~3.5× with clouds moved to the ¼-res texture.
+const TWO_PASS_MAX_PIXELS = 3_500_000;
+const SINGLE_PASS_MAX_PIXELS = 1_200_000;
+const CLOUDS_DOWNSCALE = 4;
+
+type Uniforms = Record<string, WebGLUniformLocation | null>;
+
+class ShaderRenderer {
+  private canvas: HTMLCanvasElement;
+  private gl: WebGL2RenderingContext;
+  private starsProgram: WebGLProgram | null = null;
+  private cloudsProgram: WebGLProgram | null = null;
+  private singleProgram: WebGLProgram | null = null;
+  private starsUniforms: Uniforms = {};
+  private cloudsUniforms: Uniforms = {};
+  private singleUniforms: Uniforms = {};
+  private buffer: WebGLBuffer | null = null;
+  private fbo: WebGLFramebuffer | null = null;
+  private fboTex: WebGLTexture | null = null;
+  private lowW = 1;
+  private lowH = 1;
+  twoPass = false;
+
+  constructor(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext) {
+    this.canvas = canvas;
+    this.gl = gl;
+  }
+
+  private compileProgram(fragSrc: string): WebGLProgram | null {
+    const gl = this.gl;
+    const vs = gl.createShader(gl.VERTEX_SHADER)!;
+    gl.shaderSource(vs, VERTEX_SRC);
+    gl.compileShader(vs);
+    const fs = gl.createShader(gl.FRAGMENT_SHADER)!;
+    gl.shaderSource(fs, fragSrc);
+    gl.compileShader(fs);
+    const program = gl.createProgram()!;
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    // Shaders are owned by the program from here on.
+    gl.deleteShader(vs);
+    gl.deleteShader(fs);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error("Shader link error:", gl.getProgramInfoLog(program));
+      gl.deleteProgram(program);
+      return null;
+    }
+    return program;
+  }
+
+  private locate(program: WebGLProgram, names: string[]): Uniforms {
+    const out: Uniforms = {};
+    for (const n of names) out[n] = this.gl.getUniformLocation(program, n);
+    return out;
+  }
+
+  /** Returns false when no usable program could be built (canvas stays black). */
+  setup(): boolean {
+    const gl = this.gl;
+
+    this.buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, 1, -1, -1, 1, 1, 1, -1]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+    this.starsProgram = this.compileProgram(STARS_PASS_SRC);
+    this.cloudsProgram = this.compileProgram(CLOUDS_PASS_SRC);
+
+    if (this.starsProgram && this.cloudsProgram) {
+      this.fboTex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, this.fboTex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 4, 4, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      this.fbo = gl.createFramebuffer();
+      gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.fboTex, 0);
+      this.twoPass = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    }
+
+    if (this.twoPass) {
+      this.starsUniforms = this.locate(this.starsProgram!, ["resolution", "time", "cloudsTex"]);
+      this.cloudsUniforms = this.locate(this.cloudsProgram!, [
+        "resolution",
+        "lowResolution",
+        "time",
+      ]);
+      return true;
+    }
+
+    this.singleProgram = this.compileProgram(SINGLE_PASS_SRC);
+    if (!this.singleProgram) return false;
+    this.singleUniforms = this.locate(this.singleProgram, ["resolution", "time"]);
+    return true;
+  }
+
+  /** Sizes the drawing buffer (and clouds texture) for the given CSS size. */
+  resize(cssWidth: number, cssHeight: number) {
+    const gl = this.gl;
+    const budget = this.twoPass ? TWO_PASS_MAX_PIXELS : SINGLE_PASS_MAX_PIXELS;
+    let scale = this.twoPass
+      ? Math.min(window.devicePixelRatio || 1, 1.5)
+      : Math.min(1, Math.max(0.5, 0.5 * (window.devicePixelRatio || 1)));
+    if (cssWidth * cssHeight * scale * scale > budget) {
+      scale = Math.sqrt(budget / (cssWidth * cssHeight));
+    }
+    if (this.twoPass) scale = Math.max(scale, 0.75);
+
+    this.canvas.width = Math.max(1, Math.round(cssWidth * scale));
+    this.canvas.height = Math.max(1, Math.round(cssHeight * scale));
+
+    if (this.twoPass) {
+      this.lowW = Math.max(1, Math.round(this.canvas.width / CLOUDS_DOWNSCALE));
+      this.lowH = Math.max(1, Math.round(this.canvas.height / CLOUDS_DOWNSCALE));
+      gl.bindTexture(gl.TEXTURE_2D, this.fboTex);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        this.lowW,
+        this.lowH,
+        0,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        null,
+      );
+    }
+  }
+
+  render(now = 0) {
+    const gl = this.gl;
+    const t = now * 1e-3;
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+
+    if (this.twoPass) {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
+      gl.viewport(0, 0, this.lowW, this.lowH);
+      gl.useProgram(this.cloudsProgram);
+      gl.uniform2f(this.cloudsUniforms.resolution, w, h);
+      gl.uniform2f(this.cloudsUniforms.lowResolution, this.lowW, this.lowH);
+      gl.uniform1f(this.cloudsUniforms.time, t);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      gl.viewport(0, 0, w, h);
+      gl.useProgram(this.starsProgram);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, this.fboTex);
+      gl.uniform1i(this.starsUniforms.cloudsTex, 0);
+      gl.uniform2f(this.starsUniforms.resolution, w, h);
+      gl.uniform1f(this.starsUniforms.time, t);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      return;
+    }
+
+    gl.viewport(0, 0, w, h);
+    gl.useProgram(this.singleProgram);
+    gl.uniform2f(this.singleUniforms.resolution, w, h);
+    gl.uniform1f(this.singleUniforms.time, t);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+
+  dispose() {
+    const gl = this.gl;
+    if (this.starsProgram) gl.deleteProgram(this.starsProgram);
+    if (this.cloudsProgram) gl.deleteProgram(this.cloudsProgram);
+    if (this.singleProgram) gl.deleteProgram(this.singleProgram);
+    if (this.buffer) gl.deleteBuffer(this.buffer);
+    if (this.fboTex) gl.deleteTexture(this.fboTex);
+    if (this.fbo) gl.deleteFramebuffer(this.fbo);
+  }
+}
+
+export function ShaderBackground({
+  className = "",
+  paused = false,
+}: {
+  className?: string;
+  /** Externally stop/resume the render loop — e.g. while this layer is
+   *  faded out behind other content but still inside the viewport. */
+  paused?: boolean;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pausedRef = useRef(paused);
+  const syncRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+    syncRef.current?.();
+  }, [paused]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const dpr = Math.max(1, 0.5 * window.devicePixelRatio);
-    const renderer = new WebGLRenderer(canvas, dpr, SHADER_SOURCE);
-    const pointers = new PointerHandler(canvas, dpr);
-    renderer.setup();
-    renderer.init();
+    // No AA/depth/stencil needed for fullscreen quads, and an opaque canvas
+    // is cheaper to composite. If WebGL2 is unavailable the background simply
+    // stays black — which is the site background anyway.
+    const gl = canvas.getContext("webgl2", {
+      alpha: false,
+      antialias: false,
+      depth: false,
+      stencil: false,
+      powerPreference: "high-performance",
+    }) as WebGL2RenderingContext | null;
+    if (!gl) return;
 
-    const resize = () => {
-      canvas.width = canvas.clientWidth * dpr;
-      canvas.height = canvas.clientHeight * dpr;
-      renderer.updateScale(dpr);
-    };
+    const renderer = new ShaderRenderer(canvas, gl);
+    if (!renderer.setup()) return;
+
+    const resize = () => renderer.resize(canvas.clientWidth, canvas.clientHeight);
     resize();
 
     let raf = 0;
+    let running = false;
+    let intersecting = true;
     const loop = (now: number) => {
-      renderer.updateMouse(pointers.first);
-      renderer.updatePointerCount(pointers.count);
-      renderer.updatePointerCoords(pointers.coords);
-      renderer.updateMove(pointers.move);
       renderer.render(now);
       raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
+    const sync = () => {
+      const shouldRun = intersecting && !pausedRef.current;
+      if (shouldRun && !running) {
+        running = true;
+        raf = requestAnimationFrame(loop);
+      } else if (!shouldRun && running) {
+        running = false;
+        cancelAnimationFrame(raf);
+      }
+    };
+    syncRef.current = sync;
+    sync();
 
     // Perf only: stop rendering once scrolled well past the (pinned) hero,
     // resume if it ever comes back into view.
     const io = new IntersectionObserver(
       ([entry]) => {
-        cancelAnimationFrame(raf);
-        if (entry.isIntersecting) raf = requestAnimationFrame(loop);
+        intersecting = entry.isIntersecting;
+        sync();
       },
       { rootMargin: "200px" },
     );
@@ -290,7 +407,8 @@ export function ShaderBackground({ className = "" }: { className?: string }) {
       onResize.cancel();
       cancelAnimationFrame(raf);
       io.disconnect();
-      renderer.reset();
+      syncRef.current = null;
+      renderer.dispose();
     };
   }, []);
 

@@ -59,9 +59,24 @@ function easeOutCubic(t: number) {
  * pointer parallax, and "bend away" when the cursor gets close. Pure
  * DOM/CSS + rAF (no canvas) — cheap enough to sit behind other content.
  */
-export function FloatingShapesBackground({ className = "" }: { className?: string }) {
+export function FloatingShapesBackground({
+  className = "",
+  paused = false,
+}: {
+  className?: string;
+  /** Externally stop/resume the animation loop — e.g. while this layer is
+   *  hidden behind other content but still inside the viewport. */
+  paused?: boolean;
+}) {
   const spotlightRef = useRef<HTMLDivElement>(null);
   const shapeRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const pausedRef = useRef(paused);
+  const syncRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+    syncRef.current?.();
+  }, [paused]);
 
   useEffect(() => {
     const container = shapeRefs.current[0]?.closest("[data-floating-shapes]") as HTMLElement | null;
@@ -75,6 +90,7 @@ export function FloatingShapesBackground({ className = "" }: { className?: strin
     let spotY = mouseY;
     const pushState = SHAPES.map(() => ({ x: 0, y: 0, rot: 0 }));
     let rects: { cx: number; cy: number }[] = [];
+    let rectsStamp = 0;
 
     const onMove = (e: MouseEvent) => {
       mouseX = e.clientX;
@@ -90,6 +106,12 @@ export function FloatingShapesBackground({ className = "" }: { className?: strin
     window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("touchmove", onTouch, { passive: true });
 
+    // Park the spotlight at the viewport center immediately (it may stay
+    // paused for a while, and its SSR position is intentionally offscreen).
+    if (spotlightRef.current) {
+      spotlightRef.current.style.transform = `translate3d(${spotX}px, ${spotY}px, 0) translate(-50%, -50%)`;
+    }
+
     const refreshRects = () => {
       rects = shapeRefs.current.map((el) => {
         if (!el) return { cx: 0, cy: 0 };
@@ -97,15 +119,19 @@ export function FloatingShapesBackground({ className = "" }: { className?: strin
         return { cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
       });
     };
-    refreshRects();
-    window.addEventListener("resize", refreshRects);
-    window.addEventListener("scroll", refreshRects, { passive: true });
 
     const start = performance.now();
     let raf = 0;
 
     const tick = (now: number) => {
       const t = now - start;
+      // Shape centers barely move (only on scroll/resize); re-measuring them
+      // a few times a second inside the frame we already own is far cheaper
+      // than forcing five layout reads on every scroll event.
+      if (now - rectsStamp > 250) {
+        rectsStamp = now;
+        refreshRects();
+      }
       const nx = (mouseX / window.innerWidth) * 2 - 1;
       const ny = (mouseY / window.innerHeight) * 2 - 1;
       smX += (nx - smX) * 0.055;
@@ -114,8 +140,9 @@ export function FloatingShapesBackground({ className = "" }: { className?: strin
       spotX += (mouseX - spotX) * 0.12;
       spotY += (mouseY - spotY) * 0.12;
       if (spotlightRef.current) {
-        spotlightRef.current.style.left = `${spotX}px`;
-        spotlightRef.current.style.top = `${spotY}px`;
+        // transform, not left/top — moving a compositor layer instead of
+        // triggering layout on a 700px fixed element every frame.
+        spotlightRef.current.style.transform = `translate3d(${spotX}px, ${spotY}px, 0) translate(-50%, -50%)`;
       }
 
       SHAPES.forEach((s, i) => {
@@ -164,7 +191,21 @@ export function FloatingShapesBackground({ className = "" }: { className?: strin
 
       raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
+
+    let running = false;
+    let intersecting = true;
+    const sync = () => {
+      const shouldRun = intersecting && !pausedRef.current;
+      if (shouldRun && !running) {
+        running = true;
+        raf = requestAnimationFrame(tick);
+      } else if (!shouldRun && running) {
+        running = false;
+        cancelAnimationFrame(raf);
+      }
+    };
+    syncRef.current = sync;
+    sync();
 
     // Perf only: stop animating once scrolled well past this (pinned)
     // section, resume if it comes back into view.
@@ -172,8 +213,8 @@ export function FloatingShapesBackground({ className = "" }: { className?: strin
     if (container) {
       io = new IntersectionObserver(
         ([entry]) => {
-          cancelAnimationFrame(raf);
-          if (entry.isIntersecting) raf = requestAnimationFrame(tick);
+          intersecting = entry.isIntersecting;
+          sync();
         },
         { rootMargin: "200px" },
       );
@@ -183,10 +224,9 @@ export function FloatingShapesBackground({ className = "" }: { className?: strin
     return () => {
       cancelAnimationFrame(raf);
       io?.disconnect();
+      syncRef.current = null;
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("touchmove", onTouch);
-      window.removeEventListener("resize", refreshRects);
-      window.removeEventListener("scroll", refreshRects);
     };
   }, []);
 
@@ -205,11 +245,13 @@ export function FloatingShapesBackground({ className = "" }: { className?: strin
       />
       <div
         ref={spotlightRef}
-        className="fixed h-[700px] w-[700px] rounded-full"
+        className="fixed left-0 top-0 h-[700px] w-[700px] rounded-full will-change-transform"
         style={{
           background:
             "radial-gradient(circle, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 35%, transparent 70%)",
-          transform: "translate(-50%, -50%)",
+          // Parked far offscreen until the effect positions it on mount —
+          // avoids an SSR hydration mismatch from viewport-dependent values.
+          transform: "translate3d(-9999px, -9999px, 0) translate(-50%, -50%)",
         }}
       />
       {SHAPES.map((s, i) => (

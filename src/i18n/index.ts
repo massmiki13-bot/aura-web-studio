@@ -17,10 +17,19 @@ const resources = {
   it: {
     translation: {
       nav: { home: "Home", work: "Lavori", product: "Il Prodotto", team: "Team", contact: "Contatti" },
-      hero: { badge: "[ Creative Digital Solutions ]", scroll: "Scorri" },
+      hero: {
+        badge: "[ Creative Digital Solutions ]",
+        scroll: "Scorri",
+        actTwoTitle: "Il tuo brand, elevato.",
+        actTwoSub: "Web design su misura per chi non si accontenta.",
+        actTwoTitle2: "Estetica che converte.",
+        actTwoSub2: "Performance, SEO e conversioni — di serie.",
+      },
       projects: {
         selectedWork: "// Selected Work",
         mobileTitle: "Case study cinematici.",
+        prevProject: "Progetto precedente",
+        nextProject: "Progetto successivo",
         project: "Progetto",
         caseStudies: "Aura — Case Studies",
         live: "live →",
@@ -162,10 +171,19 @@ const resources = {
   de: {
     translation: {
       nav: { home: "Home", work: "Projekte", product: "Das Produkt", team: "Team", contact: "Kontakt" },
-      hero: { badge: "[ Creative Digital Solutions ]", scroll: "Scrollen" },
+      hero: {
+        badge: "[ Creative Digital Solutions ]",
+        scroll: "Scrollen",
+        actTwoTitle: "Deine Marke, auf neuem Niveau.",
+        actTwoSub: "Maßgeschneidertes Webdesign für alle, die sich nicht zufriedengeben.",
+        actTwoTitle2: "Ästhetik, die konvertiert.",
+        actTwoSub2: "Performance, SEO und Conversions — serienmäßig.",
+      },
       projects: {
         selectedWork: "// Ausgewählte Arbeiten",
         mobileTitle: "Filmreife Case Studies.",
+        prevProject: "Vorheriges Projekt",
+        nextProject: "Nächstes Projekt",
         project: "Projekt",
         caseStudies: "Aura — Case Studies",
         live: "live →",
@@ -307,10 +325,19 @@ const resources = {
   en: {
     translation: {
       nav: { home: "Home", work: "Work", product: "The Product", team: "Team", contact: "Contact" },
-      hero: { badge: "[ Creative Digital Solutions ]", scroll: "Scroll" },
+      hero: {
+        badge: "[ Creative Digital Solutions ]",
+        scroll: "Scroll",
+        actTwoTitle: "Your brand, elevated.",
+        actTwoSub: "Bespoke web design for those who won't settle.",
+        actTwoTitle2: "Design that converts.",
+        actTwoSub2: "Performance, SEO and conversions — built in.",
+      },
       projects: {
         selectedWork: "// Selected Work",
         mobileTitle: "Cinematic case studies.",
+        prevProject: "Previous project",
+        nextProject: "Next project",
         project: "Project",
         caseStudies: "Aura — Case Studies",
         live: "live →",
@@ -452,10 +479,19 @@ const resources = {
   es: {
     translation: {
       nav: { home: "Inicio", work: "Trabajos", product: "El Producto", team: "Equipo", contact: "Contacto" },
-      hero: { badge: "[ Creative Digital Solutions ]", scroll: "Desplázate" },
+      hero: {
+        badge: "[ Creative Digital Solutions ]",
+        scroll: "Desplázate",
+        actTwoTitle: "Tu marca, elevada.",
+        actTwoSub: "Diseño web a medida para quienes no se conforman.",
+        actTwoTitle2: "Estética que convierte.",
+        actTwoSub2: "Rendimiento, SEO y conversiones — de serie.",
+      },
       projects: {
         selectedWork: "// Trabajos seleccionados",
         mobileTitle: "Casos de estudio cinematográficos.",
+        prevProject: "Proyecto anterior",
+        nextProject: "Proyecto siguiente",
         project: "Proyecto",
         caseStudies: "Aura — Casos de estudio",
         live: "en vivo →",

@@ -438,7 +438,7 @@ function requireReact() {
   return react.exports;
 }
 var reactExports = requireReact();
-const React = /* @__PURE__ */ getDefaultExportFromCjs(reactExports);
+const React__default = /* @__PURE__ */ getDefaultExportFromCjs(reactExports);
 var jsxRuntime = { exports: {} };
 var reactJsxRuntime_production = {};
 var hasRequiredReactJsxRuntime_production;
@@ -480,7 +480,7 @@ function requireJsxRuntime() {
 }
 var jsxRuntimeExports = requireJsxRuntime();
 export {
-  React as R,
+  React__default as R,
   requireReact as a,
   commonjsGlobal as c,
   getDefaultExportFromCjs as g,

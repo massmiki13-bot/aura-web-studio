@@ -68,6 +68,29 @@ function LanguageSwitcher({ onSelect, dropUp = false }: { onSelect?: () => void;
 export function Nav() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+
+  // Slide the bar away while scrolling down, bring it back on any upward
+  // scroll (and always near the top of the page). Direction is accumulated
+  // rather than per-event so Lenis's tiny per-frame deltas — or a trackpad's
+  // jittery ones — can't make the bar flicker.
+  useEffect(() => {
+    let last = window.scrollY;
+    let acc = 0;
+    const onScroll = () => {
+      const y = Math.max(0, window.scrollY);
+      const dy = y - last;
+      last = y;
+      if (dy === 0) return;
+      if (dy > 0 !== acc > 0) acc = 0;
+      acc += dy;
+      if (y < 80) setHidden(false);
+      else if (acc > 24) setHidden(true);
+      else if (acc < -16) setHidden(false);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const links = [
     { label: t("nav.services", "Servizi"), href: "/#services", type: "hash" as const },
@@ -87,7 +110,9 @@ export function Nav() {
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex items-center justify-between max-w-screen bg-black/40 backdrop-blur-md"
+        className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex items-center justify-between max-w-screen bg-black/40 backdrop-blur-md transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          hidden && !open ? "-translate-y-full" : "translate-y-0"
+        }`}
         style={{ willChange: "transform" }}
       >
         <a href="/#hero" className="font-display text-lg font-bold tracking-tight text-white">

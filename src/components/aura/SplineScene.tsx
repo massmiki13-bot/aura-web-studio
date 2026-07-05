@@ -20,10 +20,16 @@ type SplineSceneProps = {
  * prefers-reduced-motion or narrow/mobile viewports — the runtime is heavy
  * (1-3MB+ of wasm/JS) and 3D here is a premium desktop accent, not a
  * requirement, per the site's performance-first design brief.
+ *
+ * Once loaded, the runtime's render loop is stopped (app.stop()) whenever the
+ * scene is scrolled well out of view and resumed on return — otherwise every
+ * Spline scene on the page keeps burning GPU frames forever, and with several
+ * scenes mounted at once that alone can tank the whole site's frame rate.
  */
 export function SplineScene({ scene, className, eager, onSplineLoad }: SplineSceneProps) {
   const ref = useRef<HTMLDivElement>(null);
   const appRef = useRef<Application | null>(null);
+  const inViewRef = useRef(true);
   const [shouldLoad, setShouldLoad] = useState(false);
   const [ready, setReady] = useState(false);
 
@@ -73,6 +79,44 @@ export function SplineScene({ scene, className, eager, onSplineLoad }: SplineSce
     };
   }, [eager]);
 
+  // Perf: stop the runtime's render loop while the scene is scrolled well out
+  // of view, resume when it comes back. Same scroll-driven rect check as the
+  // lazy-loader above (IntersectionObserver is unreliable here), throttled to
+  // one bounding-rect read per frame at most.
+  useEffect(() => {
+    if (!shouldLoad) return;
+
+    const syncPlayState = () => {
+      const app = appRef.current;
+      if (!app) return;
+      if (inViewRef.current && app.isStopped) app.play();
+      else if (!inViewRef.current && !app.isStopped) app.stop();
+    };
+
+    let ticking = false;
+    const margin = 300;
+    const check = () => {
+      ticking = false;
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      inViewRef.current = rect.bottom > -margin && rect.top < window.innerHeight + margin;
+      syncPlayState();
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(check);
+      }
+    };
+    check();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [shouldLoad]);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -97,7 +141,24 @@ export function SplineScene({ scene, className, eager, onSplineLoad }: SplineSce
             onLoad={(app) => {
               appRef.current = app;
               setReady(true);
+              // Scenes are published with "auto" pixel ratio, i.e. full
+              // devicePixelRatio — 4× the pixels on retina for fullscreen
+              // scenes, the single biggest GPU cost on hi-DPI machines.
+              // Cap it via the runtime's own (private but stable) renderer
+              // hook; if internals ever change this silently no-ops and the
+              // scene just renders at full resolution again.
+              try {
+                const renderer = (
+                  app as unknown as { _renderer?: { setPixelRatio?: (r: number) => void } }
+                )._renderer;
+                renderer?.setPixelRatio?.(Math.min(window.devicePixelRatio || 1, 1.5));
+              } catch {
+                /* keep full-res rendering */
+              }
               onSplineLoad?.(app);
+              // A scene can finish loading after the visitor has already
+              // scrolled past it — don't leave it rendering into the void.
+              if (!inViewRef.current && !app.isStopped) app.stop();
               // Force one resize pass right after load too, in case the
               // container's final size wasn't reached until this frame.
               requestAnimationFrame(() => {

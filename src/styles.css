@@ -217,6 +217,26 @@
     background-image: radial-gradient(oklch(1 0 0 / 0.02) 1px, transparent 1px);
     background-size: 4px 4px;
   }
+  /* Liquid-metal text fill for the hero's act-two headlines: a bright band
+     of "reflection" inside the glyphs. The band's position is scrubbed by
+     GSAP (backgroundPosition) so the sheen sweeps across the letters as the
+     visitor scrolls — same material language as the chrome blob behind. */
+  .chrome-text {
+    background-image: linear-gradient(
+      100deg,
+      #ffffff 0%,
+      #ffffff 32%,
+      #989ea9 46%,
+      #eceef2 54%,
+      #ffffff 68%,
+      #ffffff 100%
+    );
+    background-size: 220% 100%;
+    background-position: 0% 0%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
   /* Scrollbar hiding for horizontal scroll containers */
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -224,6 +244,30 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* Idle drift for the projects-carousel arrows: a slow compositor-only nudge
+   toward the arrow's direction (set via --drift per side), paused while the
+   visitor is hovering so it never fights the hover interaction. */
+@keyframes carousel-arrow-drift {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(var(--drift, 6px));
+  }
+}
+.carousel-arrow-drift {
+  animation: carousel-arrow-drift 2.8s ease-in-out infinite;
+}
+.group:hover .carousel-arrow-drift {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .carousel-arrow-drift {
+    animation: none;
   }
 }
 

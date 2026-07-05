@@ -5995,6 +5995,7 @@ export {
   motionValue as Z,
   collectMotionValues as _,
   isMotionValue as a,
+  resolveElements as a0,
   isControllingVariants as b,
   isVariantLabel as c,
   isForcedMotionValue as d,

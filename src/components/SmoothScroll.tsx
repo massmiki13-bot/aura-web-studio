@@ -19,9 +19,13 @@ export function SmoothScroll() {
 
     lenis.on("scroll", ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
+    // Named so cleanup can actually remove it — removing `lenis.raf` (a
+    // different function than this wrapper) would leak a ticker callback
+    // that keeps firing every frame after unmount/HMR.
+    const onTick = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+    gsap.ticker.add(onTick);
     gsap.ticker.lagSmoothing(0);
 
     // Lenis drives scroll via its own transform, so plain hash links (nav
@@ -46,7 +50,7 @@ export function SmoothScroll() {
 
     return () => {
       lenis.destroy();
-      gsap.ticker.remove(lenis.raf);
+      gsap.ticker.remove(onTick);
       document.removeEventListener("click", onClick);
     };
   }, []);

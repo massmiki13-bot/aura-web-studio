@@ -211,6 +211,59 @@ const WHEEL_THRESHOLD = 12;
 const STEP_COOLDOWN = 550;
 
 /**
+ * Editorial line-arrow: a hairline that stretches toward its direction on
+ * hover and ends in a small chevron, with a slow idle drift (CSS keyframes,
+ * compositor-only) hinting that the deck can be flipped. Deliberately not a
+ * boxed/circled arrow button — it should read as part of the studio, not UI
+ * chrome.
+ */
+function CarouselArrow({
+  dir,
+  label,
+  onClick,
+}: {
+  dir: -1 | 1;
+  label: string;
+  onClick: () => void;
+}) {
+  const isNext = dir === 1;
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onClick}
+      // Don't let the press reach the drag surface underneath — a click on
+      // the arrow must never double as the start of a card drag.
+      onPointerDown={(e) => e.stopPropagation()}
+      onPointerUp={(e) => e.stopPropagation()}
+      className={`group absolute top-1/2 z-10 -translate-y-1/2 cursor-pointer select-none p-4 outline-none focus-visible:rounded-full focus-visible:outline focus-visible:outline-white/40 ${
+        isNext ? "-right-14 sm:-right-20 md:-right-28" : "-left-14 sm:-left-20 md:-left-28"
+      }`}
+    >
+      <span
+        className={`block transition-transform duration-300 ease-out ${
+          isNext ? "group-active:translate-x-1.5" : "group-active:-translate-x-1.5"
+        }`}
+      >
+        <span
+          className={`carousel-arrow-drift flex items-center ${isNext ? "" : "flex-row-reverse"}`}
+          style={{ "--drift": isNext ? "6px" : "-6px" } as React.CSSProperties}
+        >
+          <span className="h-px w-8 bg-white/35 transition-all duration-500 ease-out group-hover:w-14 group-hover:bg-white/90" />
+          <span
+            className={`h-[7px] w-[7px] rotate-45 transition-colors duration-500 ${
+              isNext
+                ? "-ml-[7px] border-t border-r border-white/35 group-hover:border-white/90"
+                : "-mr-[7px] border-b border-l border-white/35 group-hover:border-white/90"
+            }`}
+          />
+        </span>
+      </span>
+    </button>
+  );
+}
+
+/**
  * The projects live inside a single spotlight-lit "studio" (VolumetricStudio):
  * one case study at a time sits front-and-center under the middle beam. A
  * leftward drag/scroll fades + slides the current card out to the left while
@@ -218,6 +271,7 @@ const STEP_COOLDOWN = 550;
  * through slides in the light, never more than one on screen.
  */
 function ProjectsCarousel({ projects: items }: { projects: Project[] }) {
+  const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const locked = useRef(false);
@@ -268,7 +322,7 @@ function ProjectsCarousel({ projects: items }: { projects: Project[] }) {
   const active = items[index];
 
   return (
-    <div className="relative">
+    <div className="relative select-none">
       <VolumetricStudio className="min-h-0 h-[560px] sm:h-[620px] md:h-[680px] rounded-3xl border border-white/10">
         <div
           onWheel={onWheel}
@@ -279,25 +333,42 @@ function ProjectsCarousel({ projects: items }: { projects: Project[] }) {
           onClickCapture={onClickCapture}
           className="pointer-events-auto relative h-full w-full flex items-end justify-center overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y pb-12 sm:pb-16 md:pb-24"
         >
-          <AnimatePresence initial={false} custom={direction} mode="popLayout">
-            <motion.div
-              key={active.id}
-              custom={direction}
-              variants={{
-                enter: (dir: number) => ({ x: dir > 0 ? 140 : -140, opacity: 0 }),
-                center: { x: 0, opacity: 1 },
-                exit: (dir: number) => ({ x: dir > 0 ? -140 : 140, opacity: 0 }),
-              }}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ x: { type: "spring", stiffness: 260, damping: 30 }, opacity: { duration: 0.45 } }}
-              className="relative aspect-[3/4]"
-              style={{ width: "clamp(200px, 22vw, 280px)" }}
-            >
-              <ProjectCard project={active} />
-            </motion.div>
-          </AnimatePresence>
+          {/* Sized slot the card animates within — also the anchor for the
+              prev/next arrows so they stay centered on the card at every
+              breakpoint instead of floating somewhere in the studio. */}
+          <div className="relative aspect-[3/4]" style={{ width: "clamp(200px, 22vw, 280px)" }}>
+            <AnimatePresence initial={false} custom={direction} mode="popLayout">
+              <motion.div
+                key={active.id}
+                custom={direction}
+                variants={{
+                  enter: (dir: number) => ({ x: dir > 0 ? 140 : -140, opacity: 0 }),
+                  center: { x: 0, opacity: 1 },
+                  exit: (dir: number) => ({ x: dir > 0 ? -140 : 140, opacity: 0 }),
+                }}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: "spring", stiffness: 260, damping: 30 },
+                  opacity: { duration: 0.45 },
+                }}
+                className="absolute inset-0"
+              >
+                <ProjectCard project={active} />
+              </motion.div>
+            </AnimatePresence>
+            <CarouselArrow
+              dir={-1}
+              label={t("projects.prevProject", "Progetto precedente")}
+              onClick={() => step(-1)}
+            />
+            <CarouselArrow
+              dir={1}
+              label={t("projects.nextProject", "Progetto successivo")}
+              onClick={() => step(1)}
+            />
+          </div>
         </div>
       </VolumetricStudio>
 

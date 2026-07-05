@@ -126,7 +126,18 @@ function Room({
             style={{ left: `${pos}%`, top: "calc(3% + 80px)", mixBlendMode: "screen", willChange: "opacity" }}
           >
             {canvasReady && (
-              <Canvas camera={{ position: [0, 0, 10], fov: 45 }} shadows={false} gl={{ alpha: true }}>
+              <Canvas
+                camera={{ position: [0, 0, 10], fov: 45 }}
+                shadows={false}
+                // The light cone is completely static (the flicker is CSS
+                // opacity on the wrapper) — render frames only when
+                // something invalidates instead of 60fps forever. With three
+                // of these canvases on the page, that's the difference
+                // between three idle GPU contexts and three hot ones.
+                frameloop="demand"
+                dpr={[1, 1.5]}
+                gl={{ alpha: true, antialias: false, stencil: false, powerPreference: "low-power" }}
+              >
                 <ambientLight intensity={0.5} />
                 <SpotLight
                   distance={12}

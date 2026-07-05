@@ -75,16 +75,21 @@ const createLucideIcon = (iconName, iconNode) => {
   Component.displayName = toPascalCase(iconName);
   return Component;
 };
-const __iconNode$6 = [
+const __iconNode$7 = [
   ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
   ["path", { d: "M19 12H5", key: "x3x0zl" }]
 ];
-const ArrowLeft = createLucideIcon("arrow-left", __iconNode$6);
-const __iconNode$5 = [
+const ArrowLeft = createLucideIcon("arrow-left", __iconNode$7);
+const __iconNode$6 = [
   ["path", { d: "M5 12h14", key: "1ays0h" }],
   ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
 ];
-const ArrowRight = createLucideIcon("arrow-right", __iconNode$5);
+const ArrowRight = createLucideIcon("arrow-right", __iconNode$6);
+const __iconNode$5 = [
+  ["path", { d: "M7 7h10v10", key: "1tivn9" }],
+  ["path", { d: "M7 17 17 7", key: "1vkiza" }]
+];
+const ArrowUpRight = createLucideIcon("arrow-up-right", __iconNode$5);
 const __iconNode$4 = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
 const Check = createLucideIcon("check", __iconNode$4);
 const __iconNode$3 = [
@@ -129,5 +134,6 @@ export {
   Globe as G,
   Mail as M,
   Phone as P,
-  ArrowRight as a
+  ArrowRight as a,
+  ArrowUpRight as b
 };

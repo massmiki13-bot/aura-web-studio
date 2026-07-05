@@ -32,6 +32,24 @@ export function SparklesCanvas({ className = "", count = 220 }: { className?: st
       alphaSpeed: (Math.random() * 0.015 + 0.004) * (Math.random() > 0.5 ? 1 : -1),
     });
 
+    // One pre-rendered dot, stamped with drawImage + globalAlpha — hundreds
+    // of beginPath/arc/fill calls per frame add up on weaker CPUs, a sprite
+    // blit is a fraction of the cost for an identical soft white dot.
+    const SPRITE_SIZE = 32;
+    const sprite = document.createElement("canvas");
+    sprite.width = SPRITE_SIZE;
+    sprite.height = SPRITE_SIZE;
+    {
+      const sc = sprite.getContext("2d")!;
+      const half = SPRITE_SIZE / 2;
+      const g = sc.createRadialGradient(half, half, 0, half, half, half);
+      g.addColorStop(0, "rgba(255,255,255,1)");
+      g.addColorStop(0.8, "rgba(255,255,255,1)");
+      g.addColorStop(1, "rgba(255,255,255,0)");
+      sc.fillStyle = g;
+      sc.fillRect(0, 0, SPRITE_SIZE, SPRITE_SIZE);
+    }
+
     function resize() {
       if (!canvas) return;
       w = canvas.clientWidth;
@@ -52,11 +70,10 @@ export function SparklesCanvas({ className = "", count = 220 }: { className?: st
         if (p.y < 0) p.y = h;
         p.alpha += p.alphaSpeed;
         if (p.alpha <= 0 || p.alpha >= 1) p.alphaSpeed *= -1;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${Math.max(0, Math.min(1, p.alpha))})`;
-        ctx.fill();
+        ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
+        ctx.drawImage(sprite, p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
       }
+      ctx.globalAlpha = 1;
       if (running) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
