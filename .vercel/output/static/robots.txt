@@ -1,9 +1,0 @@
-# Aura Web Studio — crawling instructions
-# NOTE: update the Sitemap URL below if the production domain changes.
-
-User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /auth
-
-Sitemap: https://showoff-project.vercel.app/sitemap.xml
