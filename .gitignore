@@ -16,6 +16,15 @@ dist-ssr
 .nitro
 *.local
 
+# Env files (secrets — mai committare; configurarle su Vercel)
+.env
+.env.*
+
+# Lockfile Bun: il progetto usa npm (package-lock.json); un bun.lock
+# committato ha priorità su Vercel e fa buildare con versioni diverse
+bun.lock
+bun.lockb
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
