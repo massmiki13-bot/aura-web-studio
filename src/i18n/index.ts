@@ -16,7 +16,18 @@ export const LANGUAGE_STORAGE_KEY = "aura-lang";
 const resources = {
   it: {
     translation: {
-      nav: { home: "Home", work: "Lavori", product: "Il Prodotto", team: "Team", contact: "Contatti" },
+      nav: {
+        home: "Home",
+        work: "Lavori",
+        product: "Il Prodotto",
+        team: "Team",
+        contact: "Contatti",
+      },
+      intro: {
+        badge: "Creative Web Studio",
+        tagline: "Il tuo brand, elevato",
+        skip: "Salta",
+      },
       hero: {
         badge: "[ Creative Digital Solutions ]",
         scroll: "Scorri",
@@ -24,6 +35,11 @@ const resources = {
         actTwoSub: "Web design su misura per chi non si accontenta.",
         actTwoTitle2: "Estetica che converte.",
         actTwoSub2: "Performance, SEO e conversioni — di serie.",
+      },
+      services: {
+        label: "// Cosa offriamo",
+        caption1: "Progettiamo esperienze digitali che lasciano il segno.",
+        caption2: "Valore che cresce, progetto dopo progetto.",
       },
       projects: {
         selectedWork: "// Selected Work",
@@ -170,7 +186,18 @@ const resources = {
   },
   de: {
     translation: {
-      nav: { home: "Home", work: "Projekte", product: "Das Produkt", team: "Team", contact: "Kontakt" },
+      nav: {
+        home: "Home",
+        work: "Projekte",
+        product: "Das Produkt",
+        team: "Team",
+        contact: "Kontakt",
+      },
+      intro: {
+        badge: "Creative Web Studio",
+        tagline: "Deine Marke, auf neuem Niveau",
+        skip: "Überspringen",
+      },
       hero: {
         badge: "[ Creative Digital Solutions ]",
         scroll: "Scrollen",
@@ -178,6 +205,11 @@ const resources = {
         actTwoSub: "Maßgeschneidertes Webdesign für alle, die sich nicht zufriedengeben.",
         actTwoTitle2: "Ästhetik, die konvertiert.",
         actTwoSub2: "Performance, SEO und Conversions — serienmäßig.",
+      },
+      services: {
+        label: "// Was wir bieten",
+        caption1: "Wir gestalten digitale Erlebnisse, die Eindruck hinterlassen.",
+        caption2: "Wert, der wächst — Projekt für Projekt.",
       },
       projects: {
         selectedWork: "// Ausgewählte Arbeiten",
@@ -325,6 +357,11 @@ const resources = {
   en: {
     translation: {
       nav: { home: "Home", work: "Work", product: "The Product", team: "Team", contact: "Contact" },
+      intro: {
+        badge: "Creative Web Studio",
+        tagline: "Your brand, elevated",
+        skip: "Skip",
+      },
       hero: {
         badge: "[ Creative Digital Solutions ]",
         scroll: "Scroll",
@@ -332,6 +369,11 @@ const resources = {
         actTwoSub: "Bespoke web design for those who won't settle.",
         actTwoTitle2: "Design that converts.",
         actTwoSub2: "Performance, SEO and conversions — built in.",
+      },
+      services: {
+        label: "// What we offer",
+        caption1: "We design digital experiences that leave a mark.",
+        caption2: "Value that grows, project after project.",
       },
       projects: {
         selectedWork: "// Selected Work",
@@ -478,7 +520,18 @@ const resources = {
   },
   es: {
     translation: {
-      nav: { home: "Inicio", work: "Trabajos", product: "El Producto", team: "Equipo", contact: "Contacto" },
+      nav: {
+        home: "Inicio",
+        work: "Trabajos",
+        product: "El Producto",
+        team: "Equipo",
+        contact: "Contacto",
+      },
+      intro: {
+        badge: "Creative Web Studio",
+        tagline: "Tu marca, elevada",
+        skip: "Saltar",
+      },
       hero: {
         badge: "[ Creative Digital Solutions ]",
         scroll: "Desplázate",
@@ -486,6 +539,11 @@ const resources = {
         actTwoSub: "Diseño web a medida para quienes no se conforman.",
         actTwoTitle2: "Estética que convierte.",
         actTwoSub2: "Rendimiento, SEO y conversiones — de serie.",
+      },
+      services: {
+        label: "// Qué ofrecemos",
+        caption1: "Diseñamos experiencias digitales que dejan huella.",
+        caption2: "Valor que crece, proyecto a proyecto.",
       },
       projects: {
         selectedWork: "// Trabajos seleccionados",

@@ -14,17 +14,33 @@ import { rafDebounce } from "@/lib/utils";
  * compromise resolution:
  *
  *  1. clouds pass — fbm noise sampled ~15×/pixel, but the output is soft and
- *     low-frequency. Rendered at ¼ resolution into a linearly-filtered
- *     texture; the upscale is invisible.
- *  2. star pass — thin bright points/streaks that alias and shimmer unless
- *     rendered sharp. Runs at up to 1.5× devicePixelRatio (pixel-budgeted),
- *     samples the clouds texture, and dithers the output to kill 8-bit
- *     banding in the dark gradients.
+ *     low-frequency. Rendered at a fraction of the star resolution into a
+ *     linearly-filtered texture; the upscale is invisible.
+ *  2. star pass — thin bright points/streaks, ~11 loop iterations per pixel.
+ *     This is where essentially all the GPU time goes, so it is the pass whose
+ *     resolution is governed (see below), and it dithers its output to kill
+ *     8-bit banding in the dark gradients.
  *
- * If the offscreen framebuffer can't be created, it falls back to the
- * original single-pass shader at a conservative resolution. The loop also
- * stops entirely while `paused` (the hero hides this layer for most of its
- * pinned scroll span) or when scrolled out of view.
+ * Three things keep it smooth rather than merely cheap:
+ *
+ *  - **Adaptive resolution.** A fixed pixel budget is a guess about a machine
+ *    we've never met; on anything with integrated graphics the star loop at
+ *    hi-DPI simply cannot hold 60fps, and the result was a background that
+ *    crawled. So the drawing buffer is sized by a controller that watches real
+ *    frame intervals and walks the resolution down until frames land on time
+ *    (and carefully back up if there's headroom). A slightly soft background
+ *    at 60fps beats a sharp one at 25.
+ *  - **A ~60fps cap.** On 120/144Hz displays the loop would otherwise render
+ *    twice as many frames as anyone can perceive here, for a slow ambient
+ *    drift, and starve everything else on the page.
+ *  - **Deferred start.** Nothing is created until the layer is actually asked
+ *    to run (`paused` is the hero's gate, and it stays true through first
+ *    load), so context creation and shader compilation don't land in the
+ *    middle of hydration.
+ *
+ * If the offscreen framebuffer can't be created, it falls back to the original
+ * single-pass shader at a conservative resolution. The loop also stops
+ * entirely while `paused` or when scrolled out of view.
  */
 
 // Shared noise library (identical math to the original single-pass shader).
@@ -64,9 +80,9 @@ precision highp float;
 layout(location=0) in vec4 position;
 void main(){gl_Position=position;}`;
 
-// Pass 1: clouds only, at ¼ resolution. Coordinates are normalized against
-// the *main* resolution so each texel matches what the single-pass shader
-// would have computed at the corresponding full-res pixel.
+// Pass 1: clouds only, at a fraction of the star resolution. Coordinates are
+// normalized against the *main* resolution so each texel matches what the
+// single-pass shader would have computed at the corresponding full-res pixel.
 const CLOUDS_PASS_SRC = `#version 300 es
 precision highp float;
 out vec4 O;
@@ -83,7 +99,7 @@ void main(void) {
   O=vec4(bg,bg,bg,1.);
 }`;
 
-// Pass 2: the star loop at full (hi-DPI) resolution, clouds from texture.
+// Pass 2: the star loop, clouds from texture.
 const STARS_PASS_SRC = `#version 300 es
 precision highp float;
 out vec4 O;
@@ -148,11 +164,24 @@ void main(void) {
   O=vec4(col,1);
 }`;
 
-// Pixel budgets. Two-pass affords a much higher star budget because the
-// per-pixel cost dropped ~3.5× with clouds moved to the ¼-res texture.
-const TWO_PASS_MAX_PIXELS = 3_500_000;
-const SINGLE_PASS_MAX_PIXELS = 1_200_000;
-const CLOUDS_DOWNSCALE = 4;
+// Fast-machine ceilings. The drawing buffer is sized once from these and then
+// left alone — the star pass renders thin, bright, moving streaks, and those
+// shimmer and pop the instant their resolution changes underfoot, so the
+// resolution must be stable, not chased frame to frame.
+const TWO_PASS_MAX_PIXELS = 2_400_000;
+const SINGLE_PASS_MAX_PIXELS = 900_000;
+const TWO_PASS_MAX_DPR = 1.5;
+const CLOUDS_DOWNSCALE = 3; // fixed: the clouds are soft, the stars are not
+const MIN_QUALITY = 0.7; // never drop the stars far enough to alias badly
+const MAX_QUALITY = 1;
+
+// One-shot calibration. A weak GPU gets a single resolution step-down, taken
+// early — while the canvas is still fading up from transparent, so the change
+// is invisible — and then the resolution is frozen for good. There is no
+// continuous up/down: that churn was the "flashing" (every resize re-rasterises
+// the whole field of streaks at a new sampling grid).
+const CALIBRATION_MS = 520; // decided before the fade is halfway in
+const SLOW_FRAME_MS = 1000 / 40; // sustained slower than 40fps → step down once
 
 type Uniforms = Record<string, WebGLUniformLocation | null>;
 
@@ -170,6 +199,10 @@ class ShaderRenderer {
   private fboTex: WebGLTexture | null = null;
   private lowW = 1;
   private lowH = 1;
+  private cssW = 1;
+  private cssH = 1;
+  // Starts at full and only ever steps down once, during calibration.
+  quality = MAX_QUALITY;
   twoPass = false;
 
   constructor(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext) {
@@ -250,22 +283,32 @@ class ShaderRenderer {
     return true;
   }
 
-  /** Sizes the drawing buffer (and clouds texture) for the given CSS size. */
-  resize(cssWidth: number, cssHeight: number) {
-    const gl = this.gl;
+  /** Device pixels per CSS pixel for the current quality setting. */
+  private pixelScale(cssWidth: number, cssHeight: number) {
+    const dpr = window.devicePixelRatio || 1;
+    const base = this.twoPass ? Math.min(dpr, TWO_PASS_MAX_DPR) : Math.min(dpr, 1);
     const budget = this.twoPass ? TWO_PASS_MAX_PIXELS : SINGLE_PASS_MAX_PIXELS;
-    let scale = this.twoPass
-      ? Math.min(window.devicePixelRatio || 1, 1.5)
-      : Math.min(1, Math.max(0.5, 0.5 * (window.devicePixelRatio || 1)));
-    if (cssWidth * cssHeight * scale * scale > budget) {
-      scale = Math.sqrt(budget / (cssWidth * cssHeight));
-    }
-    if (this.twoPass) scale = Math.max(scale, 0.75);
+    let scale = base * this.quality;
+    const area = Math.max(1, cssWidth * cssHeight);
+    if (area * scale * scale > budget) scale = Math.sqrt(budget / area);
+    // Floored well above 0.5: below roughly one device pixel per CSS pixel the
+    // star streaks start to crawl and sparkle as they move.
+    return Math.max(0.75, scale);
+  }
+
+  /** Sizes the drawing buffer (and clouds texture) for the given CSS size. */
+  resize(cssWidth = this.cssW, cssHeight = this.cssH) {
+    const gl = this.gl;
+    this.cssW = cssWidth;
+    this.cssH = cssHeight;
+    const scale = this.pixelScale(cssWidth, cssHeight);
 
     this.canvas.width = Math.max(1, Math.round(cssWidth * scale));
     this.canvas.height = Math.max(1, Math.round(cssHeight * scale));
 
     if (this.twoPass) {
+      // The clouds are soft and low-frequency, so a fixed fraction of the star
+      // resolution is plenty and it keeps the backdrop's look constant.
       this.lowW = Math.max(1, Math.round(this.canvas.width / CLOUDS_DOWNSCALE));
       this.lowH = Math.max(1, Math.round(this.canvas.height / CLOUDS_DOWNSCALE));
       gl.bindTexture(gl.TEXTURE_2D, this.fboTex);
@@ -281,6 +324,20 @@ class ShaderRenderer {
         null,
       );
     }
+  }
+
+  /** Returns true when the quality actually moved (and the buffers resized). */
+  setQuality(next: number) {
+    const clamped = Math.min(MAX_QUALITY, Math.max(MIN_QUALITY, next));
+    if (Math.abs(clamped - this.quality) < 0.02) return false;
+    this.quality = clamped;
+    this.resize();
+    return true;
+  }
+
+  /** Was the buffer already sized down as far as it goes? */
+  get atFloor() {
+    return this.quality <= MIN_QUALITY + 0.01;
   }
 
   render(now = 0) {
@@ -334,7 +391,8 @@ export function ShaderBackground({
 }: {
   className?: string;
   /** Externally stop/resume the render loop — e.g. while this layer is
-   *  faded out behind other content but still inside the viewport. */
+   *  faded out behind other content, or before the page has finished
+   *  booting. Nothing is created at all until it first goes false. */
   paused?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -351,35 +409,97 @@ export function ShaderBackground({
     if (!canvas) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    // No AA/depth/stencil needed for fullscreen quads, and an opaque canvas
-    // is cheaper to composite. If WebGL2 is unavailable the background simply
-    // stays black — which is the site background anyway.
-    const gl = canvas.getContext("webgl2", {
-      alpha: false,
-      antialias: false,
-      depth: false,
-      stencil: false,
-      powerPreference: "high-performance",
-    }) as WebGL2RenderingContext | null;
-    if (!gl) return;
+    let renderer: ShaderRenderer | null = null;
+    let failed = false;
+    let disposed = false;
 
-    const renderer = new ShaderRenderer(canvas, gl);
-    if (!renderer.setup()) return;
-
-    const resize = () => renderer.resize(canvas.clientWidth, canvas.clientHeight);
-    resize();
+    // Context creation + shader compilation is a single long main-thread task;
+    // it happens the first time this layer is actually asked to draw, not at
+    // mount, so it can't land in the middle of hydration.
+    const ensureRenderer = () => {
+      if (renderer || failed || disposed) return renderer;
+      // No AA/depth/stencil needed for fullscreen quads, and an opaque canvas
+      // is cheaper to composite. If WebGL2 is unavailable the background simply
+      // stays black — which is the site background anyway.
+      const gl = canvas.getContext("webgl2", {
+        alpha: false,
+        antialias: false,
+        depth: false,
+        stencil: false,
+        powerPreference: "high-performance",
+      }) as WebGL2RenderingContext | null;
+      if (!gl) {
+        failed = true;
+        return null;
+      }
+      const next = new ShaderRenderer(canvas, gl);
+      if (!next.setup()) {
+        next.dispose();
+        failed = true;
+        return null;
+      }
+      next.resize(canvas.clientWidth, canvas.clientHeight);
+      renderer = next;
+      return renderer;
+    };
 
     let raf = 0;
     let running = false;
     let intersecting = true;
+    let revealed = false;
+
+    // One-shot calibration state. No frame is ever *skipped* — the content is
+    // wall-clock based (see render()), so the smoothest possible presentation
+    // is simply to draw on every vsync at whatever the display refreshes at.
+    // These only decide the single early resolution step-down.
+    let lastRender = 0;
+    let calibrated = false;
+    let calibStart = 0;
+    let calibSum = 0;
+    let calibFrames = 0;
+    const CALIB_WARMUP = 4; // ignore the first few frames (shader warm-up)
+
     const loop = (now: number) => {
-      renderer.render(now);
       raf = requestAnimationFrame(loop);
+      const dt = lastRender ? now - lastRender : 0;
+      lastRender = now;
+
+      renderer?.render(now);
+
+      // Fade up on the first drawn frame — this is also the window the one
+      // calibration step-down hides inside.
+      if (!revealed) {
+        revealed = true;
+        canvas.style.opacity = "1";
+      }
+
+      if (calibrated || !renderer) return;
+      if (!calibStart) {
+        calibStart = now;
+        return;
+      }
+      // Ignore warm-up frames and any stall (a backgrounded tab, a long
+      // main-thread task) — neither reflects steady-state GPU cost.
+      if (calibFrames >= 0 && dt > 0 && dt < 200) {
+        calibFrames += 1;
+        if (calibFrames > CALIB_WARMUP) calibSum += dt;
+      }
+      if (now - calibStart >= CALIBRATION_MS) {
+        calibrated = true;
+        const scored = Math.max(1, calibFrames - CALIB_WARMUP);
+        const avg = calibSum / scored;
+        // Struggling → one step down, taken now while the canvas is still
+        // most of the way transparent, and then never revisited.
+        if (avg > SLOW_FRAME_MS && !renderer.atFloor) renderer.setQuality(MIN_QUALITY);
+      }
     };
+
     const sync = () => {
-      const shouldRun = intersecting && !pausedRef.current;
+      const shouldRun = intersecting && !pausedRef.current && !failed;
       if (shouldRun && !running) {
+        if (!ensureRenderer()) return;
         running = true;
+        lastRender = 0;
         raf = requestAnimationFrame(loop);
       } else if (!shouldRun && running) {
         running = false;
@@ -400,15 +520,22 @@ export function ShaderBackground({
     );
     io.observe(canvas);
 
-    const onResize = rafDebounce(resize);
+    const onResize = rafDebounce(() => {
+      if (!renderer) return;
+      // Keep whatever quality calibration settled on; just refit the buffer to
+      // the new CSS box. A viewport resize is a deliberate, one-off event, not
+      // the per-frame churn that caused the shimmering.
+      renderer.resize(canvas.clientWidth, canvas.clientHeight);
+    });
     window.addEventListener("resize", onResize);
     return () => {
+      disposed = true;
       window.removeEventListener("resize", onResize);
       onResize.cancel();
       cancelAnimationFrame(raf);
       io.disconnect();
       syncRef.current = null;
-      renderer.dispose();
+      renderer?.dispose();
     };
   }, []);
 
@@ -416,7 +543,10 @@ export function ShaderBackground({
     <canvas
       ref={canvasRef}
       className={`w-full h-full touch-none ${className}`}
-      style={{ background: "black" }}
+      // Faded in on the first drawn frame so the layer never pops in mid-load —
+      // and long enough that the one-shot resolution calibration (~520ms in)
+      // happens while the canvas is still well under half opacity.
+      style={{ background: "black", opacity: 0, transition: "opacity 1200ms ease-out" }}
     />
   );
 }

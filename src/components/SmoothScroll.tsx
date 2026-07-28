@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { setLenis } from "@/lib/lenis";
 
 /**
  * Drives the whole site with Lenis smooth scroll, synced to GSAP's ticker
@@ -18,6 +19,10 @@ export function SmoothScroll() {
     });
 
     lenis.on("scroll", ScrollTrigger.update);
+    // Published so components that intercept wheel events (the Spline scenes
+    // block the runtime's scroll-zoom) can forward the gesture back here
+    // instead of dropping the page onto native scroll — see @/lib/lenis.
+    setLenis(lenis);
 
     // Named so cleanup can actually remove it — removing `lenis.raf` (a
     // different function than this wrapper) would leak a ticker callback
@@ -49,6 +54,7 @@ export function SmoothScroll() {
     document.addEventListener("click", onClick);
 
     return () => {
+      setLenis(null);
       lenis.destroy();
       gsap.ticker.remove(onTick);
       document.removeEventListener("click", onClick);

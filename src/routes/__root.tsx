@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import i18n, { getStoredLanguage } from "../i18n";
 import { Toaster } from "@/components/ui/sonner";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import { INTRO_CURTAIN_SCRIPT } from "@/lib/boot";
 import {
   rootMeta,
   rootLinks,
@@ -104,6 +105,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       {
+        // Must run before the body paints — see INTRO_CURTAIN_SCRIPT.
+        children: INTRO_CURTAIN_SCRIPT,
+      },
+      {
         type: "application/ld+json",
         children: JSON.stringify(generateOrganizationSchema()),
       },
@@ -121,11 +126,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="it">
+    // This app hydrates the <html> element itself, and several things write to
+    // it before or during hydration: the pre-paint curtain class (see
+    // INTRO_CURTAIN_SCRIPT), Lenis's own classes, the intro's scroll lock.
+    // None of them are React's to reconcile, but React compares the attributes
+    // it rendered against what it finds — and a mismatch on the root element
+    // makes it throw the server tree away and re-render the whole shell, which
+    // surfaces as the root error component. Suppression here covers only this
+    // element's own attributes, not its descendants.
+    <html lang="it" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <Scripts />
       </body>

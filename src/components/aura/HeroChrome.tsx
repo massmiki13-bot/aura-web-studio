@@ -15,8 +15,14 @@ import * as THREE from "three";
  * - scroll progress arrives through a mutable ref, never through React state,
  * - every eased value uses exp() damping on the frame delta, so the motion
  *   feels identical at 30, 60 or 144Hz,
- * - the render loop is switched off (`frameloop="never"`) whenever the act
- *   is hidden behind the title card or the hero is scrolled out of view.
+ * - the sphere's tessellation is chosen from the device's own coarse
+ *   capabilities: every vertex costs six 3D simplex evaluations (the surface
+ *   normal is rebuilt from two displaced neighbours), so the vertex count is
+ *   by far the biggest lever on this scene's cost,
+ * - while the act is hidden the loop runs in `demand` mode, which still draws
+ *   exactly one frame when the canvas mounts. That single frame is what
+ *   compiles the shader and uploads the geometry — done during idle time
+ *   behind the title card instead of at the moment the act has to appear.
  */
 
 export type HeroChromeMotion = {
@@ -187,7 +193,30 @@ function clamp01(v: number) {
   return Math.min(1, Math.max(0, v));
 }
 
-function ChromeBlob({ motion }: { motion: React.MutableRefObject<HeroChromeMotion> }) {
+/**
+ * Icosahedron subdivision level. `detail` costs quadratically — 20·(d+1)²
+ * triangles, none of them indexed — and at the size this blob occupies on
+ * screen the silhouette stops improving well before the shading cost does.
+ * Phones and small/low-DPI screens (a decent proxy for a weak GPU) get the
+ * coarse tier; the normals are rebuilt per vertex, so even the coarse mesh
+ * shades smoothly rather than faceted.
+ */
+function pickDetail() {
+  if (typeof window === "undefined") return 24;
+  const coarse = window.matchMedia("(pointer: coarse)").matches;
+  const smallish = Math.min(window.innerWidth, window.innerHeight) < 700;
+  const cores = navigator.hardwareConcurrency ?? 4;
+  if (coarse || smallish || cores <= 4) return 16;
+  return 28;
+}
+
+function ChromeBlob({
+  motion,
+  detail,
+}: {
+  motion: React.MutableRefObject<HeroChromeMotion>;
+  detail: number;
+}) {
   const mesh = useRef<THREE.Mesh>(null!);
   const group = useRef<THREE.Group>(null!);
   const timeRef = useRef(0);
@@ -244,7 +273,7 @@ function ChromeBlob({ motion }: { motion: React.MutableRefObject<HeroChromeMotio
   return (
     <group ref={group}>
       <mesh ref={mesh} frustumCulled={false}>
-        <icosahedronGeometry args={[1.45, 48]} />
+        <icosahedronGeometry args={[1.45, detail]} />
         <shaderMaterial
           uniforms={uniforms}
           vertexShader={VERTEX_SHADER}
@@ -266,14 +295,35 @@ export function HeroChrome({
   motion: React.MutableRefObject<HeroChromeMotion>;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [enabled, setEnabled] = useState(false);
+  const [detail, setDetail] = useState(0);
   const [inView, setInView] = useState(true);
 
   // Client-only (avoids any SSR/hydration concern) and skipped entirely under
   // prefers-reduced-motion, like every other animated layer on the site.
+  // Building the geometry and compiling this shader is a long task, so it's
+  // taken during an idle slot rather than straight after hydration — the act
+  // it belongs to is three screens of scrolling away.
   useEffect(() => {
-    setEnabled(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let cancelled = false;
+    const mount = () => {
+      if (!cancelled) setDetail(pickDetail());
+    };
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(mount, { timeout: 2500 });
+      return () => {
+        cancelled = true;
+        window.cancelIdleCallback(id);
+      };
+    }
+    const id = window.setTimeout(mount, 600);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(id);
+    };
   }, []);
+
+  const enabled = detail > 0;
 
   // Stop rendering once the hero is scrolled well out of view.
   useEffect(() => {
@@ -293,12 +343,16 @@ export function HeroChrome({
       {enabled && (
         <Canvas
           camera={{ position: [0, 0, 6], fov: 42 }}
-          dpr={[1, 1.5]}
+          // Capped below the shader background's ceiling: this canvas is only
+          // ever seen behind large soft chrome, where extra pixels buy nothing.
+          dpr={[1, 1.35]}
           flat
-          frameloop={running ? "always" : "never"}
+          // "demand" (not "never") while hidden: R3F still renders the single
+          // frame that warms the pipeline, then stays idle until it's needed.
+          frameloop={running ? "always" : "demand"}
           gl={{ alpha: true, antialias: true, stencil: false, powerPreference: "high-performance" }}
         >
-          <ChromeBlob motion={motion} />
+          <ChromeBlob motion={motion} detail={detail} />
         </Canvas>
       )}
     </div>

@@ -5,9 +5,10 @@ import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
 import { SplineScene } from "./SplineScene";
 
-// Placeholder scene — swap with the eye-tracking robot Spline scene once it's
-// built (prompt provided separately).
-const ROBOT_SCENE_PLACEHOLDER = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
+// The eye-tracking robot. Passed explicitly because SplineScene's default is
+// the scene used by the full-screen Services section further up the page —
+// this row keeps its own.
+const ROBOT_SCENE = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
 
 function RowLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -27,10 +28,10 @@ function RowHeading({ children }: { children: React.ReactNode }) {
 
 /**
  * Three alternating service rows, each its own spotlit dark card — the
- * showcase for what we actually build. Row 1's right-hand panel is a
- * placeholder Spline scene standing in for the eye-tracking robot (to be
- * swapped once that scene exists). Rows 2 and 3 use lightweight custom
- * widgets (no WebGL) so the section doesn't turn into three heavy 3D canvases.
+ * showcase for what we actually build. Row 1's right-hand panel is the
+ * eye-tracking robot Spline scene. Rows 2 and 3 use lightweight custom
+ * widgets (no WebGL) so the section doesn't turn into three heavy 3D
+ * canvases.
  */
 export function ServicesShowcase() {
   const { t } = useTranslation();
@@ -43,9 +44,7 @@ export function ServicesShowcase() {
         <div className="flex flex-col md:flex-row h-full">
           <div className="flex-1 p-8 md:p-14 relative z-10 flex flex-col justify-center">
             <RowLabel>{t("services3d.label", "// Pagine ed esperienze 3D")}</RowLabel>
-            <RowHeading>
-              {t("services3d.title", "Ingegneria 3D, non decorazione.")}
-            </RowHeading>
+            <RowHeading>{t("services3d.title", "Ingegneria 3D, non decorazione.")}</RowHeading>
             <p className="text-white/55 max-w-md">
               {t(
                 "services3d.paragraph",
@@ -54,7 +53,7 @@ export function ServicesShowcase() {
             </p>
           </div>
           <div className="flex-1 relative min-h-[280px]">
-            <SplineScene scene={ROBOT_SCENE_PLACEHOLDER} className="w-full h-full" />
+            <SplineScene scene={ROBOT_SCENE} className="absolute inset-0" />
           </div>
         </div>
       </Card>
@@ -85,7 +84,9 @@ export function ServicesShowcase() {
         <div className="flex flex-col md:flex-row h-full">
           <div className="flex-1 p-8 md:p-14 relative z-10 flex flex-col justify-center">
             <RowLabel>{t("servicesPrivacy.label", "// Privacy & Cookie Compliance")}</RowLabel>
-            <RowHeading>{t("servicesPrivacy.title", "Conformità normativa, non un'opzione.")}</RowHeading>
+            <RowHeading>
+              {t("servicesPrivacy.title", "Conformità normativa, non un'opzione.")}
+            </RowHeading>
             <p className="text-white/55 max-w-md">
               {t(
                 "servicesPrivacy.paragraph",

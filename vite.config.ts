@@ -25,6 +25,7 @@ export default defineConfig({
     // instead discovers + optimizes it "on demand" on first request — which
     // races with that same request and 404s on the freshly-hashed dep file.
     // Pre-declaring it here makes it part of the initial optimize run instead.
+    // (Deep imports only — the drei barrel breaks esbuild pre-bundling here.)
     optimizeDeps: {
       include: ["@react-three/fiber", "@react-three/drei/core/SpotLight", "three"],
     },

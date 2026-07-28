@@ -1,181 +1,191 @@
 import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import type { Application } from "@splinetool/runtime";
+import { useNearViewport } from "@/hooks/use-near-viewport";
+import { CanvasBoundary } from "@/components/CanvasBoundary";
+import { getLenis } from "@/lib/lenis";
+import { onBootReady, onScrollIntent, useBootReady } from "@/lib/boot";
 
+// The Spline runtime + WebGL scene are heavy, so the component is code-split
+// and only imported the first time the host element nears the viewport.
 const Spline = lazy(() => import("@splinetool/react-spline"));
 
-type SplineSceneProps = {
-  scene: string;
+export type SplineSceneProps = {
+  /** The published scene URL (…/scene.splinecode). */
+  scene?: string;
   className?: string;
-  /** Skip the "wait until near viewport" lazy-load and mount immediately —
-   *  use for scenes that are already visible on first paint (e.g. the hero),
-   *  where waiting for an IntersectionObserver only delays the load. */
-  eager?: boolean;
-  /** Fires once the runtime has parsed the scene, with the live Application
-   *  instance — use it to drive camera zoom / object state from scroll. */
-  onSplineLoad?: (app: Application) => void;
 };
 
+// Fetching + evaluating the runtime chunk costs several MB and a long main-
+// thread task. Left to the scroll, that task lands in the middle of the
+// approach to the section and stalls a frame, so it's started during idle time
+// instead — by the time the section is near, mounting is just a canvas and the
+// scene download.
+//
+// The timing is gated twice, deliberately. First the boot gate (see @/lib/boot)
+// — this section's wrapper mounts on the very first render of a cold visit, and
+// warming from there put a multi-megabyte download and parse up against the
+// intro and the hero's shader compile. Then scroll intent: even after boot, the
+// visitor is looking at the hero, and this parse is a long main-thread task that
+// stutters the hero's background animation if it lands in that window. It waits
+// for the first scroll — still a full section of runway before this scene is
+// reached — with a long fallback for a visitor who lingers on the hero.
+let warmed = false;
+function warmSplineRuntime() {
+  if (warmed || typeof window === "undefined") return;
+  warmed = true;
+  const load = () => {
+    void import("@splinetool/react-spline");
+  };
+  const schedule = () => {
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(load, { timeout: 4000 });
+    } else {
+      window.setTimeout(load, 2000);
+    }
+  };
+  onBootReady(() => onScrollIntent(schedule, 8000));
+}
+
 /**
- * Loads a Spline 3D scene only once it's near the viewport, and never on
- * prefers-reduced-motion or narrow/mobile viewports — the runtime is heavy
- * (1-3MB+ of wasm/JS) and 3D here is a premium desktop accent, not a
- * requirement, per the site's performance-first design brief.
+ * Drop-in Spline scene wrapper. Replaces the procedural R3F coin (UnovaCoin):
+ * client-only (nothing mounts during SSR), lazy (the runtime + scene download
+ * only start once the element is near the viewport, via the same
+ * useNearViewport pattern the rest of the site's canvases use), and fades in
+ * once the scene has finished loading so there's no pop.
  *
- * Once loaded, the runtime's render loop is stopped (app.stop()) whenever the
- * scene is scrolled well out of view and resumed on return — otherwise every
- * Spline scene on the page keeps burning GPU frames forever, and with several
- * scenes mounted at once that alone can tank the whole site's frame rate.
+ * Under prefers-reduced-motion the scene still renders (Spline shows its
+ * initial pose) but nothing is force-loaded eagerly.
  */
-export function SplineScene({ scene, className, eager, onSplineLoad }: SplineSceneProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const appRef = useRef<Application | null>(null);
-  const inViewRef = useRef(true);
-  const [shouldLoad, setShouldLoad] = useState(false);
-  const [ready, setReady] = useState(false);
-
+export function SplineScene({
+  scene = "https://prod.spline.design/0CM1l3LnIBHakUny/scene.splinecode",
+  className,
+}: SplineSceneProps) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  // A full viewport of lead time: the canvas has to exist and the scene has to
+  // be decoding *before* the section starts arriving, otherwise that work is
+  // paid frame-by-frame during the scroll into it.
+  const { mounted: near, active } = useNearViewport(wrapRef, 900);
+  const booted = useBootReady();
+  // Even once booted and measured near, the scene's own mount forces the heavy
+  // runtime import (the Suspense child imports it regardless of the warm
+  // helper), so the mount itself waits for scroll intent — otherwise that parse
+  // lands while the visitor is still on the hero and stutters its animation.
+  // A page that loads already scrolled down skips the wait.
+  const [intent, setIntent] = useState(false);
   useEffect(() => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isMobile = window.innerWidth < 768;
-    if (reduceMotion || isMobile) return;
-
-    if (eager) {
-      setShouldLoad(true);
+    if (!booted) return;
+    if (window.scrollY > 50) {
+      setIntent(true);
       return;
     }
+    return onScrollIntent(() => setIntent(true), 8000);
+  }, [booted]);
+  const mounted = near && booted && intent;
+  const [loaded, setLoaded] = useState(false);
+  const appRef = useRef<Application | null>(null);
 
-    const el = ref.current;
-    if (!el) return;
+  useEffect(warmSplineRuntime, []);
 
-    // IntersectionObserver doesn't fire reliably for this component in this
-    // project's setup, so "near viewport" is instead a plain scroll-driven
-    // bounding-rect check (rAF-throttled) with a generous margin. It also
-    // runs once immediately on mount to catch elements already in view.
-    let ticking = false;
-    let done = false;
-    const margin = 400;
-    const check = () => {
-      ticking = false;
-      if (done || !ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      if (rect.bottom > -margin && rect.top < window.innerHeight + margin) {
-        done = true;
-        setShouldLoad(true);
-        window.removeEventListener("scroll", onScroll);
-        window.removeEventListener("resize", onScroll);
-      }
-    };
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(check);
-      }
-    };
-    check();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [eager]);
-
-  // Perf: stop the runtime's render loop while the scene is scrolled well out
-  // of view, resume when it comes back. Same scroll-driven rect check as the
-  // lazy-loader above (IntersectionObserver is unreliable here), throttled to
-  // one bounding-rect read per frame at most.
+  // Kill Spline's scroll-wheel zoom. Spline binds a native `wheel` listener on
+  // its canvas; a capture-phase listener on the wrapper fires first and stops
+  // the event before the canvas ever sees it.
+  //
+  // Stopping there is not enough on its own, though: Lenis drives the whole
+  // page and listens on `window` in the bubble phase, so a swallowed wheel
+  // event never reached it — the browser fell back to native scrolling while
+  // Lenis resynced from it, which is the jolt you felt scrolling into this
+  // section. The gesture is therefore re-dispatched straight at `window`,
+  // where Lenis picks it up with its own easing, multipliers and delta-mode
+  // normalisation. The synthetic event's path is just `window`, so it can't
+  // come back through this listener.
   useEffect(() => {
-    if (!shouldLoad) return;
+    const node = wrapRef.current;
+    if (!node || !mounted) return;
+    const onWheel = (e: WheelEvent) => {
+      e.stopPropagation();
+      const lenis = getLenis();
+      // No Lenis (prefers-reduced-motion) or a browser-zoom gesture: the
+      // native default is the right behaviour, so it's left untouched.
+      if (!lenis || e.ctrlKey) return;
+      e.preventDefault();
+      window.dispatchEvent(
+        new WheelEvent("wheel", {
+          deltaX: e.deltaX,
+          deltaY: e.deltaY,
+          deltaMode: e.deltaMode,
+          cancelable: true,
+        }),
+      );
+    };
+    node.addEventListener("wheel", onWheel, { capture: true, passive: false });
+    return () =>
+      node.removeEventListener("wheel", onWheel, { capture: true } as EventListenerOptions);
+  }, [mounted]);
 
-    const syncPlayState = () => {
-      const app = appRef.current;
-      if (!app) return;
-      if (inViewRef.current && app.isStopped) app.play();
-      else if (!inViewRef.current && !app.isStopped) app.stop();
-    };
-
-    let ticking = false;
-    const margin = 300;
-    const check = () => {
-      ticking = false;
-      if (!ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      inViewRef.current = rect.bottom > -margin && rect.top < window.innerHeight + margin;
-      syncPlayState();
-    };
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(check);
-      }
-    };
-    check();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [shouldLoad]);
-
+  // The scene keeps rendering (and running its controls) once mounted, and
+  // there is more than one of these on the page — parked far from the viewport
+  // that's frames taken from whatever the visitor is actually looking at.
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    // react-spline sizes its canvas once against the container's dimensions
-    // at load time. If that happens before the surrounding flex/grid layout
-    // has settled (e.g. inside a pinned full-bleed hero), the canvas is
-    // stuck small forever — force a resize whenever the container changes.
+    const app = appRef.current;
+    if (!app) return;
+    if (active) app.play();
+    else app.stop();
+  }, [active, loaded]);
+
+  // react-spline sizes its canvas against the container once, at load time. In
+  // a full-bleed section that only reaches its final size after the pinned
+  // layout above it settles, that leaves the canvas stuck at the wrong size —
+  // so the runtime is re-sized whenever the container's box changes.
+  useEffect(() => {
+    const node = wrapRef.current;
+    if (!node) return;
     const ro = new ResizeObserver((entries) => {
       const { width, height } = entries[0].contentRect;
       if (width > 0 && height > 0) appRef.current?.setSize(width, height);
     });
-    ro.observe(el);
+    ro.observe(node);
     return () => ro.disconnect();
   }, []);
 
   return (
-    <div ref={ref} className={className}>
-      {shouldLoad && (
-        <Suspense fallback={null}>
-          <Spline
-            scene={scene}
-            onLoad={(app) => {
-              appRef.current = app;
-              setReady(true);
-              // Scenes are published with "auto" pixel ratio, i.e. full
-              // devicePixelRatio — 4× the pixels on retina for fullscreen
-              // scenes, the single biggest GPU cost on hi-DPI machines.
-              // Cap it via the runtime's own (private but stable) renderer
-              // hook; if internals ever change this silently no-ops and the
-              // scene just renders at full resolution again.
-              try {
-                const renderer = (
-                  app as unknown as { _renderer?: { setPixelRatio?: (r: number) => void } }
-                )._renderer;
-                renderer?.setPixelRatio?.(Math.min(window.devicePixelRatio || 1, 1.5));
-              } catch {
-                /* keep full-res rendering */
-              }
-              onSplineLoad?.(app);
-              // A scene can finish loading after the visitor has already
-              // scrolled past it — don't leave it rendering into the void.
-              if (!inViewRef.current && !app.isStopped) app.stop();
-              // Force one resize pass right after load too, in case the
-              // container's final size wasn't reached until this frame.
-              requestAnimationFrame(() => {
-                if (ref.current) {
-                  const { width, height } = ref.current.getBoundingClientRect();
-                  if (width > 0 && height > 0) app.setSize(width, height);
+    <div ref={wrapRef} className={className} aria-hidden>
+      {mounted && (
+        <CanvasBoundary label="spline scene">
+          <Suspense fallback={null}>
+            <Spline
+              scene={scene}
+              onLoad={(app) => {
+                appRef.current = app;
+                // Scenes are published at "auto" pixel ratio, i.e. the full
+                // devicePixelRatio — four times the fragments on a hi-DPI
+                // screen, and for a section-sized canvas that is the single
+                // biggest reason frames start dropping while scrolling through
+                // it. Capped through the runtime's own (private but stable)
+                // renderer hook; if the internals ever move this silently
+                // no-ops and the scene just renders at full resolution again.
+                try {
+                  const renderer = (
+                    app as unknown as { _renderer?: { setPixelRatio?: (r: number) => void } }
+                  )._renderer;
+                  renderer?.setPixelRatio?.(Math.min(window.devicePixelRatio || 1, 1.5));
+                } catch {
+                  /* keep full-res rendering */
                 }
-              });
-            }}
-            style={{
-              width: "100%",
-              height: "100%",
-              opacity: ready ? 1 : 0,
-              transition: "opacity 1.2s ease",
-            }}
-          />
-        </Suspense>
+                // The container may not have reached its final size until this
+                // frame — one forced resize pass covers that.
+                const box = wrapRef.current?.getBoundingClientRect();
+                if (box && box.width > 0 && box.height > 0) app.setSize(box.width, box.height);
+                setLoaded(true);
+              }}
+              style={{
+                width: "100%",
+                height: "100%",
+                opacity: loaded ? 1 : 0,
+                transition: "opacity 600ms ease",
+              }}
+            />
+          </Suspense>
+        </CanvasBoundary>
       )}
     </div>
   );

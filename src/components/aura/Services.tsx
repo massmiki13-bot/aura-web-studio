@@ -1,30 +1,19 @@
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import type { SPEObject } from "@splinetool/runtime";
 import { ScrollTrigger } from "@/lib/gsap";
 import { SplineScene } from "./SplineScene";
 
-// Spline's CDN doesn't send cache-busting headers, so bump this version
-// query whenever the scene is updated in the editor.
-const COLUMNS_SCENE = "https://prod.spline.design/nFN858rUaWOUlNsP/scene.splinecode?v=6";
-
 /**
- * This scene is ours (owned in our Spline account): a row of columns with a
- * coin and two captions ("Text" and "Text 3"). The scene ships with an
- * empty/unused Timeline, so its internal interaction graph doesn't actually
- * drive anything on scroll — we drive the caption swap ourselves via the
- * documented runtime API (show()/hide() on the named objects) instead of
- * fighting an authoring setup we can't see into.
+ * "Cosa offriamo": a full-screen section whose entire space is the mouse-
+ * interactive Spline scene. Previously an R3F staircase with a procedural coin
+ * climbing it under two crossfading headlines; that set piece and its captions
+ * have been removed so the Spline animation stands on its own. Only the small
+ * section label and the approach reveal-fade remain.
  */
-const CROSSFADE_START = 0.4; // fraction of the pin where the caption crossfade begins
-const CROSSFADE_END = 0.62; // ...and where it finishes
 
 export function Services() {
   const sectionRef = useRef<HTMLElement>(null);
   const fadeInRef = useRef<HTMLDivElement>(null);
-  // Cached once on load — findObjectByName walks the whole scene graph, far
-  // too expensive to call twice per scrubbed scroll frame.
-  const captionsRef = useRef<{ first?: SPEObject; second?: SPEObject }>({});
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -34,9 +23,8 @@ export function Services() {
 
     // The scene brightens *while the section travels up into view* — after
     // the hero's dissolve, the viewport used to show a full screen-height of
-    // dead black before the pin started and only then faded in. Tying the
-    // reveal to the approach instead means the columns are already emerging
-    // as they arrive, and are fully lit the moment the pin engages.
+    // dead black before it faded in. Tying the reveal to the approach instead
+    // means the space is already emerging as it arrives.
     const reveal = ScrollTrigger.create({
       trigger: section,
       start: "top bottom",
@@ -44,8 +32,7 @@ export function Services() {
       scrub: true,
       onUpdate: (self) => {
         // Ease-out on the reveal: most of the brightening happens early in
-        // the approach, so the dark bridge from the hero reads as a beat,
-        // not a stretch.
+        // the approach, so the dark bridge from the hero reads as a beat.
         const v = Math.pow(1 - self.progress, 1.7);
         fadeIn.style.opacity = String(v);
         // Once fully transparent the overlay is also visibility:hidden, so
@@ -54,32 +41,8 @@ export function Services() {
       },
     });
 
-    const trigger = ScrollTrigger.create({
-      trigger: section,
-      start: "top top",
-      end: "+=180%",
-      // scrub: true — Lenis already smooths the scroll; see Hero for why a
-      // second smoothing layer here makes the fades lag the 3D scene.
-      scrub: true,
-      pin: true,
-      anticipatePin: 1,
-      onUpdate: (self) => {
-        // Cross-dissolve the two captions via their material's alpha rather
-        // than a hard hide()/show() cut — smooth, gradual handoff between
-        // the first and second line as the coin moves across the columns.
-        const t = Math.min(
-          Math.max((self.progress - CROSSFADE_START) / (CROSSFADE_END - CROSSFADE_START), 0),
-          1,
-        );
-        const { first, second } = captionsRef.current;
-        if (first?.material) first.material.alpha = 1 - t;
-        if (second?.material) second.material.alpha = t;
-      },
-    });
-
     return () => {
       reveal.kill();
-      trigger.kill();
     };
   }, []);
 
@@ -89,22 +52,14 @@ export function Services() {
       ref={sectionRef}
       className="relative h-screen w-full overflow-hidden bg-black"
     >
-      <SplineScene
-        scene={COLUMNS_SCENE}
-        className="absolute inset-0"
-        onSplineLoad={(app) => {
-          captionsRef.current = {
-            first: app.findObjectByName("Text"),
-            second: app.findObjectByName("Text 3"),
-          };
-          // Start on the first caption only — the second stays fully
-          // transparent (not hidden, so its alpha can be tweened) until the
-          // crossfade window is reached.
-          const second = captionsRef.current.second;
-          if (second?.material) second.material.alpha = 0;
-        }}
-      />
+      {/* The Spline scene fills the section and receives pointer events so it
+          reacts to the mouse the same way it does in the Spline editor. */}
+      <div className="absolute inset-0">
+        <SplineScene className="absolute inset-0" />
+      </div>
+
       <ServicesLabel />
+      {/* Reveal overlay stays click-through so it never blocks the scene. */}
       <div ref={fadeInRef} className="absolute inset-0 z-20 bg-black pointer-events-none" />
     </section>
   );
