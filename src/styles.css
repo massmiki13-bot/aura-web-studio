@@ -286,24 +286,6 @@
   }
 }
 
-@keyframes services-orb-breathe {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.06);
-  }
-}
-.services-orb-breathe {
-  animation: services-orb-breathe 6s ease-in-out infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .services-orb-breathe {
-    animation: none;
-  }
-}
-
 @keyframes spotlight {
   0% {
     opacity: 0;

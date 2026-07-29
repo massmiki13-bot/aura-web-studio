@@ -40,6 +40,24 @@ const resources = {
         label: "// Cosa offriamo",
         caption1: "Progettiamo esperienze digitali che lasciano il segno.",
         caption2: "Valore che cresce, progetto dopo progetto.",
+        mobileItems: [
+          {
+            title: "Design su misura",
+            desc: "Ogni sito nasce dalle tue esigenze, mai da un template.",
+          },
+          {
+            title: "Esperienze 3D",
+            desc: "Scene interattive integrate nel codice, non semplice decorazione.",
+          },
+          {
+            title: "SEO & Performance",
+            desc: "Architettura tecnica pensata per essere trovata e veloce.",
+          },
+          {
+            title: "Multilingua",
+            desc: "Il tuo sito parla la lingua dei tuoi clienti, ovunque siano.",
+          },
+        ],
       },
       projects: {
         selectedWork: "// Selected Work",
@@ -246,6 +264,24 @@ const resources = {
         label: "// Was wir bieten",
         caption1: "Wir gestalten digitale Erlebnisse, die Eindruck hinterlassen.",
         caption2: "Wert, der wächst — Projekt für Projekt.",
+        mobileItems: [
+          {
+            title: "Maßgeschneidertes Design",
+            desc: "Jede Website entsteht aus deinen Anforderungen, nie aus einer Vorlage.",
+          },
+          {
+            title: "3D-Erlebnisse",
+            desc: "Interaktive Szenen direkt im Code integriert, keine bloße Dekoration.",
+          },
+          {
+            title: "SEO & Performance",
+            desc: "Technische Architektur, damit du gefunden wirst und alles schnell läuft.",
+          },
+          {
+            title: "Mehrsprachig",
+            desc: "Deine Website spricht die Sprache deiner Kunden, wo auch immer sie sind.",
+          },
+        ],
       },
       projects: {
         selectedWork: "// Ausgewählte Arbeiten",
@@ -446,6 +482,24 @@ const resources = {
         label: "// What we offer",
         caption1: "We design digital experiences that leave a mark.",
         caption2: "Value that grows, project after project.",
+        mobileItems: [
+          {
+            title: "Custom Design",
+            desc: "Every site is built from your needs, never from a template.",
+          },
+          {
+            title: "3D Experiences",
+            desc: "Interactive scenes built into the code, not just decoration.",
+          },
+          {
+            title: "SEO & Performance",
+            desc: "Technical architecture built to be found and to be fast.",
+          },
+          {
+            title: "Multi-language",
+            desc: "Your site speaks your customers' language, wherever they are.",
+          },
+        ],
       },
       projects: {
         selectedWork: "// Selected Work",
@@ -652,6 +706,24 @@ const resources = {
         label: "// Qué ofrecemos",
         caption1: "Diseñamos experiencias digitales que dejan huella.",
         caption2: "Valor que crece, proyecto a proyecto.",
+        mobileItems: [
+          {
+            title: "Diseño a medida",
+            desc: "Cada sitio nace de tus necesidades, nunca de una plantilla.",
+          },
+          {
+            title: "Experiencias 3D",
+            desc: "Escenas interactivas integradas en el código, no solo decoración.",
+          },
+          {
+            title: "SEO y Rendimiento",
+            desc: "Arquitectura técnica pensada para ser encontrada y ser rápida.",
+          },
+          {
+            title: "Multiidioma",
+            desc: "Tu sitio habla el idioma de tus clientes, estén donde estén.",
+          },
+        ],
       },
       projects: {
         selectedWork: "// Trabajos seleccionados",

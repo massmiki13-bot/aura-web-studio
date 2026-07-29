@@ -78,7 +78,11 @@ export function Services() {
     <section
       id="services"
       ref={sectionRef}
-      className="relative h-screen w-full overflow-hidden bg-black"
+      // Desktop keeps the exact original box (h-screen, clipped) since it's
+      // a full-bleed backdrop for the Spline scene. Mobile switches to a
+      // flow container instead: the offer cards need to size to their own
+      // content, not be clipped to one screen height.
+      className="relative min-h-screen md:h-screen w-full overflow-visible md:overflow-hidden bg-black"
     >
       {/* The Spline scene fills the section and receives pointer events so it
           reacts to the mouse the same way it does in the Spline editor.
@@ -92,13 +96,13 @@ export function Services() {
         </div>
       )}
 
-      {/* Mobile-only static replacement: same chrome/metallic language as the
-          Hero and Intro (silver-on-black radial gradient, soft glow), just
-          without the WebGL scene — lighter to load and reads correctly at a
-          portrait aspect ratio instead of an off-centre crop of a wide scene. */}
+      {/* Mobile-only replacement: what used to be a Spline scene (badly
+          cropped at a portrait aspect ratio) is now a short list of concrete
+          offerings — in normal flow, not absolute, so the section grows to
+          fit it instead of clipping. */}
       {isDesktop !== true && (
-        <div className="absolute inset-0 md:hidden" aria-hidden>
-          <ServicesMobileVisual />
+        <div className="md:hidden pt-32 pb-16 px-6">
+          <ServicesMobileOffer />
         </div>
       )}
 
@@ -110,27 +114,32 @@ export function Services() {
 }
 
 /**
- * CSS-only "chrome orb" — a static stand-in for the desktop Spline scene.
- * Reuses the same silver-on-black material language as the Hero's chrome
- * blob and the Intro's genesis core (no new colour introduced), just without
- * a WebGL context: a centred radial-gradient sphere with a soft ambient glow
- * and a slow breathing scale, cheap enough to run happily on any phone.
+ * Mobile-only "what we offer" cards — replaces the desktop Spline scene,
+ * which is a decorative backdrop rather than actual content, with concrete,
+ * scannable offerings. Same solid-card language used elsewhere on the site
+ * (bg-neutral-950 + border, not the shared translucent .glass utility).
  */
-function ServicesMobileVisual() {
+function ServicesMobileOffer() {
+  const { t } = useTranslation();
+  const raw = t("services.mobileItems", { returnObjects: true });
+  // Defensive: a transient SSR/i18n resource-loading race must never crash
+  // the page — same class of bug already hit on /contact and /pricing this
+  // session (raw i18n resources not yet ready server-side right after an
+  // edit). Empty list just means the cards don't render, not a 500.
+  const items = Array.isArray(raw) ? (raw as { title: string; desc: string }[]) : [];
   return (
-    <div className="relative h-full w-full flex items-center justify-center overflow-hidden">
-      <div
-        className="absolute h-[70vw] w-[70vw] max-h-[380px] max-w-[380px] rounded-full blur-3xl opacity-60"
-        style={{ background: "var(--glow-cyan)" }}
-      />
-      <div
-        className="services-orb-breathe relative h-[46vw] w-[46vw] max-h-[240px] max-w-[240px] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle at 35% 30%, oklch(0.95 0 0) 0%, oklch(0.55 0.01 260) 55%, oklch(0.12 0.005 260) 100%)",
-          boxShadow: "0 0 90px 10px oklch(1 0 0 / 0.08)",
-        }}
-      />
+    <div className="relative z-10 space-y-4">
+      {items.map((item) => (
+        <div
+          key={item.title}
+          className="bg-neutral-950 rounded-2xl border border-white/10 p-5"
+        >
+          <h3 className="font-display text-lg font-semibold tracking-tight text-white mb-1.5">
+            {item.title}
+          </h3>
+          <p className="text-white/60 text-sm font-light leading-relaxed">{item.desc}</p>
+        </div>
+      ))}
     </div>
   );
 }
