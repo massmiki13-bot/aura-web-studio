@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { SITE_CONFIG } from "@/lib/seo";
 
 export function Contact() {
   const { t } = useTranslation();
@@ -167,6 +168,9 @@ export function Footer() {
             AURA<span className="text-primary">.</span>
           </a>
           <p className="text-white/60 normal-case tracking-normal text-xs">{t("footer.tagline")}</p>
+          <p className="text-white/30 normal-case tracking-normal text-xs">
+            {SITE_CONFIG.location.street}, {SITE_CONFIG.location.city} — {SITE_CONFIG.location.region}
+          </p>
         </div>
 
         {/* Explore */}
@@ -194,9 +198,9 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <a href="/#contact" className="hover:text-primary transition-colors">
+              <Link to="/contact" className="hover:text-primary transition-colors">
                 {t("nav.contact")}
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -206,9 +210,9 @@ export function Footer() {
           <p className="text-white/50">{t("footer.legal")}</p>
           <ul className="space-y-2.5">
             <li>
-              <a href="#" className="hover:text-primary transition-colors">
+              <Link to="/privacy" className="hover:text-primary transition-colors">
                 {t("footer.privacy")}
-              </a>
+              </Link>
             </li>
             <li>
               <a href="#" className="hover:text-primary transition-colors">
@@ -225,13 +229,24 @@ export function Footer() {
               <a href="#" className="hover:text-primary transition-colors">
                 GH
               </a>
+              <a
+                href={SITE_CONFIG.social.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-primary transition-colors"
+              >
+                LI
+              </a>
             </li>
           </ul>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto w-full mt-12 pt-6 border-t border-white/10 font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
-        © 2026 Aura Web Studio
+      <div className="max-w-7xl mx-auto w-full mt-12 pt-6 border-t border-white/10 font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30 flex flex-wrap items-center justify-between gap-3">
+        <span>© 2026 Aura Web Studio</span>
+        <Link to="/auth" className="hover:text-white/60 transition-colors">
+          Area personale
+        </Link>
       </div>
     </footer>
   );

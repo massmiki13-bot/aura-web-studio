@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowLeft, Phone, Mail, FileText } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Nav } from "@/components/aura/Nav";
 import { Footer } from "@/components/aura/Contact";
 import { pageSeo } from "@/lib/seo";
 import { SparklesCanvas } from "@/components/ui/sparkles-canvas";
+import { members } from "@/lib/team-members";
+import { TeamMemberCard } from "@/components/aura/TeamMemberCard";
 
 export const Route = createFileRoute("/team")({
   head: () =>
@@ -18,46 +20,6 @@ export const Route = createFileRoute("/team")({
     }),
   component: TeamPage,
 });
-
-// TODO: replace placeholder data with the real members' details and photos.
-const members = [
-  {
-    name: "Nome",
-    surname: "Cognome",
-    roleKey: "founder",
-    image: "/team/member-1.jpg",
-    phone: "+39 345 7454180",
-    pec: "nome.cognome@pec.it",
-    email: "nome@aurawebstudio.it",
-    accent: "oklch(0.85 0.005 260)",
-  },
-  {
-    name: "Nome",
-    surname: "Cognome",
-    roleKey: "developer",
-    image: "/team/member-2.jpg",
-    phone: "+39 000 0000000",
-    pec: "nome.cognome@pec.it",
-    email: "nome@aurawebstudio.it",
-    accent: "oklch(0.75 0.005 260)",
-  },
-  {
-    name: "Nome",
-    surname: "Cognome",
-    roleKey: "designer",
-    image: "/team/member-3.jpg",
-    phone: "+39 000 0000000",
-    pec: "nome.cognome@pec.it",
-    email: "nome@aurawebstudio.it",
-    accent: "oklch(0.65 0.005 260)",
-  },
-];
-
-const roles: Record<string, string> = {
-  founder: "Founder & Full-Stack",
-  developer: "Developer",
-  designer: "Design & Motion",
-};
 
 function TeamPage() {
   const { t } = useTranslation();
@@ -148,85 +110,7 @@ function TeamPage() {
         {/* Members Grid */}
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl">
           {members.map((m, index) => (
-            <motion.div
-              key={`${m.name}-${index}`}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 + index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              // Solid background instead of the shared translucent .glass
-              // utility — the page-wide sparkle/grid backdrop would
-              // otherwise show (blurred) through the cards.
-              className="relative bg-neutral-950 rounded-[2rem] p-8 flex flex-col overflow-hidden border border-white/10"
-            >
-              {/* Photo */}
-              <div
-                className="relative aspect-square w-full rounded-2xl overflow-hidden mb-6 border border-white/10"
-                style={{ background: `radial-gradient(circle at 50% 30%, ${m.accent}, #050108)` }}
-              >
-                <img
-                  src={m.image}
-                  alt={`${m.name} ${m.surname}`}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
-              </div>
-
-              {/* Name & Role */}
-              <h2 className="font-display text-2xl font-bold tracking-tight text-white">
-                {m.name} <span className="text-white/80">{m.surname}</span>
-              </h2>
-              <p
-                className="font-mono-spec text-[10px] uppercase tracking-widest mt-1 mb-6"
-                style={{ color: m.accent }}
-              >
-                {roles[m.roleKey]}
-              </p>
-
-              {/* Contact info */}
-              <ul className="space-y-3 mt-auto">
-                <li>
-                  <a
-                    href={`tel:${m.phone.replace(/\s/g, "")}`}
-                    className="flex items-center gap-3 text-white/70 hover:text-primary transition-colors group"
-                  >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/5 border border-white/10 group-hover:border-primary/40">
-                      <Phone className="h-3.5 w-3.5" />
-                    </span>
-                    <span className="text-sm font-light">{m.phone}</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href={`mailto:${m.email}`}
-                    className="flex items-center gap-3 text-white/70 hover:text-primary transition-colors group"
-                  >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/5 border border-white/10 group-hover:border-primary/40">
-                      <Mail className="h-3.5 w-3.5" />
-                    </span>
-                    <span className="text-sm font-light break-all">{m.email}</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href={`mailto:${m.pec}`}
-                    className="flex items-center gap-3 text-white/70 hover:text-primary transition-colors group"
-                  >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/5 border border-white/10 group-hover:border-primary/40">
-                      <FileText className="h-3.5 w-3.5" />
-                    </span>
-                    <span className="text-sm font-light break-all">
-                      <span className="text-white/40">{t("team.pec")}: </span>
-                      {m.pec}
-                    </span>
-                  </a>
-                </li>
-              </ul>
-            </motion.div>
+            <TeamMemberCard key={`${m.name}-${index}`} member={m} index={index} />
           ))}
         </div>
       </div>

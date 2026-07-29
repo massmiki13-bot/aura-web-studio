@@ -49,16 +49,18 @@ export const SITE_CONFIG = {
   author: "Aura Web Studio",
   company: "Aura Web Studio",
   companyEmail: "info@aura-webstudio.com",
-  phone: "+39 345 7454180",
+  phone: "+39 334 1924697",
   social: {
     instagram: "https://instagram.com/aurawebstudio",
     behance: "https://behance.net/aurawebstudio",
     github: "https://github.com/aurawebstudio",
+    linkedin: "https://www.linkedin.com/in/michele-massardi-a72a38425/",
   },
   location: {
     country: "IT",
     city: "Bolzano",
     region: "Trentino-Alto Adige",
+    street: "Via Maso della Pieve",
   },
   locale: "it_IT",
   alternateLocales: ["en_US", "de_DE", "es_ES"],
@@ -229,6 +231,7 @@ export function generateOrganizationSchema() {
       addressCountry: SITE_CONFIG.location.country,
       addressRegion: SITE_CONFIG.location.region,
       addressLocality: SITE_CONFIG.location.city,
+      streetAddress: SITE_CONFIG.location.street,
     },
     areaServed: [
       { "@type": "Country", name: "Italy" },
@@ -242,7 +245,12 @@ export function generateOrganizationSchema() {
       email: SITE_CONFIG.companyEmail,
       availableLanguage: ["it", "en", "de", "es"],
     },
-    sameAs: [SITE_CONFIG.social.instagram, SITE_CONFIG.social.behance, SITE_CONFIG.social.github],
+    sameAs: [
+      SITE_CONFIG.social.instagram,
+      SITE_CONFIG.social.behance,
+      SITE_CONFIG.social.github,
+      SITE_CONFIG.social.linkedin,
+    ],
     knowsLanguage: ["it", "en", "de", "es"],
     openingHoursSpecification: [
       {

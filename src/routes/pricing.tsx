@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Check, ArrowLeft } from "lucide-react";
@@ -7,6 +8,7 @@ import { Nav } from "@/components/aura/Nav";
 import { pageSeo } from "@/lib/seo";
 import { SparklesCanvas } from "@/components/ui/sparkles-canvas";
 import { WordRevealHeading } from "@/components/ui/word-reveal-heading";
+import { PlanRequestModal, type PlanRequestTarget } from "@/components/aura/PlanRequestModal";
 
 export const Route = createFileRoute("/pricing")({
   head: () =>
@@ -20,16 +22,18 @@ export const Route = createFileRoute("/pricing")({
 });
 
 const planConfig = [
-  { key: "base", price: "€750,00", popular: false },
-  { key: "professional", price: "€2000,00", popular: true },
-  { key: "premium", price: "€5000,00", popular: false },
+  { key: "base", price: "€750,00", priceValue: 750, popular: false },
+  { key: "professional", price: "€2000,00", priceValue: 2000, popular: true },
+  { key: "premium", price: "€5000,00", priceValue: 5000, popular: false },
 ] as const;
 
 function PricingPage() {
   const { t } = useTranslation();
+  const [requestedPlan, setRequestedPlan] = useState<PlanRequestTarget | null>(null);
 
   const plans = planConfig.map((p) => ({
     price: p.price,
+    priceValue: p.priceValue,
     popular: p.popular,
     period: t("pricing.period"),
     name: t(`pricing.${p.key}.name`),
@@ -138,7 +142,7 @@ function PricingPage() {
                   )}
                 </div>
 
-                <div className="mb-4 flex items-baseline gap-1">
+                <div className="mb-1 flex items-baseline gap-1">
                   <span className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-white">
                     {plan.price}
                   </span>
@@ -146,6 +150,13 @@ function PricingPage() {
                     {plan.period}
                   </span>
                 </div>
+
+                {/* Surfaced next to the price itself (not only in the
+                    maintenance card further down the page) so nobody forms a
+                    "total cost" expectation before learning about it. */}
+                <p className="mb-4 font-mono-spec text-[10px] uppercase tracking-widest text-primary/80">
+                  {t("pricing.plusMaintenance")}
+                </p>
 
                 <p className="text-white/50 text-xs sm:text-sm font-light min-h-10 leading-relaxed">
                   {plan.desc}
@@ -156,6 +167,13 @@ function PricingPage() {
                   {plan.popular ? (
                     <button
                       type="button"
+                      onClick={() =>
+                        setRequestedPlan({
+                          name: plan.name,
+                          price: plan.price,
+                          priceValue: plan.priceValue,
+                        })
+                      }
                       className="w-full cursor-pointer hover:shadow-(--shadow-neon) transition-shadow duration-300 rounded-full py-4 px-6 font-mono-spec text-xs uppercase tracking-[0.3em] text-black text-center transition-opacity"
                       style={{
                         background: "var(--gradient-aura)",
@@ -167,6 +185,13 @@ function PricingPage() {
                   ) : (
                     <button
                       type="button"
+                      onClick={() =>
+                        setRequestedPlan({
+                          name: plan.name,
+                          price: plan.price,
+                          priceValue: plan.priceValue,
+                        })
+                      }
                       className="w-full cursor-pointer rounded-full bg-white/[0.02] hover:bg-white/[0.06] border border-white/15 hover:border-white/30 py-3.5 px-4 font-mono-spec text-[11px] uppercase tracking-widest text-white text-center font-medium transition-all hover:scale-[1.02] active:scale-95"
                     >
                       {plan.buttonText}
@@ -261,6 +286,8 @@ function PricingPage() {
       </div>
 
       <Footer />
+
+      <PlanRequestModal plan={requestedPlan} onOpenChange={(open) => !open && setRequestedPlan(null)} />
     </main>
   );
 }

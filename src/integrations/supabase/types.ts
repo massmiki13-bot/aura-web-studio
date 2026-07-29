@@ -38,6 +38,39 @@ export type Database = {
         }
         Relationships: []
       }
+      plan_requests: {
+        Row: {
+          contact_email: string
+          created_at: string
+          full_name: string
+          id: string
+          message: string
+          phone: string
+          plan: string
+          requested_price: number | null
+        }
+        Insert: {
+          contact_email: string
+          created_at?: string
+          full_name: string
+          id?: string
+          message: string
+          phone: string
+          plan: string
+          requested_price?: number | null
+        }
+        Update: {
+          contact_email?: string
+          created_at?: string
+          full_name?: string
+          id?: string
+          message?: string
+          phone?: string
+          plan?: string
+          requested_price?: number | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string

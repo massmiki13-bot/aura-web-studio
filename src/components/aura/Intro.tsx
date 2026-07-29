@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useTranslation } from "react-i18next";
 import * as THREE from "three";
@@ -782,7 +783,14 @@ export function Intro() {
 
   if (stage !== "playing") return null;
 
-  return (
+  // Ported to <body> rather than rendered inline: this overlay is a sibling of
+  // <Nav/> under the same <main>, and its own timed unmount (~3s in, or on
+  // skip) raced the mobile nav's AnimatePresence overlay mounting in the same
+  // commit — React would occasionally lose track of which sibling DOM node to
+  // insert before and throw insertBefore/NotFoundError, crashing the whole
+  // page (only reachable on "/", the one route that renders this at all). A
+  // portal removes it from that shared reconciliation parent entirely.
+  return createPortal(
     <div
       ref={rootRef}
       className="fixed inset-0 z-[100] bg-black overflow-hidden"
@@ -868,6 +876,7 @@ export function Intro() {
       >
         {t("intro.skip", "Salta")} →
       </button>
-    </div>
+    </div>,
+    document.body,
   );
 }
