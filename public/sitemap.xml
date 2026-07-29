@@ -2,18 +2,28 @@
 <!-- NOTE: update the domain in each <loc> if the production domain changes. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://showoff-project.vercel.app/</loc>
+    <loc>https://aura-webstudio.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://showoff-project.vercel.app/pricing</loc>
+    <loc>https://aura-webstudio.com/pricing</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://showoff-project.vercel.app/team</loc>
+    <loc>https://aura-webstudio.com/team</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aura-webstudio.com/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aura-webstudio.com/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 </urlset>
