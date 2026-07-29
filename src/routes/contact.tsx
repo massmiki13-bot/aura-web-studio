@@ -27,10 +27,10 @@ const studioDots = [
 export const Route = createFileRoute("/contact")({
   head: () =>
     pageSeo({
-      title: "Contatti",
+      title: "Contatti — Agenzia Web Bolzano",
       path: "/contact",
       description:
-        "Contatta direttamente i fondatori di Aura Web Studio: telefono, email e PEC. Disponibili h24 da remoto e sempre pronti per un incontro dal vivo.",
+        "Contatta l'agenzia web di Bolzano Aura Web Studio: telefono, email e PEC. Disponibili h24 da remoto e sempre pronti per un incontro dal vivo.",
     }),
   component: ContactPage,
 });

@@ -14,6 +14,7 @@ type Project = {
   desc: string;
   domain: string | null;
   image: string | null;
+  alt: string;
   bg: string;
 };
 
@@ -25,7 +26,8 @@ const projects: Project[] = [
     descKey: "01",
     desc: "Esperienza dark mode per uno shisha bar di lusso, con accenti dorati luminosi e overlay glassmorphici.",
     domain: "https://la-cave-eosin.vercel.app",
-    image: "/projects/la_cave.png",
+    image: "/projects/la_cave.jpg",
+    alt: "Sito web per shisha bar di lusso La Cave, dark mode con dettagli dorati — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 30% 30%, oklch(0.22 0.02 305) 0%, #050108 60%)",
   },
   {
@@ -36,6 +38,7 @@ const projects: Project[] = [
     desc: "Estetica street-pop vibrante guidata da effetti di scroll dinamici e particelle interattive.",
     domain: "https://triclinium-cotoletteria.vercel.app",
     image: "/projects/triclinium.png",
+    alt: "Sito web ristorante Triclinium Cotoletteria con animazioni scroll dinamiche — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 70% 40%, oklch(0.25 0.03 95) 0%, #0a0700 70%)",
   },
   {
@@ -45,7 +48,8 @@ const projects: Project[] = [
     descKey: "03",
     desc: "Layout di lusso dark-slate impreziosito da fluide piastrelle in parallax.",
     domain: "https://aldo-s-glass-wine-bar.vercel.app",
-    image: "/projects/enoteca_da_aldo.png",
+    image: "/projects/enoteca_da_aldo.jpg",
+    alt: "Sito web enoteca di lusso Enoteca da Aldo con effetto parallax — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 50% 60%, oklch(0.2 0.01 250) 0%, #02040a 70%)",
   },
   {
@@ -55,7 +59,8 @@ const projects: Project[] = [
     descKey: "04",
     desc: "Ristorante fusion italo-indiano su un dark mode editoriale con accenti premium.",
     domain: "https://namastepiccolaitalia.it",
-    image: "/projects/piccola_italia.png",
+    image: "/projects/piccola_italia.jpg",
+    alt: "Sito web ristorante fusion italo-indiano Piccola Italia — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 20% 70%, oklch(0.25 0.03 25) 0%, #080203 70%)",
   },
   {
@@ -66,6 +71,7 @@ const projects: Project[] = [
     desc: "Osteria storica a Bolzano: cucina italiana autentica, prenotazione tavolo e menu digitale.",
     domain: "https://osteria-da-marco.vercel.app",
     image: "/projects/osteria_da_marco.jpg",
+    alt: "Sito web osteria storica a Bolzano, Osteria da Marco, con prenotazione tavolo online — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 40% 40%, oklch(0.22 0.03 60) 0%, #0a0602 70%)",
   },
   {
@@ -76,6 +82,7 @@ const projects: Project[] = [
     desc: "Bar & restaurant nel cuore di Merano: colazione, business lunch e cocktail d'autore.",
     domain: "https://central-merano.vercel.app",
     image: "/projects/central_merano.jpg",
+    alt: "Sito web bar e ristorante Central nel centro di Merano — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 60% 50%, oklch(0.2 0.02 40) 0%, #060402 70%)",
   },
   {
@@ -85,7 +92,8 @@ const projects: Project[] = [
     descKey: "05",
     desc: "Vetrina per beauty studio in light mode elegante con branding cosmetico custom.",
     domain: "https://s-nail-beauty-studio.vercel.app",
-    image: "/projects/snail&saloon.png",
+    image: "/projects/snail_saloon.jpg",
+    alt: "Sito web beauty studio S.nail & Saloon in light mode elegante — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 60% 30%, oklch(0.2 0.02 340) 0%, #060106 65%)",
   },
   {
@@ -95,7 +103,8 @@ const projects: Project[] = [
     descKey: "06",
     desc: "Interfaccia wellness raffinata con flusso di prenotazione intuitivo.",
     domain: "https://be-beauty-wellness.vercel.app",
-    image: "/projects/bebeauty_saloon.png",
+    image: "/projects/bebeauty_saloon.jpg",
+    alt: "Sito web centro wellness Be Beauty con flusso di prenotazione online — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 40% 50%, oklch(0.2 0.02 180) 0%, #00060a 70%)",
   },
   {
@@ -106,6 +115,7 @@ const projects: Project[] = [
     desc: "Barbershop moderno con prenotazione online e galleria tagli.",
     domain: "https://sahal-barber-next.vercel.app",
     image: "/projects/sahal_barber.jpg",
+    alt: "Sito web barbershop moderno Sahal Barber Studio con prenotazione online e galleria tagli — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 50% 40%, oklch(0.2 0.02 210) 0%, #04060a 70%)",
   },
   {
@@ -116,6 +126,7 @@ const projects: Project[] = [
     desc: "Salone di parrucchieri con presentazione servizi e team.",
     domain: "https://lala-hair-next.vercel.app",
     image: "/projects/lala_hair.jpg",
+    alt: "Sito web salone di parrucchieri Lala Hair Studio con presentazione servizi e team — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 55% 45%, oklch(0.2 0.02 320) 0%, #0a0208 70%)",
   },
   {
@@ -126,6 +137,7 @@ const projects: Project[] = [
     desc: "Concessionaria auto in stile Ferrari con configuratore 3D a hotspot.",
     domain: "https://nils-automotive.vercel.app",
     image: "/projects/nils_automotive.jpg",
+    alt: "Sito web concessionaria auto Nils Automotive in stile Ferrari con configuratore 3D — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 45% 35%, oklch(0.2 0.03 25) 0%, #0a0100 70%)",
   },
   {
@@ -136,6 +148,7 @@ const projects: Project[] = [
     desc: "Officina meccanica dal 1947: prenotazione tagliandi e servizi.",
     domain: "https://foppa-next.vercel.app",
     image: "/projects/autoservice_foppa.jpg",
+    alt: "Sito web officina meccanica Autoservice Foppa dal 1947 con prenotazione tagliandi — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 35% 55%, oklch(0.2 0.02 230) 0%, #02040a 70%)",
   },
   {
@@ -145,7 +158,8 @@ const projects: Project[] = [
     descKey: "07",
     desc: "Shop online e portfolio per modding FiveM con griglie prodotto interattive.",
     domain: "https://www.markz3d.com",
-    image: "/projects/markz3d.png",
+    image: "/projects/markz3d.jpg",
+    alt: "Sito web e shop online Markz3D per modding FiveM con griglie prodotto interattive — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 30% 60%, oklch(0.2 0.02 150) 0%, #02070a 70%)",
   },
   {
@@ -156,6 +170,7 @@ const projects: Project[] = [
     desc: "Florovivaismo professionale dal 1979: catalogo prodotti, percorsi hobbisti/professionisti e richiesta preventivo.",
     domain: "https://manna-italia.vercel.app",
     image: "/projects/manna_italia.jpg",
+    alt: "Sito web florovivaismo professionale Manna Italia dal 1979 con catalogo prodotti — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 35% 40%, oklch(0.24 0.04 145) 0%, #010a04 70%)",
   },
   {
@@ -166,6 +181,7 @@ const projects: Project[] = [
     desc: "Resort 3 stelle in Val di Non: centro wellness, offerte stagionali e vista sulle Dolomiti di Brenta.",
     domain: "https://hotel-rosa.vercel.app/it",
     image: "/projects/hotel_rosa.jpg",
+    alt: "Sito web resort Hotel Rosa in Val di Non con centro wellness e vista sulle Dolomiti di Brenta — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 55% 35%, oklch(0.25 0.03 350) 0%, #0a0206 70%)",
   },
   {
@@ -176,6 +192,7 @@ const projects: Project[] = [
     desc: "Camping 5 stelle & Charme Hotel a Lana: piscine, SPA e cucina italiana in un'esperienza editoriale.",
     domain: "https://schlosshof-resort.vercel.app/it",
     image: "/projects/schlosshof_resort.jpg",
+    alt: "Sito web camping 5 stelle e charme hotel Schlosshof Resort a Lana con piscine e SPA — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 45% 45%, oklch(0.22 0.03 230) 0%, #020508 70%)",
   },
   {
@@ -186,6 +203,7 @@ const projects: Project[] = [
     desc: "Landing page dark mode ad alta conversione per un percorso di trading e mentorship, con accenti dorati e CTA marcate.",
     domain: "https://dauda-ai.vercel.app",
     image: "/projects/dauda_ai.jpg",
+    alt: "Landing page dark mode ad alta conversione Dauda AI per trading e mentorship — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 65% 30%, oklch(0.22 0.04 85) 0%, #0a0700 70%)",
   },
   {
@@ -196,6 +214,7 @@ const projects: Project[] = [
     desc: "Impiantistica elettrica e fotovoltaico in Alto Adige: hero fotovoltaico d'impatto e presentazione servizi aziendali.",
     domain: "https://pernthaler.vercel.app",
     image: "/projects/pernthaler.jpg",
+    alt: "Sito web impiantistica elettrica e fotovoltaico Pernthaler in Alto Adige — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 40% 50%, oklch(0.22 0.03 240) 0%, #020409 70%)",
   },
 ];
@@ -226,7 +245,7 @@ function ProjectCard({ project }: { project: Project }) {
       {project.image && (
         <img
           src={project.image}
-          alt={project.name}
+          alt={project.alt}
           draggable={false}
           loading="lazy"
           decoding="async"

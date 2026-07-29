@@ -28,22 +28,26 @@ export const SITE_CONFIG = {
   baseUrl: RAW_BASE_URL.replace(/\/+$/, ""),
   name: "Aura Web Studio",
   /** Title shown for the homepage and used as the brand suffix on subpages. */
-  defaultTitle: "Aura Web Studio — Creative Digital Solutions Made in Italy",
+  defaultTitle: "Aura Web Studio — Web Design a Bolzano & Sviluppo Siti Web Premium",
   titleSuffix: "Aura Web Studio",
   description:
-    "Studio creativo di web design e sviluppo. Realizziamo esperienze digitali cinematiche per hospitality, ristoranti e brand lifestyle italiani con React, Framer Motion e tecnologie web all'avanguardia.",
-  shortDescription: "Web design & sviluppo creativo per brand italiani dell'hospitality",
+    "Agenzia di web design a Bolzano: sviluppiamo siti web professionali ed esperienze digitali cinematiche per hospitality, ristoranti e brand di lusso, in Alto Adige e in tutta Italia.",
+  shortDescription: "Web design a Bolzano — agenzia digitale premium per hospitality e brand italiani",
   keywords: [
+    "web design Bolzano",
+    "sviluppo siti web Alto Adige",
+    "agenzia web design premium",
+    "prezzi siti web professionali Bolzano",
+    "agenzia web Bolzano contatti",
     "web design",
     "sviluppo web",
     "agenzia digitale",
-    "React",
-    "Framer Motion",
     "siti per ristoranti",
     "siti hospitality",
     "web design di lusso",
     "esperienze web cinematiche",
-    "Bolzano",
+    "React",
+    "Framer Motion",
     "Italia",
   ],
   author: "Aura Web Studio",
@@ -65,7 +69,7 @@ export const SITE_CONFIG = {
   locale: "it_IT",
   alternateLocales: ["en_US", "de_DE", "es_ES"],
   ogImagePath: "/og-image.png",
-  ogImageAlt: "Aura Web Studio — Creative Digital Solutions",
+  ogImageAlt: "Aura Web Studio — Web Design a Bolzano",
   ogImageWidth: 1200,
   ogImageHeight: 630,
   /** Search Console verification tokens — leave empty to omit the tag entirely. */
@@ -252,6 +256,44 @@ export function generateOrganizationSchema() {
       SITE_CONFIG.social.linkedin,
     ],
     knowsLanguage: ["it", "en", "de", "es"],
+    knowsAbout: [
+      "Web design",
+      "Sviluppo siti web",
+      "Esperienze web 3D e interattive",
+      "Animazioni e motion design",
+      "Siti web per hospitality e ristorazione",
+      "Ottimizzazione SEO",
+    ],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Servizi Aura Web Studio",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Web design su misura",
+            description: "Progettazione e design di siti web editoriali e cinematici per brand italiani.",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Sviluppo siti web",
+            description: "Sviluppo front-end con React, animazioni Framer Motion ed esperienze 3D interattive.",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Siti web per hospitality e ristorazione",
+            description: "Siti su misura per hotel, ristoranti e brand lifestyle in Alto Adige e in Italia.",
+          },
+        },
+      ],
+    },
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",

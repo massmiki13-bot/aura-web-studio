@@ -13,10 +13,10 @@ import { PlanRequestModal, type PlanRequestTarget } from "@/components/aura/Plan
 export const Route = createFileRoute("/pricing")({
   head: () =>
     pageSeo({
-      title: "Piani e Prezzi",
+      title: "Prezzi Siti Web Professionali Bolzano",
       path: "/pricing",
       description:
-        "Scegli il piano ideale per portare il tuo business online. Tariffe trasparenti per landing page, siti vetrina ed e-commerce custom.",
+        "Prezzi trasparenti per siti web professionali a Bolzano: landing page, siti vetrina ed e-commerce custom. Scegli il piano ideale per portare il tuo business online.",
     }),
   component: PricingPage,
 });

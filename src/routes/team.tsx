@@ -12,11 +12,11 @@ import { TeamMemberCard } from "@/components/aura/TeamMemberCard";
 export const Route = createFileRoute("/team")({
   head: () =>
     pageSeo({
-      title: "Team",
+      title: "Team — Agenzia Web Design Bolzano",
       path: "/team",
       type: "profile",
       description:
-        "Le persone dietro ad Aura Web Studio. Conosci il trio e contattaci direttamente: telefono, PEC ed email.",
+        "Le persone dietro Aura Web Studio, agenzia di web design a Bolzano. Conosci il trio e contattaci direttamente: telefono, PEC ed email.",
     }),
   component: TeamPage,
 });

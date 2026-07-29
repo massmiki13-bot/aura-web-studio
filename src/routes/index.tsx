@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
     pageSeo({
       path: "/",
       description:
-        "Studio creativo di web design e sviluppo: esperienze web cinematiche, animazioni a 60fps e design ad alto impatto per brand italiani dell'hospitality e del lifestyle.",
+        "Web design a Bolzano e sviluppo siti web in Alto Adige: esperienze digitali cinematiche, animazioni a 60fps e design ad alto impatto per brand italiani dell'hospitality e del lifestyle.",
     }),
   component: Index,
 });

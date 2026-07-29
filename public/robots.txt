@@ -1,9 +1,10 @@
 # Aura Web Studio — crawling instructions
 # NOTE: update the Sitemap URL below if the production domain changes.
+# /admin and /auth are intentionally NOT disallowed here: they already carry a
+# per-page noindex meta tag (see src/lib/seo.ts pageSeo()), and Google can only
+# honor that tag if it's allowed to crawl the page in the first place.
 
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /auth
 
 Sitemap: https://aura-webstudio.com/sitemap.xml
