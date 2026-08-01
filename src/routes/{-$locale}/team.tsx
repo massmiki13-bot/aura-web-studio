@@ -4,25 +4,46 @@ import { ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Nav } from "@/components/aura/Nav";
 import { Footer } from "@/components/aura/Contact";
-import { pageSeo } from "@/lib/seo";
+import { pageSeo, localizedPath, type Locale } from "@/lib/seo";
 import { SparklesCanvas } from "@/components/ui/sparkles-canvas";
 import { members } from "@/lib/team-members";
 import { TeamMemberCard } from "@/components/aura/TeamMemberCard";
 
-export const Route = createFileRoute("/team")({
-  head: () =>
-    pageSeo({
-      title: "Team — Agenzia Web Design Bolzano",
-      path: "/team",
-      type: "profile",
-      description:
-        "Le persone dietro Aura Web Studio, agenzia di web design a Bolzano. Conosci il trio e contattaci direttamente: telefono, PEC ed email.",
-    }),
+const TEAM_SEO: Record<Locale, { title: string; description: string }> = {
+  it: {
+    title: "Team — Agenzia Web Design Bolzano",
+    description:
+      "Le persone dietro Aura Web Studio, agenzia di web design a Bolzano. Conosci il trio e contattaci direttamente: telefono, PEC ed email.",
+  },
+  de: {
+    title: "Team — Webdesign-Agentur Bozen",
+    description:
+      "Die Menschen hinter Aura Web Studio, Webdesign-Agentur in Bozen. Lerne das Trio kennen und kontaktiere uns direkt: Telefon, PEC und E-Mail.",
+  },
+  en: {
+    title: "Team — Web Design Agency Bolzano",
+    description:
+      "The people behind Aura Web Studio, web design agency in Bolzano. Meet the trio and get in touch directly: phone, certified email and email.",
+  },
+  es: {
+    title: "Equipo — Agencia de Diseño Web Bolzano",
+    description:
+      "Las personas detrás de Aura Web Studio, agencia de diseño web en Bolzano. Conoce al trío y contáctanos directamente: teléfono, PEC y email.",
+  },
+};
+
+export const Route = createFileRoute("/{-$locale}/team")({
+  head: ({ params }) => {
+    const locale = (params.locale as Locale | undefined) ?? "it";
+    return pageSeo({ subPath: "team", locale, type: "profile", ...TEAM_SEO[locale] });
+  },
   component: TeamPage,
 });
 
 function TeamPage() {
   const { t } = useTranslation();
+  const { locale } = Route.useParams();
+  const homeHref = localizedPath((locale as Locale | undefined) ?? "it", "");
 
   return (
     <main className="min-h-screen bg-black text-white relative flex flex-col justify-between overflow-hidden">
@@ -49,12 +70,16 @@ function TeamPage() {
         className="absolute inset-0 overflow-hidden pointer-events-none z-0"
         style={{
           maskImage: "linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)",
-          WebkitMaskImage: "linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)",
         }}
       >
         <div
           className="absolute inset-0"
-          style={{ background: "radial-gradient(60% 45% at 50% 12%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 45%, transparent 75%)" }}
+          style={{
+            background:
+              "radial-gradient(60% 45% at 50% 12%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 45%, transparent 75%)",
+          }}
         />
         <div
           className="absolute inset-0 opacity-50"
@@ -71,7 +96,7 @@ function TeamPage() {
         {/* Back Button */}
         <div className="mb-12">
           <Link
-            to="/"
+            to={homeHref}
             className="inline-flex items-center gap-2 font-mono-spec text-[10px] uppercase tracking-[0.25em] text-white/50 hover:text-primary transition-colors cursor-pointer"
           >
             <ArrowLeft className="h-3 w-3" /> {t("team.backHome")}

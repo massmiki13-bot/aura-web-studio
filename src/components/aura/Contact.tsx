@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { SITE_CONFIG } from "@/lib/seo";
+import { SITE_CONFIG, localizedPath } from "@/lib/seo";
+import { getLocaleFromPathname } from "@/i18n";
 
 export function Contact() {
   const { t } = useTranslation();
+  const locale = getLocaleFromPathname(useRouterState({ select: (s) => s.location.pathname }));
   const [focus, setFocus] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -69,7 +71,7 @@ export function Contact() {
             {t("contact.paragraph")}
           </p>
           <Link
-            to="/team"
+            to={localizedPath(locale, "team")}
             className="glass rounded-2xl p-5 flex items-center gap-4 group hover:border-primary/30 border border-transparent transition-colors cursor-pointer"
           >
             <div className="flex-1">
@@ -159,17 +161,23 @@ export function Contact() {
 
 export function Footer() {
   const { t } = useTranslation();
+  const locale = getLocaleFromPathname(useRouterState({ select: (s) => s.location.pathname }));
+  const homeHref = localizedPath(locale, "");
   return (
     <footer className="bg-black px-6 md:px-16 py-16 border-t border-white/10">
       <div className="max-w-7xl mx-auto w-full grid gap-12 md:grid-cols-4 font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
         {/* Brand */}
         <div className="space-y-3 md:col-span-2">
-          <a href="/#hero" className="font-display text-xl font-bold tracking-tight text-white">
+          <a
+            href={`${homeHref}#hero`}
+            className="font-display text-xl font-bold tracking-tight text-white"
+          >
             AURA<span className="text-primary">.</span>
           </a>
           <p className="text-white/60 normal-case tracking-normal text-xs">{t("footer.tagline")}</p>
           <p className="text-white/30 normal-case tracking-normal text-xs">
-            {SITE_CONFIG.location.street}, {SITE_CONFIG.location.city} — {SITE_CONFIG.location.region}
+            {SITE_CONFIG.location.street}, {SITE_CONFIG.location.city} —{" "}
+            {SITE_CONFIG.location.region}
           </p>
         </div>
 
@@ -178,27 +186,36 @@ export function Footer() {
           <p className="text-white/50">{t("footer.explore")}</p>
           <ul className="space-y-2.5">
             <li>
-              <a href="/#projects" className="hover:text-primary transition-colors">
+              <a href={`${homeHref}#projects`} className="hover:text-primary transition-colors">
                 {t("nav.work")}
               </a>
             </li>
             <li>
-              <a href="/#team" className="hover:text-primary transition-colors">
+              <a href={`${homeHref}#team`} className="hover:text-primary transition-colors">
                 {t("nav.product")}
               </a>
             </li>
             <li>
-              <Link to="/pricing" className="hover:text-primary transition-colors">
+              <Link
+                to={localizedPath(locale, "pricing")}
+                className="hover:text-primary transition-colors"
+              >
                 {t("pricing.title")}
               </Link>
             </li>
             <li>
-              <Link to="/team" className="hover:text-primary transition-colors">
+              <Link
+                to={localizedPath(locale, "team")}
+                className="hover:text-primary transition-colors"
+              >
                 {t("nav.team")}
               </Link>
             </li>
             <li>
-              <Link to="/contact" className="hover:text-primary transition-colors">
+              <Link
+                to={localizedPath(locale, "contact")}
+                className="hover:text-primary transition-colors"
+              >
                 {t("nav.contact")}
               </Link>
             </li>

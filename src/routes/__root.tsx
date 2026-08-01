@@ -1,9 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
-  Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -11,7 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import i18n, { getStoredLanguage } from "../i18n";
+import { getLocaleFromPathname } from "../i18n";
 import { Toaster } from "@/components/ui/sonner";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { INTRO_CURTAIN_SCRIPT } from "@/lib/boot";
@@ -34,12 +34,16 @@ function NotFoundComponent() {
           The page you're looking for doesn't exist or has been moved.
         </p>
         <div className="mt-6">
-          <Link
-            to="/"
+          {/* Plain anchor, not <Link to>: the router's typed paths don't
+              include a bare "/" now that the index route carries the
+              optional {-$locale} param, and a 404 has no locale of its own
+              to resolve it from anyway. */}
+          <a
+            href="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Go home
-          </Link>
+          </a>
         </div>
       </div>
     </div>
@@ -125,6 +129,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  // Derived from the URL (not client state), so it's identical on the server
+  // render and the client hydration pass — no mismatch, no effect needed.
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const lang = getLocaleFromPathname(pathname);
   return (
     // This app hydrates the <html> element itself, and several things write to
     // it before or during hydration: the pre-paint curtain class (see
@@ -134,7 +142,7 @@ function RootShell({ children }: { children: ReactNode }) {
     // makes it throw the server tree away and re-render the whole shell, which
     // surfaces as the root error component. Suppression here covers only this
     // element's own attributes, not its descendants.
-    <html lang="it" suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
@@ -148,14 +156,6 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-
-  // Restore the visitor's preferred language after hydration (SSR renders the default).
-  useEffect(() => {
-    const stored = getStoredLanguage();
-    if (stored && stored !== i18n.language) {
-      void i18n.changeLanguage(stored);
-    }
-  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

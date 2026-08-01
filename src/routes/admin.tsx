@@ -66,10 +66,7 @@ function AdminPage() {
         const uid = sess.session.user.id;
         setUserId(uid);
         setUserEmail(sess.session.user.email ?? null);
-        const { data: roles } = await supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", uid);
+        const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid);
         const admin = !!roles?.some((r) => r.role === "admin");
         setIsAdmin(admin);
         if (admin) {
@@ -129,7 +126,9 @@ function AdminPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p className="font-mono-spec text-xs uppercase tracking-widest text-white/40">Caricamento…</p>
+        <p className="font-mono-spec text-xs uppercase tracking-widest text-white/40">
+          Caricamento…
+        </p>
       </main>
     );
   }
@@ -178,12 +177,12 @@ function AdminPage() {
   return (
     <main className="min-h-screen bg-black text-white px-6 md:px-12 py-10">
       <header className="flex items-center justify-between mb-10 max-w-6xl mx-auto">
-        <Link to="/" className="font-display text-lg font-bold tracking-tight text-white">
+        <a href="/" className="font-display text-lg font-bold tracking-tight text-white">
           AURA<span className="text-primary">.</span>
           <span className="text-white/40 text-xs ml-2 font-mono-spec uppercase tracking-widest">
             / admin
           </span>
-        </Link>
+        </a>
         <div className="flex items-center gap-4">
           <span className="hidden sm:inline text-xs text-white/40 font-mono-spec">{userEmail}</span>
           <button
@@ -273,7 +272,10 @@ function AdminPage() {
                         {entry.kind === "quote" ? entry.contact_email : entry.email}
                       </a>
                       {entry.kind === "quote" && (
-                        <a href={`tel:${entry.phone.replace(/\s/g, "")}`} className="text-white/60 hover:text-white">
+                        <a
+                          href={`tel:${entry.phone.replace(/\s/g, "")}`}
+                          className="text-white/60 hover:text-white"
+                        >
                           {entry.phone}
                         </a>
                       )}

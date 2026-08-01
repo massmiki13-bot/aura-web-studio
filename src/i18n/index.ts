@@ -11,7 +11,6 @@ export const LANGUAGES = [
 export type LanguageCode = (typeof LANGUAGES)[number]["code"];
 
 export const DEFAULT_LANGUAGE: LanguageCode = "it";
-export const LANGUAGE_STORAGE_KEY = "aura-lang";
 
 const resources = {
   it: {
@@ -20,6 +19,7 @@ const resources = {
         home: "Home",
         work: "Lavori",
         product: "Il Prodotto",
+        pricing: "Prezzi",
         team: "Team",
         contact: "Contatti",
       },
@@ -244,6 +244,7 @@ const resources = {
         home: "Home",
         work: "Projekte",
         product: "Das Produkt",
+        pricing: "Preise",
         team: "Team",
         contact: "Kontakt",
       },
@@ -464,7 +465,14 @@ const resources = {
   },
   en: {
     translation: {
-      nav: { home: "Home", work: "Work", product: "The Product", team: "Team", contact: "Contact" },
+      nav: {
+        home: "Home",
+        work: "Work",
+        product: "The Product",
+        pricing: "Pricing",
+        team: "Team",
+        contact: "Contact",
+      },
       intro: {
         badge: "Creative Web Studio",
         tagline: "Your brand, elevated",
@@ -686,6 +694,7 @@ const resources = {
         home: "Inicio",
         work: "Trabajos",
         product: "El Producto",
+        pricing: "Precios",
         team: "Equipo",
         contact: "Contacto",
       },
@@ -857,8 +866,7 @@ const resources = {
         },
         modal: {
           title: "Solicitar presupuesto",
-          subtitle:
-            "Déjanos tus datos: te contactaremos en 24 horas para definir cada detalle.",
+          subtitle: "Déjanos tus datos: te contactaremos en 24 horas para definir cada detalle.",
           planLabel: "Plan seleccionado",
           formName: "Nombre y Apellido",
           formPhone: "Número de móvil",
@@ -906,28 +914,13 @@ const resources = {
   },
 } as const;
 
-export function persistLanguage(code: LanguageCode) {
-  if (typeof window !== "undefined") {
-    try {
-      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, code);
-    } catch {
-      /* ignore */
-    }
-  }
-  void i18n.changeLanguage(code);
-}
+export { resources };
 
-export function getStoredLanguage(): LanguageCode | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
-    if (stored && LANGUAGES.some((l) => l.code === stored)) {
-      return stored as LanguageCode;
-    }
-  } catch {
-    /* ignore */
-  }
-  return null;
+/** Derive the active locale from a pathname like "/de/pricing" (falls back to the default). */
+export function getLocaleFromPathname(pathname: string): LanguageCode {
+  const match = /^\/(de|en|es)(\/|$)/.exec(pathname);
+  const code = match?.[1];
+  return code && LANGUAGES.some((l) => l.code === code) ? (code as LanguageCode) : DEFAULT_LANGUAGE;
 }
 
 if (!i18n.isInitialized) {

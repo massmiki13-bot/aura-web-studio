@@ -7,6 +7,8 @@
  * public/robots.txt and public/sitemap.xml must be updated to match.
  */
 
+import { LANGUAGES, DEFAULT_LANGUAGE, type LanguageCode } from "@/i18n";
+
 type MetaDescriptor =
   | { title: string }
   | { name: string; content: string }
@@ -32,7 +34,8 @@ export const SITE_CONFIG = {
   titleSuffix: "Aura Web Studio",
   description:
     "Agenzia di web design a Bolzano: sviluppiamo siti web professionali ed esperienze digitali cinematiche per hospitality, ristoranti e brand di lusso, in Alto Adige e in tutta Italia.",
-  shortDescription: "Web design a Bolzano — agenzia digitale premium per hospitality e brand italiani",
+  shortDescription:
+    "Web design a Bolzano — agenzia digitale premium per hospitality e brand italiani",
   keywords: [
     "web design Bolzano",
     "sviluppo siti web Alto Adige",
@@ -156,12 +159,37 @@ export function rootLinks(): LinkDescriptor[] {
   ];
 }
 
+/** Locales with a real, fully-translated content route (see src/i18n). Privacy/admin/auth stay IT-only. */
+export const LOCALES: readonly LanguageCode[] = LANGUAGES.map((l) => l.code);
+export type Locale = LanguageCode;
+export const DEFAULT_LOCALE: Locale = DEFAULT_LANGUAGE;
+
+/**
+ * Build the locale-prefixed path for a logical sub-path ("" for home, no leading slash).
+ * No trailing slash on locale-home paths (e.g. "/de", not "/de/") — the router
+ * strips trailing slashes with a 307, and canonical/hreflang must point at the
+ * final URL, not a redirecting one.
+ */
+export function localizedPath(locale: Locale, subPath = ""): string {
+  const clean = subPath.replace(/^\/+/, "");
+  if (locale === DEFAULT_LOCALE) return clean ? `/${clean}` : "/";
+  return clean ? `/${locale}/${clean}` : `/${locale}`;
+}
+
 export type PageSeoOptions = {
   /** Page-specific title (without brand suffix). Omit for the homepage. */
   title?: string;
   description?: string;
-  /** Site-relative path, e.g. "/pricing". Drives canonical + og:url. */
+  /** Site-relative path, e.g. "/pricing". Drives canonical + og:url. Ignored when `subPath` is set. */
   path?: string;
+  /**
+   * Logical sub-path shared across locales ("" for home, "pricing" for /pricing).
+   * When set, `path`/canonical are derived from `locale` automatically and hreflang
+   * alternates are emitted for every entry in LOCALES plus x-default. Only pass this
+   * for pages that actually have translated content at every locale.
+   */
+  subPath?: string;
+  locale?: Locale;
   /** Absolute or site-relative image. Defaults to the site OG image. */
   image?: string;
   type?: "website" | "article" | "profile";
@@ -171,15 +199,19 @@ export type PageSeoOptions = {
 
 /**
  * Per-page meta + links. Returns everything a route's `head()` needs:
- * canonical, og/twitter, page title & description, and robots noindex when set.
+ * canonical, og/twitter, page title & description, robots noindex when set,
+ * and hreflang alternates when `subPath` is set.
  */
 export function pageSeo(options: PageSeoOptions = {}): {
   meta: MetaDescriptor[];
   links: LinkDescriptor[];
 } {
+  const locale = options.locale ?? DEFAULT_LOCALE;
   const title = buildTitle(options.title);
   const description = options.description ?? SITE_CONFIG.description;
-  const url = absoluteUrl(options.path ?? "/");
+  const path =
+    options.subPath !== undefined ? localizedPath(locale, options.subPath) : (options.path ?? "/");
+  const url = absoluteUrl(path);
   const image = absoluteUrl(options.image ?? SITE_CONFIG.ogImagePath);
   const type = options.type ?? "website";
 
@@ -208,6 +240,21 @@ export function pageSeo(options: PageSeoOptions = {}): {
   const links: LinkDescriptor[] = options.noindex
     ? [] // Don't advertise a canonical for pages we don't want indexed.
     : [{ rel: "canonical", href: url }];
+
+  if (options.subPath !== undefined && !options.noindex) {
+    for (const l of LOCALES) {
+      links.push({
+        rel: "alternate",
+        hreflang: l,
+        href: absoluteUrl(localizedPath(l, options.subPath)),
+      });
+    }
+    links.push({
+      rel: "alternate",
+      hreflang: "x-default",
+      href: absoluteUrl(localizedPath(DEFAULT_LOCALE, options.subPath)),
+    });
+  }
 
   return { meta, links };
 }
@@ -273,7 +320,8 @@ export function generateOrganizationSchema() {
           itemOffered: {
             "@type": "Service",
             name: "Web design su misura",
-            description: "Progettazione e design di siti web editoriali e cinematici per brand italiani.",
+            description:
+              "Progettazione e design di siti web editoriali e cinematici per brand italiani.",
           },
         },
         {
@@ -281,7 +329,8 @@ export function generateOrganizationSchema() {
           itemOffered: {
             "@type": "Service",
             name: "Sviluppo siti web",
-            description: "Sviluppo front-end con React, animazioni Framer Motion ed esperienze 3D interattive.",
+            description:
+              "Sviluppo front-end con React, animazioni Framer Motion ed esperienze 3D interattive.",
           },
         },
         {
@@ -289,7 +338,8 @@ export function generateOrganizationSchema() {
           itemOffered: {
             "@type": "Service",
             name: "Siti web per hospitality e ristorazione",
-            description: "Siti su misura per hotel, ristoranti e brand lifestyle in Alto Adige e in Italia.",
+            description:
+              "Siti su misura per hotel, ristoranti e brand lifestyle in Alto Adige e in Italia.",
           },
         },
       ],

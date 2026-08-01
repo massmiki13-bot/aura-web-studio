@@ -5,19 +5,39 @@ import { Check, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Footer } from "@/components/aura/Contact";
 import { Nav } from "@/components/aura/Nav";
-import { pageSeo } from "@/lib/seo";
+import { pageSeo, localizedPath, type Locale } from "@/lib/seo";
 import { SparklesCanvas } from "@/components/ui/sparkles-canvas";
 import { WordRevealHeading } from "@/components/ui/word-reveal-heading";
 import { PlanRequestModal, type PlanRequestTarget } from "@/components/aura/PlanRequestModal";
 
-export const Route = createFileRoute("/pricing")({
-  head: () =>
-    pageSeo({
-      title: "Prezzi Siti Web Professionali Bolzano",
-      path: "/pricing",
-      description:
-        "Prezzi trasparenti per siti web professionali a Bolzano: landing page, siti vetrina ed e-commerce custom. Scegli il piano ideale per portare il tuo business online.",
-    }),
+const PRICING_SEO: Record<Locale, { title: string; description: string }> = {
+  it: {
+    title: "Prezzi Siti Web Professionali Bolzano",
+    description:
+      "Prezzi trasparenti per siti web professionali a Bolzano: landing page, siti vetrina ed e-commerce custom. Scegli il piano ideale per portare il tuo business online.",
+  },
+  de: {
+    title: "Preise Professionelle Webseiten Bozen",
+    description:
+      "Transparente Preise für professionelle Webseiten in Bozen: Landingpages, Website-Baukästen und individuelle E-Commerce-Lösungen. Wähle den idealen Plan für dein Business online.",
+  },
+  en: {
+    title: "Professional Website Pricing Bolzano",
+    description:
+      "Transparent pricing for professional websites in Bolzano: landing pages, showcase sites and custom e-commerce. Choose the ideal plan to bring your business online.",
+  },
+  es: {
+    title: "Precios de Sitios Web Profesionales Bolzano",
+    description:
+      "Precios transparentes para sitios web profesionales en Bolzano: landing pages, sitios vetrina y e-commerce a medida. Elige el plan ideal para llevar tu negocio online.",
+  },
+};
+
+export const Route = createFileRoute("/{-$locale}/pricing")({
+  head: ({ params }) => {
+    const locale = (params.locale as Locale | undefined) ?? "it";
+    return pageSeo({ subPath: "pricing", locale, ...PRICING_SEO[locale] });
+  },
   component: PricingPage,
 });
 
@@ -29,6 +49,8 @@ const planConfig = [
 
 function PricingPage() {
   const { t } = useTranslation();
+  const { locale } = Route.useParams();
+  const homeHref = localizedPath((locale as Locale | undefined) ?? "it", "");
   const [requestedPlan, setRequestedPlan] = useState<PlanRequestTarget | null>(null);
 
   const plans = planConfig.map((p) => ({
@@ -64,13 +86,19 @@ function PricingPage() {
           reference — kept to plain white/theme tokens, no new colors. */}
       <div
         className="absolute top-0 left-0 right-0 h-[420px] overflow-hidden pointer-events-none z-0"
-        style={{ maskImage: "radial-gradient(60% 60% at 50% 0%, black, transparent 85%)", WebkitMaskImage: "radial-gradient(60% 60% at 50% 0%, black, transparent 85%)" }}
+        style={{
+          maskImage: "radial-gradient(60% 60% at 50% 0%, black, transparent 85%)",
+          WebkitMaskImage: "radial-gradient(60% 60% at 50% 0%, black, transparent 85%)",
+        }}
       >
         {/* Soft white light wash behind the grid/sparkles — makes the whole
             header area feel diffused/glowing instead of a flat black box. */}
         <div
           className="absolute inset-0"
-          style={{ background: "radial-gradient(50% 55% at 50% 15%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 45%, transparent 75%)" }}
+          style={{
+            background:
+              "radial-gradient(50% 55% at 50% 15%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 45%, transparent 75%)",
+          }}
         />
         <div
           className="absolute inset-0 opacity-50"
@@ -87,7 +115,7 @@ function PricingPage() {
         {/* Navigation & Back Button */}
         <div className="mb-12">
           <Link
-            to="/"
+            to={homeHref}
             className="inline-flex items-center gap-2 font-mono-spec text-[10px] uppercase tracking-[0.25em] text-white/50 hover:text-primary transition-colors cursor-pointer"
           >
             <ArrowLeft className="h-3 w-3" /> {t("pricing.backHome")}
@@ -287,7 +315,10 @@ function PricingPage() {
 
       <Footer />
 
-      <PlanRequestModal plan={requestedPlan} onOpenChange={(open) => !open && setRequestedPlan(null)} />
+      <PlanRequestModal
+        plan={requestedPlan}
+        onOpenChange={(open) => !open && setRequestedPlan(null)}
+      />
     </main>
   );
 }

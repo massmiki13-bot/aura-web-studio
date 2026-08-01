@@ -4,7 +4,7 @@ import { ArrowLeft, Clock, Users2, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Nav } from "@/components/aura/Nav";
 import { Footer } from "@/components/aura/Contact";
-import { pageSeo, SITE_CONFIG } from "@/lib/seo";
+import { pageSeo, SITE_CONFIG, localizedPath, type Locale } from "@/lib/seo";
 import { SparklesCanvas } from "@/components/ui/sparkles-canvas";
 import { members } from "@/lib/team-members";
 import { TeamMemberCard } from "@/components/aura/TeamMemberCard";
@@ -24,19 +24,41 @@ const studioDots = [
   { start: BOLZANO, end: { lat: -33.8688, lng: 151.2093, label: "Sydney" } },
 ];
 
-export const Route = createFileRoute("/contact")({
-  head: () =>
-    pageSeo({
-      title: "Contatti — Agenzia Web Bolzano",
-      path: "/contact",
-      description:
-        "Contatta l'agenzia web di Bolzano Aura Web Studio: telefono, email e PEC. Disponibili h24 da remoto e sempre pronti per un incontro dal vivo.",
-    }),
+const CONTACT_SEO: Record<Locale, { title: string; description: string }> = {
+  it: {
+    title: "Contatti — Agenzia Web Bolzano",
+    description:
+      "Contatta l'agenzia web di Bolzano Aura Web Studio: telefono, email e PEC. Disponibili h24 da remoto e sempre pronti per un incontro dal vivo.",
+  },
+  de: {
+    title: "Kontakt — Webagentur Bozen",
+    description:
+      "Kontaktiere die Webagentur Aura Web Studio in Bozen: Telefon, E-Mail und PEC. Rund um die Uhr remote erreichbar und jederzeit bereit für ein persönliches Treffen.",
+  },
+  en: {
+    title: "Contact — Web Agency Bolzano",
+    description:
+      "Get in touch with Bolzano web agency Aura Web Studio: phone, email and certified email. Available remotely around the clock and always ready for an in-person meeting.",
+  },
+  es: {
+    title: "Contacto — Agencia Web Bolzano",
+    description:
+      "Contacta con la agencia web de Bolzano Aura Web Studio: teléfono, email y PEC. Disponibles 24h en remoto y siempre listos para una reunión presencial.",
+  },
+};
+
+export const Route = createFileRoute("/{-$locale}/contact")({
+  head: ({ params }) => {
+    const locale = (params.locale as Locale | undefined) ?? "it";
+    return pageSeo({ subPath: "contact", locale, ...CONTACT_SEO[locale] });
+  },
   component: ContactPage,
 });
 
 function ContactPage() {
   const { t } = useTranslation();
+  const { locale } = Route.useParams();
+  const homeHref = localizedPath((locale as Locale | undefined) ?? "it", "");
 
   return (
     <main className="min-h-screen bg-black text-white relative flex flex-col justify-between overflow-hidden">
@@ -59,12 +81,16 @@ function ContactPage() {
         className="absolute inset-0 overflow-hidden pointer-events-none z-0"
         style={{
           maskImage: "linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)",
-          WebkitMaskImage: "linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)",
         }}
       >
         <div
           className="absolute inset-0"
-          style={{ background: "radial-gradient(60% 45% at 50% 12%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 45%, transparent 75%)" }}
+          style={{
+            background:
+              "radial-gradient(60% 45% at 50% 12%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 45%, transparent 75%)",
+          }}
         />
         <div
           className="absolute inset-0 opacity-50"
@@ -81,7 +107,7 @@ function ContactPage() {
         {/* Back Button */}
         <div className="mb-12">
           <Link
-            to="/"
+            to={homeHref}
             className="inline-flex items-center gap-2 font-mono-spec text-[10px] uppercase tracking-[0.25em] text-white/50 hover:text-primary transition-colors cursor-pointer"
           >
             <ArrowLeft className="h-3 w-3" /> {t("contactPage.backHome")}

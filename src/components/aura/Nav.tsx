@@ -1,11 +1,23 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { Globe, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { LANGUAGES, persistLanguage, type LanguageCode } from "@/i18n";
+import { LANGUAGES, getLocaleFromPathname, type LanguageCode } from "@/i18n";
+import { localizedPath } from "@/lib/seo";
 import { PlanRequestModal, type PlanRequestTarget } from "@/components/aura/PlanRequestModal";
+
+// The only sub-paths that actually have translated content at every locale
+// (see src/routes/{-$locale}/) — anything else falls back to that locale's home.
+const LOCALIZED_SUBPATHS = new Set(["", "pricing", "team", "contact"]);
+
+/** Strip a /de|/en|/es prefix (if any) to get the logical sub-path, e.g. "pricing". */
+function subPathFromPathname(pathname: string): string {
+  const match = /^\/(?:de|en|es)(?:\/(.*))?$/.exec(pathname);
+  if (match) return match[1] ?? "";
+  return pathname.replace(/^\/+/, "");
+}
 
 // No specific plan behind this entry point (it's the header CTA, reachable
 // from any page) — price/priceValue stay empty so the modal hides the
@@ -17,18 +29,26 @@ const GENERIC_QUOTE_REQUEST: PlanRequestTarget = {
   priceValue: 0,
 };
 
-function LanguageSwitcher({ onSelect, dropUp = false }: { onSelect?: () => void; dropUp?: boolean }) {
-  const { i18n } = useTranslation();
+function LanguageSwitcher({
+  onSelect,
+  dropUp = false,
+}: {
+  onSelect?: () => void;
+  dropUp?: boolean;
+}) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
-  const current =
-    LANGUAGES.find((l) => l.code === i18n.language) ??
-    LANGUAGES.find((l) => i18n.language?.startsWith(l.code)) ??
-    LANGUAGES[0];
+  const current = LANGUAGES.find((l) => l.code === getLocaleFromPathname(pathname)) ?? LANGUAGES[0];
 
+  // Locale is part of the URL (not client state), so switching means
+  // navigating to the equivalent page in the target language — a full
+  // navigation, since it's a genuinely different, separately-indexed page.
   const choose = (code: LanguageCode) => {
-    persistLanguage(code);
+    const subPath = subPathFromPathname(pathname);
+    const target = localizedPath(code, LOCALIZED_SUBPATHS.has(subPath) ? subPath : "");
     setOpen(false);
     onSelect?.();
+    window.location.href = target;
   };
 
   return (
@@ -79,6 +99,8 @@ function LanguageSwitcher({ onSelect, dropUp = false }: { onSelect?: () => void;
 
 export function Nav() {
   const { t } = useTranslation();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const homeHref = localizedPath(getLocaleFromPathname(pathname), "");
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
   // Portal target only exists once mounted on the client — see the portal
@@ -109,11 +131,12 @@ export function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const locale = getLocaleFromPathname(pathname);
   const links = [
-    { label: t("nav.work"), href: "/#projects", type: "hash" as const },
-    { label: t("nav.pricing", "Prezzi"), href: "/pricing", type: "route" as const },
-    { label: t("nav.team"), href: "/team", type: "route" as const },
-    { label: t("nav.contact"), href: "/contact", type: "route" as const },
+    { label: t("nav.work"), href: `${homeHref}#projects`, type: "hash" as const },
+    { label: t("nav.pricing"), href: localizedPath(locale, "pricing"), type: "route" as const },
+    { label: t("nav.team"), href: localizedPath(locale, "team"), type: "route" as const },
+    { label: t("nav.contact"), href: localizedPath(locale, "contact"), type: "route" as const },
   ];
 
   useEffect(() => {
@@ -131,7 +154,10 @@ export function Nav() {
         }`}
         style={{ willChange: "transform" }}
       >
-        <a href="/#hero" className="font-display text-lg font-bold tracking-tight text-white">
+        <a
+          href={`${homeHref}#hero`}
+          className="font-display text-lg font-bold tracking-tight text-white"
+        >
           AURA<span className="text-accent">.</span>
         </a>
         <nav className="hidden md:flex items-center gap-10 font-mono-spec text-xs uppercase tracking-[0.2em] text-white">

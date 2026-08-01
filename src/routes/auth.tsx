@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -44,14 +44,17 @@ function AuthPage() {
   return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center px-6">
       <div className="w-full max-w-md">
-        <Link to="/" className="font-display text-lg font-bold tracking-tight text-white">
+        <a href="/" className="font-display text-lg font-bold tracking-tight text-white">
           AURA<span className="text-primary">.</span>
-        </Link>
+        </a>
         <h1 className="font-display text-3xl font-bold tracking-tight mt-8 mb-2">Admin Access</h1>
         <p className="text-white/50 text-sm mb-8 font-mono-spec uppercase tracking-widest text-[10px]">
           // Aura Web Studio dashboard
         </p>
-        <form onSubmit={submit} className="bg-neutral-950 border border-white/10 rounded-2xl p-6 space-y-5">
+        <form
+          onSubmit={submit}
+          className="bg-neutral-950 border border-white/10 rounded-2xl p-6 space-y-5"
+        >
           <div>
             <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
               Email
