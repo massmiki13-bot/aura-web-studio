@@ -47,7 +47,7 @@ const projects: Project[] = [
     category: "hospitality",
     descKey: "03",
     desc: "Layout di lusso dark-slate impreziosito da fluide piastrelle in parallax.",
-    domain: "https://aldo-s-glass-wine-bar.vercel.app",
+    domain: "https://enotecadaaldo.vercel.app",
     image: "/projects/enoteca_da_aldo.jpg",
     alt: "Sito web enoteca di lusso Enoteca da Aldo con effetto parallax — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 50% 60%, oklch(0.2 0.01 250) 0%, #02040a 70%)",
