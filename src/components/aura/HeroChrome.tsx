@@ -195,19 +195,23 @@ function clamp01(v: number) {
 
 /**
  * Icosahedron subdivision level. `detail` costs quadratically — 20·(d+1)²
- * triangles, none of them indexed — and at the size this blob occupies on
- * screen the silhouette stops improving well before the shading cost does.
- * Phones and small/low-DPI screens (a decent proxy for a weak GPU) get the
- * coarse tier; the normals are rebuilt per vertex, so even the coarse mesh
- * shades smoothly rather than faceted.
+ * triangles, none of them indexed — and every one of those vertices runs six
+ * 3D simplex evaluations (the surface normal is rebuilt from two displaced
+ * neighbours), so this number is by far the biggest lever on the scene's cost.
+ *
+ * Both tiers came down after measuring: at 28 the sphere is ~50k vertices and
+ * ~300k simplex evaluations *per frame*, which is what made the act stutter on
+ * anything but a fast discrete GPU — and against a blob this soft, this large
+ * and this reflective, the silhouette is indistinguishable from 20. The coarse
+ * tier is for weak GPUs that still get the canvas at all; phones don't render
+ * this component in the first place (see Hero).
  */
 function pickDetail() {
-  if (typeof window === "undefined") return 24;
-  const coarse = window.matchMedia("(pointer: coarse)").matches;
+  if (typeof window === "undefined") return 20;
   const smallish = Math.min(window.innerWidth, window.innerHeight) < 700;
   const cores = navigator.hardwareConcurrency ?? 4;
-  if (coarse || smallish || cores <= 4) return 16;
-  return 28;
+  if (smallish || cores <= 4) return 12;
+  return 20;
 }
 
 function ChromeBlob({
@@ -300,27 +304,18 @@ export function HeroChrome({
 
   // Client-only (avoids any SSR/hydration concern) and skipped entirely under
   // prefers-reduced-motion, like every other animated layer on the site.
-  // Building the geometry and compiling this shader is a long task, so it's
-  // taken during an idle slot rather than straight after hydration — the act
-  // it belongs to is three screens of scrolling away.
+  //
+  // Built synchronously on mount, deliberately. This used to wait for an idle
+  // slot (with a 2.5s timeout) on the reasoning that the geometry build and
+  // shader compile are a long task — but the *mount itself* is now the gate:
+  // Hero doesn't render this component until the visitor's first scroll, which
+  // is a full screen of scrolling before act two is due. Waiting a second time
+  // meant that on a busy main thread — exactly when someone is scrolling —
+  // requestIdleCallback ran out its timeout and the blob faded in seconds into
+  // an act that had already started without it. That was the late spawn.
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let cancelled = false;
-    const mount = () => {
-      if (!cancelled) setDetail(pickDetail());
-    };
-    if (typeof window.requestIdleCallback === "function") {
-      const id = window.requestIdleCallback(mount, { timeout: 2500 });
-      return () => {
-        cancelled = true;
-        window.cancelIdleCallback(id);
-      };
-    }
-    const id = window.setTimeout(mount, 600);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(id);
-    };
+    setDetail(pickDetail());
   }, []);
 
   const enabled = detail > 0;

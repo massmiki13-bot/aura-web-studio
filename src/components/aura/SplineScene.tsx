@@ -29,9 +29,17 @@ export type SplineSceneProps = {
 // stutters the hero's background animation if it lands in that window. It waits
 // for the first scroll — still a full section of runway before this scene is
 // reached — with a long fallback for a visitor who lingers on the hero.
+//
+// Second line of defence for phones. Callers are expected not to render this
+// component on mobile at all (see Services), but this helper's whole job is to
+// schedule work on gates that fire *later* — long after a component that only
+// existed for one render has gone. If it ever runs on a narrow viewport it
+// would download several megabytes for a scene that is never shown, so it
+// refuses outright rather than trusting the caller.
 let warmed = false;
 function warmSplineRuntime() {
   if (warmed || typeof window === "undefined") return;
+  if (!window.matchMedia("(min-width: 768px)").matches) return;
   warmed = true;
   const load = () => {
     void import("@splinetool/react-spline");

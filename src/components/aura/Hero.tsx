@@ -5,6 +5,7 @@ import { HeroChrome, type HeroChromeMotion } from "./HeroChrome";
 import { ShaderBackground } from "@/components/ui/shader-background";
 import { FloatingShapesBackground } from "@/components/ui/floating-shapes-background";
 import { CanvasBoundary } from "@/components/CanvasBoundary";
+import { useIsDesktopViewport } from "@/hooks/use-desktop-viewport";
 import { introWillPlay, onScrollIntent, useBootReady } from "@/lib/boot";
 
 /**
@@ -27,6 +28,14 @@ export function Hero() {
   // The GPU layers trail the boot signal by a beat, on purpose — see the
   // effect below. `booted` reveals the copy; this mounts the shader background.
   const [layersOn, setLayersOn] = useState(false);
+  // Desktop only. The chrome blob is a second WebGL context running a vertex
+  // shader with six 3D simplex evaluations per vertex over a ~17k-triangle
+  // sphere — on a phone it drops the whole act to single-digit fps, on top of
+  // the shader background already holding a context. Mobile gets a CSS orb
+  // instead (see the act-two markup below), which costs the main thread
+  // nothing. `null` (not yet measured) counts as "not desktop" so no canvas is
+  // ever armed speculatively.
+  const isDesktop = useIsDesktopViewport();
   // The chrome blob (act two) is a second WebGL context whose mount is heavy
   // enough to stutter the shader if it lands while the visitor is still on the
   // title card. It doesn't exist until the visitor starts scrolling toward it —
@@ -231,14 +240,20 @@ export function Hero() {
     return () => window.clearTimeout(id);
   }, [booted]);
 
-  // Arm the chrome blob on the first hint of scrolling (with a long fallback
-  // for a visitor who never scrolls, so it's ready if they eventually do). This
-  // keeps its heavy WebGL mount out of the first seconds on the title card,
-  // where it would stutter the shader behind it.
+  // Arm the chrome blob on the first hint of scrolling (with a fallback for a
+  // visitor who never scrolls, so it's ready if they eventually do). This keeps
+  // its heavy WebGL mount out of the first seconds on the title card, where it
+  // would stutter the shader behind it — but it still has a full screen of
+  // scrolling to warm up in before act two is due at 12% of the pin.
+  //
+  // The fallback was 6s: long enough that a visitor who paused on the hero and
+  // then scrolled straight through hit act two with no canvas built yet, and
+  // the blob faded in seconds late, mid-section. Two seconds is still well
+  // clear of the hero's own first moments.
   useEffect(() => {
-    if (!layersOn) return;
-    return onScrollIntent(armChrome, 6000);
-  }, [layersOn]);
+    if (!layersOn || isDesktop !== true) return;
+    return onScrollIntent(armChrome, 2000);
+  }, [layersOn, isDesktop]);
 
   return (
     <section
@@ -309,7 +324,7 @@ export function Hero() {
             translatable and crawlable whatever the boot gate is doing. Gated on
             scroll intent (not just boot) so this second WebGL context never
             mounts while the visitor is still watching act one. */}
-        {chromeOn && (
+        {chromeOn && isDesktop === true && (
           <CanvasBoundary label="hero chrome">
             <FloatingShapesBackground className="z-0" paused={actTwoPaused} />
             <HeroChrome
@@ -318,6 +333,18 @@ export function Hero() {
               motion={chromeMotion}
             />
           </CanvasBoundary>
+        )}
+        {/* Mobile: the same silhouette, drawn with gradients. Server-rendered
+            and inert — no gate, no canvas, nothing to arm — so it is simply
+            already there when act two fades in, instead of appearing seconds
+            into it. See .chrome-orb-fallback in styles.css. */}
+        {isDesktop !== true && (
+          <div className="md:hidden absolute inset-0 z-10 flex items-center justify-center overflow-hidden">
+            <div
+              aria-hidden
+              className="chrome-orb-fallback relative aspect-square w-[68vw] max-w-90 rounded-full"
+            />
+          </div>
         )}
         <div className="absolute inset-0 z-20 pointer-events-none">
           {/* Soft dark halo behind the copy so it stays readable over the

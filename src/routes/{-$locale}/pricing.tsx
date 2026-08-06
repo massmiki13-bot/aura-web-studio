@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Footer } from "@/components/aura/Contact";
 import { Nav } from "@/components/aura/Nav";
 import { pageSeo, localizedPath, type Locale } from "@/lib/seo";
+import { tList } from "@/lib/utils";
 import { SparklesCanvas } from "@/components/ui/sparkles-canvas";
 import { WordRevealHeading } from "@/components/ui/word-reveal-heading";
 import { PlanRequestModal, type PlanRequestTarget } from "@/components/aura/PlanRequestModal";
@@ -61,10 +62,12 @@ function PricingPage() {
     name: t(`pricing.${p.key}.name`),
     desc: t(`pricing.${p.key}.desc`),
     buttonText: t(`pricing.${p.key}.button`),
-    features: t(`pricing.${p.key}.features`, { returnObjects: true }) as string[],
+    // Guarded, not cast: see tList — an unloaded resource returns a string
+    // here, and the `.map()` below turned that into a 500 on the whole route.
+    features: tList<string>(t(`pricing.${p.key}.features`, { returnObjects: true })),
   }));
 
-  const maintenanceItems = t("pricing.maintenance.items", { returnObjects: true }) as string[];
+  const maintenanceItems = tList<string>(t("pricing.maintenance.items", { returnObjects: true }));
 
   return (
     <main className="min-h-screen bg-black text-white relative flex flex-col justify-between overflow-hidden">

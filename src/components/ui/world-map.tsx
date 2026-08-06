@@ -48,10 +48,7 @@ export function WorldMap({
     return { x, y };
   };
 
-  const createCurvedPath = (
-    start: { x: number; y: number },
-    end: { x: number; y: number },
-  ) => {
+  const createCurvedPath = (start: { x: number; y: number }, end: { x: number; y: number }) => {
     const midX = (start.x + end.x) / 2;
     const midY = Math.min(start.y, end.y) - 50;
     return `M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`;
@@ -113,11 +110,7 @@ export function WorldMap({
                 stroke="url(#path-gradient)"
                 strokeWidth="1"
                 initial={{ pathLength: 0 }}
-                animate={
-                  loop
-                    ? { pathLength: [0, 0, 1, 1, 0] }
-                    : { pathLength: 1 }
-                }
+                animate={loop ? { pathLength: [0, 0, 1, 1, 0] } : { pathLength: 1 }}
                 transition={
                   loop
                     ? {
@@ -141,7 +134,10 @@ export function WorldMap({
                   fill={lineColor}
                   initial={{ offsetDistance: "0%", opacity: 0 }}
                   animate={{
-                    offsetDistance: [undefined, "0%", "100%", "100%", "100%"],
+                    // First keyframe was `undefined` ("start from the current
+                    // value"), which Framer's types reject — and it resolves to
+                    // exactly the `initial` above anyway, so it's spelled out.
+                    offsetDistance: ["0%", "0%", "100%", "100%", "100%"],
                     opacity: [0, 0, 1, 0, 0],
                   }}
                   transition={{
@@ -184,8 +180,22 @@ export function WorldMap({
                     className="drop-shadow-lg"
                   />
                   <circle cx={startPoint.x} cy={startPoint.y} r="3" fill={lineColor} opacity="0.5">
-                    <animate attributeName="r" from="3" to="12" dur="2s" begin="0s" repeatCount="indefinite" />
-                    <animate attributeName="opacity" from="0.6" to="0" dur="2s" begin="0s" repeatCount="indefinite" />
+                    <animate
+                      attributeName="r"
+                      from="3"
+                      to="12"
+                      dur="2s"
+                      begin="0s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      from="0.6"
+                      to="0"
+                      dur="2s"
+                      begin="0s"
+                      repeatCount="indefinite"
+                    />
                   </circle>
                 </motion.g>
 
@@ -196,7 +206,12 @@ export function WorldMap({
                     transition={{ delay: 0.5 * i + 0.3, duration: 0.5 }}
                     className="pointer-events-none"
                   >
-                    <foreignObject x={startPoint.x - 55} y={startPoint.y - 35} width="110" height="30">
+                    <foreignObject
+                      x={startPoint.x - 55}
+                      y={startPoint.y - 35}
+                      width="110"
+                      height="30"
+                    >
                       <div className="flex items-center justify-center h-full">
                         <span className="font-mono-spec text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-md bg-black/90 text-white border border-white/15 shadow-sm">
                           {dot.start.label}
@@ -225,8 +240,22 @@ export function WorldMap({
                     className="drop-shadow-lg"
                   />
                   <circle cx={endPoint.x} cy={endPoint.y} r="3" fill={lineColor} opacity="0.5">
-                    <animate attributeName="r" from="3" to="12" dur="2s" begin="0.5s" repeatCount="indefinite" />
-                    <animate attributeName="opacity" from="0.6" to="0" dur="2s" begin="0.5s" repeatCount="indefinite" />
+                    <animate
+                      attributeName="r"
+                      from="3"
+                      to="12"
+                      dur="2s"
+                      begin="0.5s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      from="0.6"
+                      to="0"
+                      dur="2s"
+                      begin="0.5s"
+                      repeatCount="indefinite"
+                    />
                   </circle>
                 </motion.g>
 

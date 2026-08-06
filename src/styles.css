@@ -262,6 +262,75 @@
   pointer-events: none;
 }
 
+/* Mobile stand-in for the hero's chrome blob.
+
+   The real thing is a WebGL sphere whose every vertex evaluates six 3D simplex
+   noises — fine on a desktop GPU, a frame-killer on a phone, and it is a second
+   live WebGL context on top of the shader background. On mobile the blob is not
+   rendered at all (see HeroChrome/Hero) and this takes its place: two stacked
+   conic/radial gradients that read as the same brushed metal, animated only
+   through `transform` and `opacity`, so the whole thing lives on the compositor
+   and costs the main thread nothing.
+
+   The palette is deliberately dark. A bright silver disc is what a matcap
+   sphere looks like in isolation, but the act-two headline sits directly on
+   top of it — at anything like full brightness the white copy simply
+   disappeared into it. So this is mostly near-black metal with one specular
+   highlight and a violet grazing rim, which is the same read as the WebGL
+   version, and leaves the text the brightest thing on screen. */
+.chrome-orb-fallback {
+  background:
+    radial-gradient(
+      circle at 33% 26%,
+      rgba(244, 246, 250, 0.92) 0%,
+      rgba(150, 156, 170, 0.45) 11%,
+      rgba(52, 55, 64, 0.55) 30%,
+      rgba(14, 15, 19, 0.95) 58%,
+      #050507 80%
+    ),
+    #000;
+  box-shadow:
+    0 0 70px 6px rgba(150, 160, 190, 0.1),
+    inset -14px -18px 55px rgba(0, 0, 0, 0.95);
+  animation: chrome-orb-drift 9s ease-in-out infinite;
+}
+.chrome-orb-fallback::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 210deg,
+    rgba(255, 255, 255, 0) 0deg,
+    rgba(255, 255, 255, 0.12) 60deg,
+    rgba(255, 255, 255, 0) 140deg,
+    rgba(168, 85, 247, 0.16) 240deg,
+    rgba(255, 255, 255, 0) 330deg
+  );
+  mix-blend-mode: screen;
+  animation: chrome-orb-sheen 14s linear infinite;
+}
+@keyframes chrome-orb-drift {
+  0%,
+  100% {
+    transform: translate3d(0, -2%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, 2%, 0) scale(1.045);
+  }
+}
+@keyframes chrome-orb-sheen {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chrome-orb-fallback,
+  .chrome-orb-fallback::after {
+    animation: none;
+  }
+}
+
 /* Idle drift for the projects-carousel arrows: a slow compositor-only nudge
    toward the arrow's direction (set via --drift per side), paused while the
    visitor is hovering so it never fights the hover interaction. */

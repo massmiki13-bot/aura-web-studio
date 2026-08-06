@@ -245,13 +245,17 @@ export function pageSeo(options: PageSeoOptions = {}): {
     for (const l of LOCALES) {
       links.push({
         rel: "alternate",
-        hreflang: l,
+        // `hrefLang`, not `hreflang`: React does pass the lowercase form
+        // through to the HTML, but it logs an "Invalid DOM property" error
+        // for it on every single page load. The rendered attribute is
+        // identical either way — HTML attribute names are case-insensitive.
+        hrefLang: l,
         href: absoluteUrl(localizedPath(l, options.subPath)),
       });
     }
     links.push({
       rel: "alternate",
-      hreflang: "x-default",
+      hrefLang: "x-default",
       href: absoluteUrl(localizedPath(DEFAULT_LOCALE, options.subPath)),
     });
   }

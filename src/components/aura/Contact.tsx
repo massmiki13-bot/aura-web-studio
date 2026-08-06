@@ -26,19 +26,26 @@ export function Contact() {
       return;
     }
     setLoading(true);
-    const { error } = await supabase
-      .from("contact_messages")
-      .insert({ name: name.trim(), email: email.trim(), message: message.trim() });
-    setLoading(false);
-    if (error) {
+    try {
+      // `supabase` is a lazily-built proxy that *throws* on first use if its
+      // env vars are missing (see integrations/supabase/client). Uncaught, that
+      // rejected the handler before `setLoading(false)` could run: the button
+      // sat on "Invio…" forever and the visitor got no error and no message
+      // sent. Every failure has to end in a toast and an unlocked form.
+      const { error } = await supabase
+        .from("contact_messages")
+        .insert({ name: name.trim(), email: email.trim(), message: message.trim() });
+      if (error) throw error;
+      setSent(true);
+      setName("");
+      setEmail("");
+      setMessage("");
+      toast.success(t("contact.success"));
+    } catch {
       toast.error(t("contact.errSend"));
-      return;
+    } finally {
+      setLoading(false);
     }
-    setSent(true);
-    setName("");
-    setEmail("");
-    setMessage("");
-    toast.success(t("contact.success"));
   };
 
   return (
@@ -231,25 +238,47 @@ export function Footer() {
                 {t("footer.privacy")}
               </Link>
             </li>
-            <li>
-              <a href="#" className="hover:text-primary transition-colors">
-                {t("footer.terms")}
-              </a>
-            </li>
+            {/* No terms page exists yet, so this was `href="#"` — a link that
+                scrolls to the top of the page and looks broken. Until there is
+                one, the privacy policy is the only legal document we actually
+                have. */}
             <li className="pt-2 flex gap-4">
-              <a href="#" className="hover:text-primary transition-colors">
+              {/* Every one of these was `href="#"` too. They point at the
+                  profiles already declared as `sameAs` in the Organization
+                  schema (see @/lib/seo), so the footer and the structured data
+                  now agree instead of contradicting each other. */}
+              <a
+                href={SITE_CONFIG.social.instagram}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+                className="hover:text-primary transition-colors"
+              >
                 IG
               </a>
-              <a href="#" className="hover:text-primary transition-colors">
+              <a
+                href={SITE_CONFIG.social.behance}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Behance"
+                className="hover:text-primary transition-colors"
+              >
                 BE
               </a>
-              <a href="#" className="hover:text-primary transition-colors">
+              <a
+                href={SITE_CONFIG.social.github}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub"
+                className="hover:text-primary transition-colors"
+              >
                 GH
               </a>
               <a
                 href={SITE_CONFIG.social.linkedin}
                 target="_blank"
                 rel="noreferrer"
+                aria-label="LinkedIn"
                 className="hover:text-primary transition-colors"
               >
                 LI

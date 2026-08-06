@@ -1,3 +1,4 @@
+import { Suspense, lazy, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowLeft, Clock, Users2, MapPin } from "lucide-react";
@@ -8,7 +9,15 @@ import { pageSeo, SITE_CONFIG, localizedPath, type Locale } from "@/lib/seo";
 import { SparklesCanvas } from "@/components/ui/sparkles-canvas";
 import { members } from "@/lib/team-members";
 import { TeamMemberCard } from "@/components/aura/TeamMemberCard";
-import { WorldMap } from "@/components/ui/world-map";
+import { useNearViewport } from "@/hooks/use-near-viewport";
+// Code-split, and mounted only once it's actually approaching the viewport.
+// WorldMap renders its dot grid with `dotted-map`, which drags in proj4, mgrs
+// and wkt-parser — around 700 kB of geo libraries, for a decorative graphic
+// well below the fold that a visitor here for the phone number may never
+// reach. Statically imported it was the single largest thing on this route.
+const WorldMap = lazy(() =>
+  import("@/components/ui/world-map").then((m) => ({ default: m.WorldMap })),
+);
 
 // Bolzano as the studio's hub, fanning out to a worldwide set of cities —
 // a deliberate "reachable anywhere" statement to pair with the h24 remote
@@ -204,9 +213,7 @@ function ContactPage() {
           <p className="text-white/50 text-sm md:text-base font-light leading-relaxed max-w-2xl mb-8">
             {t("contactPage.mapCaption")}
           </p>
-          <div className="rounded-[2rem] border border-white/10 p-2 bg-neutral-950">
-            <WorldMap dots={studioDots} lineColor="oklch(0.85 0.18 200)" />
-          </div>
+          <LazyWorldMap />
         </motion.div>
 
         {/* Founders Grid */}
@@ -219,5 +226,34 @@ function ContactPage() {
 
       <Footer />
     </main>
+  );
+}
+
+/**
+ * The world map, deferred twice over: the chunk is only fetched when the
+ * graphic nears the viewport, and the box it will fill is reserved at exactly
+ * its final aspect ratio so nothing below it shifts when it arrives.
+ */
+function LazyWorldMap() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { mounted } = useNearViewport(ref, 600);
+
+  return (
+    <div ref={ref} className="rounded-[2rem] border border-white/10 p-2 bg-neutral-950">
+      {mounted ? (
+        <Suspense fallback={<WorldMapPlaceholder />}>
+          <WorldMap dots={studioDots} lineColor="oklch(0.85 0.18 200)" />
+        </Suspense>
+      ) : (
+        <WorldMapPlaceholder />
+      )}
+    </div>
+  );
+}
+
+// Same box the real map occupies at every breakpoint — see WorldMap's root.
+function WorldMapPlaceholder() {
+  return (
+    <div className="w-full aspect-[2/1] md:aspect-[2.5/1] lg:aspect-[2/1] rounded-2xl bg-black" />
   );
 }

@@ -5,7 +5,9 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Globe, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LANGUAGES, getLocaleFromPathname, type LanguageCode } from "@/i18n";
+import { getLenis } from "@/lib/lenis";
 import { localizedPath } from "@/lib/seo";
+import { useOverlayRoot } from "@/lib/overlay-root";
 import { PlanRequestModal, type PlanRequestTarget } from "@/components/aura/PlanRequestModal";
 
 // The only sub-paths that actually have translated content at every locale
@@ -103,10 +105,9 @@ export function Nav() {
   const homeHref = localizedPath(getLocaleFromPathname(pathname), "");
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
-  // Portal target only exists once mounted on the client — see the portal
-  // below for why the mobile overlay needs one at all.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // Client-only container the overlay portals into — see @/lib/overlay-root
+  // (and the portal below) for why it must not be <body> itself.
+  const overlayRoot = useOverlayRoot();
   const [quoteOpen, setQuoteOpen] = useState(false);
 
   // Slide the bar away while scrolling down, bring it back on any upward
@@ -139,10 +140,28 @@ export function Nav() {
     { label: t("nav.contact"), href: localizedPath(locale, "contact"), type: "route" as const },
   ];
 
+  // Any navigation closes the menu. The in-menu links close it themselves, but
+  // a back/forward gesture or a language switch does not — and an overlay that
+  // survives a route change reads as a frozen page.
+  useEffect(() => setOpen(false), [pathname]);
+
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+    // Lenis drives the page and keeps easing toward a scroll position of its
+    // own; an overflow lock alone doesn't reach it, which let the page creep
+    // underneath the overlay. Stop it at the source and hand it back on close.
+    const lenis = getLenis();
+    lenis?.stop();
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = prev;
+      lenis?.start();
+      window.removeEventListener("keydown", onKey);
     };
   }, [open]);
 
@@ -190,9 +209,14 @@ export function Nav() {
           </button>
         </nav>
         <button
+          type="button"
           aria-label="Menu"
+          aria-expanded={open}
+          aria-controls="mobile-menu"
           onClick={() => setOpen((v) => !v)}
-          className="md:hidden relative w-10 h-10 flex flex-col items-center justify-center gap-1.5"
+          // Above the overlay it opens (z-40): the button is the close control
+          // too, and a tap on it must never be swallowed by the overlay.
+          className="md:hidden relative z-50 w-10 h-10 flex flex-col items-center justify-center gap-1.5"
           style={{ willChange: "transform" }}
         >
           <motion.span
@@ -206,20 +230,24 @@ export function Nav() {
         </button>
       </header>
 
-      {/* Ported to <body>: this overlay is a sibling of <Hero/> under the same
-          <main>, and Hero's GSAP ScrollTrigger pin wraps itself in a
-          `.pin-spacer` div that React never sees. That silently invalidates
-          React's record of <main>'s children, so this AnimatePresence's own
-          insert (computed against the stale child list) targeted a node no
-          longer actually there and threw insertBefore/NotFoundError, crashing
-          the whole app — reproducible only on "/", the one route that pins
-          anything. Rendering into <body> instead removes it from that shared,
-          GSAP-touched reconciliation parent entirely. */}
-      {mounted &&
+      {/* Portalled out of the route tree: this overlay is a sibling of <Hero/>
+          under the same <main>, and Hero's GSAP ScrollTrigger pin wraps itself
+          in a `.pin-spacer` div that React never sees. That silently
+          invalidates React's record of <main>'s children, so this
+          AnimatePresence's own insert (computed against the stale child list)
+          targeted a node no longer actually there and threw
+          insertBefore/NotFoundError, crashing the whole app to the root error
+          page — reproducible only on "/", the one route that pins anything.
+          The target is a standalone container, *not* <body>: this app hydrates
+          <html>, so <body> is itself React-rendered with React-owned children
+          and portalling there only moved the same conflict one level up. See
+          @/lib/overlay-root. */}
+      {overlayRoot &&
         createPortal(
           <AnimatePresence>
             {open && (
               <motion.div
+                id="mobile-menu"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -234,7 +262,17 @@ export function Nav() {
                     const anim = {
                       initial: { y: 60, opacity: 0 },
                       animate: { y: 0, opacity: 1 },
-                      exit: { y: 30, opacity: 0 },
+                      // Explicit, delay-free exit. Without it each link
+                      // inherited its own entrance delay on the way out, and
+                      // AnimatePresence holds the overlay until its slowest
+                      // child has left — so dismissing the menu left a
+                      // full-screen black sheet up for about a second, which
+                      // reads as a tap that didn't register.
+                      exit: {
+                        y: 30,
+                        opacity: 0,
+                        transition: { delay: 0, duration: 0.25 },
+                      },
                       transition: {
                         delay: 0.1 + i * 0.07,
                         ease: [0.22, 1, 0.36, 1] as const,
@@ -256,7 +294,28 @@ export function Nav() {
                       </motion.a>
                     );
                   })}
-                  <div className="mt-10 flex justify-center">
+                  {/* The quote CTA existed only in the desktop bar, so the
+                      primary conversion action was unreachable on a phone. */}
+                  <motion.button
+                    type="button"
+                    initial={{ y: 40, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    // Explicit exit transition: the entrance delay lands this
+                    // last in the stagger, and AnimatePresence holds the whole
+                    // overlay until its slowest child has finished leaving —
+                    // inheriting that delay on the way out kept the menu on
+                    // screen for a second after it had been dismissed.
+                    exit={{ y: 20, opacity: 0, transition: { delay: 0, duration: 0.25 } }}
+                    transition={{ delay: 0.1 + links.length * 0.07, duration: 0.6 }}
+                    onClick={() => {
+                      setOpen(false);
+                      setQuoteOpen(true);
+                    }}
+                    className="mt-6 inline-flex items-center rounded-full border border-white/20 px-7 py-3 font-mono-spec text-[11px] uppercase tracking-widest text-white/80 hover:border-white/50 hover:text-white transition-colors"
+                  >
+                    {t("nav.cta", "Richiedi preventivo")}
+                  </motion.button>
+                  <div className="mt-6 flex justify-center">
                     <LanguageSwitcher dropUp onSelect={() => setOpen(false)} />
                   </div>
                 </nav>

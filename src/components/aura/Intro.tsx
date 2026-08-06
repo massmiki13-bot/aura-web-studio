@@ -7,6 +7,7 @@ import { gsap } from "@/lib/gsap";
 import { rafDebounce } from "@/lib/utils";
 import { getLenis } from "@/lib/lenis";
 import { introWillPlay, markBootReady, markIntroSeen } from "@/lib/boot";
+import { useOverlayRoot } from "@/lib/overlay-root";
 
 /**
  * The first-visit intro — a 3D "genesis" sequence, deliberately not a curtain
@@ -632,6 +633,7 @@ export function Intro() {
   const finished = useRef(false);
   const skipping = useRef(false);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const overlayRoot = useOverlayRoot();
 
   // Decide once, on the client. The answer was already settled before the page
   // painted (@/lib/boot), so this only reads it back.
@@ -781,15 +783,16 @@ export function Intro() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage]);
 
-  if (stage !== "playing") return null;
+  if (stage !== "playing" || !overlayRoot) return null;
 
-  // Ported to <body> rather than rendered inline: this overlay is a sibling of
-  // <Nav/> under the same <main>, and its own timed unmount (~3s in, or on
-  // skip) raced the mobile nav's AnimatePresence overlay mounting in the same
-  // commit — React would occasionally lose track of which sibling DOM node to
-  // insert before and throw insertBefore/NotFoundError, crashing the whole
-  // page (only reachable on "/", the one route that renders this at all). A
-  // portal removes it from that shared reconciliation parent entirely.
+  // Portalled out of the route tree rather than rendered inline: this overlay
+  // is a sibling of <Nav/> under the same <main>, and its own timed unmount
+  // (~3s in, or on skip) raced the mobile nav's AnimatePresence overlay
+  // mounting in the same commit — React would occasionally lose track of which
+  // sibling DOM node to insert before and throw insertBefore/NotFoundError,
+  // crashing the whole page (only reachable on "/", the one route that renders
+  // this at all). The target is a standalone container rather than <body>,
+  // which React owns here too — see @/lib/overlay-root.
   return createPortal(
     <div
       ref={rootRef}

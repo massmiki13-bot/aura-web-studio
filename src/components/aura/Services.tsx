@@ -1,34 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollTrigger } from "@/lib/gsap";
+import { useIsDesktopViewport } from "@/hooks/use-desktop-viewport";
+import { tList } from "@/lib/utils";
 import { SplineScene } from "./SplineScene";
-
-const DESKTOP_QUERY = "(min-width: 768px)"; // Tailwind's `md` breakpoint
-
-/**
- * Is the viewport at least `md` wide? Null until measured on the client, so
- * SSR and the very first client render agree (both render neither branch's
- * *content-bearing* component — see the null-check below) and there's
- * nothing to hydration-mismatch on; the real branch commits a beat later.
- *
- * Needed because `useNearViewport` (SplineScene's lazy-mount gate) measures
- * `getBoundingClientRect()`, not CSS — a `display:none` element collapses to
- * a (0,0,0,0) box, which reads as "at the top of the viewport" and mounts
- * the WebGL scene anyway. Hiding the Spline branch with Tailwind's `hidden
- * md:block` alone still downloaded the multi-MB runtime on phones; only not
- * rendering `<SplineScene>` at all on mobile stops that.
- */
-function useIsDesktopViewport() {
-  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
-  useEffect(() => {
-    const mq = window.matchMedia(DESKTOP_QUERY);
-    const update = () => setIsDesktop(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-  return isDesktop;
-}
 
 /**
  * "Cosa offriamo": a full-screen section whose entire space is the mouse-
@@ -79,27 +54,36 @@ export function Services() {
       id="services"
       ref={sectionRef}
       // Desktop keeps the exact original box (h-screen, clipped) since it's
-      // a full-bleed backdrop for the Spline scene. Mobile switches to a
-      // flow container instead: the offer cards need to size to their own
-      // content, not be clipped to one screen height.
-      className="relative min-h-screen md:h-screen w-full overflow-visible md:overflow-hidden bg-black"
+      // a full-bleed backdrop for the Spline scene. Mobile sizes to its own
+      // content instead — it previously carried `min-h-screen` from when a
+      // full-bleed scene lived here, which left a screen-height of dead black
+      // under the last offer card before the next section.
+      className="relative md:h-screen w-full overflow-visible md:overflow-hidden bg-black"
     >
       {/* The Spline scene fills the section and receives pointer events so it
           reacts to the mouse the same way it does in the Spline editor.
-          Desktop-only (unchanged): the scene's camera framing is authored for
-          a wide viewport, and doesn't recompose for a narrow, tall one. Not
-          rendered at all on mobile (see useIsDesktopViewport) rather than
-          just CSS-hidden, so the heavy runtime + scene never download there. */}
-      {isDesktop !== false && (
-        <div className="absolute inset-0 hidden md:block">
+          Desktop-only: the scene's camera framing is authored for a wide
+          viewport and doesn't recompose for a narrow, tall one, and the
+          runtime alone is several megabytes plus a long parse.
+
+          Gated on `=== true`, not `!== false`. On the render before the media
+          query is measured `isDesktop` is null, and rendering <SplineScene>
+          for even that one pass was enough: its mount effect registers the
+          runtime pre-warm on the boot/scroll-intent gates, and those fire
+          later regardless of whether the component is still mounted. Phones
+          were still downloading and parsing the whole Spline runtime for a
+          scene they never showed. */}
+      {isDesktop === true && (
+        <div className="absolute inset-0">
           <SplineScene className="absolute inset-0" />
         </div>
       )}
 
-      {/* Mobile-only replacement: what used to be a Spline scene (badly
-          cropped at a portrait aspect ratio) is now a short list of concrete
-          offerings — in normal flow, not absolute, so the section grows to
-          fit it instead of clipping. */}
+      {/* Mobile replacement: what used to be a Spline scene (badly cropped at
+          a portrait aspect ratio) is now a short list of concrete offerings —
+          in normal flow, not absolute, so the section grows to fit it instead
+          of clipping. Rendered while `isDesktop` is still null too, so the
+          section is never momentarily empty on a phone. */}
       {isDesktop !== true && (
         <div className="md:hidden pt-32 pb-16 px-6">
           <ServicesMobileOffer />
@@ -121,19 +105,15 @@ export function Services() {
  */
 function ServicesMobileOffer() {
   const { t } = useTranslation();
-  const raw = t("services.mobileItems", { returnObjects: true });
-  // Defensive: a transient SSR/i18n resource-loading race must never crash
-  // the page — same class of bug already hit on /contact and /pricing this
-  // session (raw i18n resources not yet ready server-side right after an
-  // edit). Empty list just means the cards don't render, not a 500.
-  const items = Array.isArray(raw) ? (raw as { title: string; desc: string }[]) : [];
+  // Guarded, never cast: a transient SSR/i18n resource-loading race must not
+  // crash the page. Empty list means the cards don't render, not a 500.
+  const items = tList<{ title: string; desc: string }>(
+    t("services.mobileItems", { returnObjects: true }),
+  );
   return (
     <div className="relative z-10 space-y-4">
       {items.map((item) => (
-        <div
-          key={item.title}
-          className="bg-neutral-950 rounded-2xl border border-white/10 p-5"
-        >
+        <div key={item.title} className="bg-neutral-950 rounded-2xl border border-white/10 p-5">
           <h3 className="font-display text-lg font-semibold tracking-tight text-white mb-1.5">
             {item.title}
           </h3>
