@@ -78,7 +78,10 @@ function ogSvg() {
 }
 
 function renderPng(svg, width) {
-  const resvg = new Resvg(svg, { fitTo: { mode: "width", value: width }, background: "rgba(0,0,0,0)" });
+  const resvg = new Resvg(svg, {
+    fitTo: { mode: "width", value: width },
+    background: "rgba(0,0,0,0)",
+  });
   return resvg.render().asPng();
 }
 
@@ -108,7 +111,11 @@ async function main() {
   await out("mstile-150x150.png", renderPng(monogramSvg({ size: 512, radius: 0 }), 150));
 
   // Multi-resolution .ico
-  const ico = await pngToIco([renderPng(baseSvg, 16), renderPng(baseSvg, 32), renderPng(baseSvg, 48)]);
+  const ico = await pngToIco([
+    renderPng(baseSvg, 16),
+    renderPng(baseSvg, 32),
+    renderPng(baseSvg, 48),
+  ]);
   await out("favicon.ico", ico);
 
   // Open Graph share image

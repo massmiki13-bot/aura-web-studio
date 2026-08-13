@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
@@ -349,7 +351,7 @@ function ChromeBlob({
   // used to keep the scroll zoom inside the canvas — see the clamp below.
   const viewport = useThree((s) => s.viewport);
 
-  const matcap = useMemo(makeMatcapTexture, []);
+  const matcap = useMemo(() => makeMatcapTexture(), []);
   useEffect(() => () => matcap.dispose(), [matcap]);
 
   const geometry = useMemo(() => makeChromeGeometry(1.45, detail), [detail]);

@@ -1,5 +1,12 @@
-import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
+/**
+ * Translation data and the locale vocabulary. Deliberately free of side
+ * effects: this module is imported by server components, route metadata and
+ * the sitemap, and it used to initialise a shared i18next singleton at import
+ * time. A singleton is the one thing that cannot exist here — concurrent
+ * requests in different languages would race each other through it — so the
+ * instance is built per render by @/i18n/provider instead, and this file is
+ * only ever data.
+ */
 
 export const LANGUAGES = [
   { code: "it", label: "Italiano", short: "IT" },
@@ -912,21 +919,17 @@ const resources = {
 
 export { resources };
 
+/** Every locale that has a prefix in the URL — i.e. all but the default. */
+export const PREFIXED_LANGUAGES = LANGUAGES.filter((l) => l.code !== DEFAULT_LANGUAGE).map(
+  (l) => l.code,
+);
+
+export function isLanguageCode(value: string | undefined): value is LanguageCode {
+  return !!value && LANGUAGES.some((l) => l.code === value);
+}
+
 /** Derive the active locale from a pathname like "/de/pricing" (falls back to the default). */
 export function getLocaleFromPathname(pathname: string): LanguageCode {
-  const match = /^\/(de|en|es)(\/|$)/.exec(pathname);
-  const code = match?.[1];
-  return code && LANGUAGES.some((l) => l.code === code) ? (code as LanguageCode) : DEFAULT_LANGUAGE;
+  const code = /^\/([a-z]{2})(?:\/|$)/.exec(pathname)?.[1];
+  return isLanguageCode(code) ? code : DEFAULT_LANGUAGE;
 }
-
-if (!i18n.isInitialized) {
-  i18n.use(initReactI18next).init({
-    resources,
-    lng: DEFAULT_LANGUAGE,
-    fallbackLng: DEFAULT_LANGUAGE,
-    interpolation: { escapeValue: false },
-    react: { useSuspense: false },
-  });
-}
-
-export default i18n;

@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import { rafDebounce } from "@/lib/utils";
 
@@ -77,7 +79,15 @@ class Dot {
   size: number;
   phase: number;
 
-  constructor(sx: number, sy: number, tx: number, ty: number, now: number, fromColor: Color, toColor: Color) {
+  constructor(
+    sx: number,
+    sy: number,
+    tx: number,
+    ty: number,
+    now: number,
+    fromColor: Color,
+    toColor: Color,
+  ) {
     this.sx = sx;
     this.sy = sy;
     this.tx = tx;
@@ -90,7 +100,14 @@ class Dot {
     this.phase = Math.random() * Math.PI * 2;
   }
 
-  retarget(tx: number, ty: number, now: number, toColor: Color, base: { x: number; y: number }, fromColor: Color) {
+  retarget(
+    tx: number,
+    ty: number,
+    now: number,
+    toColor: Color,
+    base: { x: number; y: number },
+    fromColor: Color,
+  ) {
     this.sx = base.x;
     this.sy = base.y;
     this.tx = tx;
@@ -210,7 +227,9 @@ export function ParticleText({ words, className = "" }: { words: string[]; class
           d.retarget(c.x, c.y, now, { ...color }, base, base.color);
         } else {
           const spawn = edgeSpawn();
-          dots.push(new Dot(spawn.x, spawn.y, c.x, c.y, now, { r: 20, g: 20, b: 22 }, { ...color }));
+          dots.push(
+            new Dot(spawn.x, spawn.y, c.x, c.y, now, { r: 20, g: 20, b: 22 }, { ...color }),
+          );
         }
       }
       // Excess dots from a shorter word: send them back out to the edges

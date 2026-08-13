@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 
 type Shape = {
@@ -20,29 +22,64 @@ type Shape = {
 // brand-clashing colors.
 const SHAPES: Shape[] = [
   {
-    depth: 1.4, base: 12, delay: 0, phase: 0, fspeed: 0.55, famp: 16,
-    width: "clamp(280px,42vw,600px)", height: "clamp(70px,10vw,140px)",
-    left: "-12%", top: "14%",
+    depth: 1.4,
+    base: 12,
+    delay: 0,
+    phase: 0,
+    fspeed: 0.55,
+    famp: 16,
+    width: "clamp(280px,42vw,600px)",
+    height: "clamp(70px,10vw,140px)",
+    left: "-12%",
+    top: "14%",
   },
   {
-    depth: 1.1, base: -15, delay: 200, phase: 1.3, fspeed: 0.45, famp: 14,
-    width: "clamp(230px,35vw,500px)", height: "clamp(60px,9vw,120px)",
-    right: "-8%", top: "68%",
+    depth: 1.1,
+    base: -15,
+    delay: 200,
+    phase: 1.3,
+    fspeed: 0.45,
+    famp: 14,
+    width: "clamp(230px,35vw,500px)",
+    height: "clamp(60px,9vw,120px)",
+    right: "-8%",
+    top: "68%",
   },
   {
-    depth: 1.8, base: -8, delay: 100, phase: 2.1, fspeed: 0.6, famp: 12,
-    width: "clamp(160px,22vw,300px)", height: "clamp(45px,6vw,80px)",
-    left: "3%", bottom: "4%",
+    depth: 1.8,
+    base: -8,
+    delay: 100,
+    phase: 2.1,
+    fspeed: 0.6,
+    famp: 12,
+    width: "clamp(160px,22vw,300px)",
+    height: "clamp(45px,6vw,80px)",
+    left: "3%",
+    bottom: "4%",
   },
   {
-    depth: 2.2, base: 20, delay: 300, phase: 0.7, fspeed: 0.7, famp: 10,
-    width: "clamp(110px,15vw,200px)", height: "clamp(32px,4.5vw,60px)",
-    right: "12%", top: "8%",
+    depth: 2.2,
+    base: 20,
+    delay: 300,
+    phase: 0.7,
+    fspeed: 0.7,
+    famp: 10,
+    width: "clamp(110px,15vw,200px)",
+    height: "clamp(32px,4.5vw,60px)",
+    right: "12%",
+    top: "8%",
   },
   {
-    depth: 2.6, base: -25, delay: 400, phase: 1.9, fspeed: 0.8, famp: 9,
-    width: "clamp(90px,11vw,150px)", height: "clamp(24px,3.2vw,40px)",
-    left: "16%", top: "3%",
+    depth: 2.6,
+    base: -25,
+    delay: 400,
+    phase: 1.9,
+    fspeed: 0.8,
+    famp: 9,
+    width: "clamp(90px,11vw,150px)",
+    height: "clamp(24px,3.2vw,40px)",
+    left: "16%",
+    top: "3%",
   },
 ];
 
@@ -236,7 +273,10 @@ export function FloatingShapesBackground({
   }, []);
 
   return (
-    <div data-floating-shapes className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}>
+    <div
+      data-floating-shapes
+      className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}
+    >
       {/* No blur on this one. It is a two-stop linear gradient across the
           whole viewport — there is no detail in it for a 64px Gaussian to
           soften, so the filter was buying a viewport-sized backing store and
@@ -249,7 +289,8 @@ export function FloatingShapesBackground({
             "linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)",
           backgroundSize: "64px 64px",
           maskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, black 10%, transparent 75%)",
-          WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, black 10%, transparent 75%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 70% 60% at 50% 40%, black 10%, transparent 75%)",
         }}
       />
       <div

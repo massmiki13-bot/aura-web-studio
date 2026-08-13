@@ -1,30 +1,27 @@
-/**
- * SEO Configuration & Utilities
- * Single source of truth for all metadata across the site.
- *
- * To change the production domain later, set VITE_SITE_URL in Vercel
- * (e.g. https://www.your-domain.com) — no code change needed. The static
- * public/robots.txt and public/sitemap.xml must be updated to match.
- */
+import type { Metadata, Viewport } from "next";
 
 import { LANGUAGES, DEFAULT_LANGUAGE, type LanguageCode } from "@/i18n";
 
-type MetaDescriptor =
-  | { title: string }
-  | { name: string; content: string }
-  | { property: string; content: string }
-  | { charSet: string }
-  | { httpEquiv: string; content: string };
+/**
+ * SEO configuration and metadata builders — the single source of truth for
+ * every tag the site puts in its head.
+ *
+ * This used to hand-roll arrays of meta/link descriptors for TanStack's
+ * `head()`. Next resolves metadata itself: it dedupes across the layout/page
+ * boundary, resolves relative URLs against `metadataBase`, and renders
+ * canonical, hreflang, Open Graph and Twitter from structured fields rather
+ * than from a list of tag literals. So the job here is to describe pages, not
+ * to emit tags — which is why there is no longer any function returning
+ * `{ meta, links }`.
+ *
+ * To change the production domain, set NEXT_PUBLIC_SITE_URL. robots.txt and
+ * the sitemap are generated from this file (app/robots.ts, app/sitemap.ts) and
+ * follow automatically — they used to be static files in /public that had to
+ * be remembered separately, and drifted.
+ */
 
-type LinkDescriptor = {
-  rel: string;
-  href: string;
-  [key: string]: string | undefined;
-};
-
-/** Normalize the base URL (strip trailing slash) so joins never double-up. */
-const RAW_BASE_URL =
-  (import.meta.env.VITE_SITE_URL as string | undefined) ?? "https://showoff-project.vercel.app";
+/** Normalized (no trailing slash) so joins never double up. */
+const RAW_BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://showoff-project.vercel.app";
 
 export const SITE_CONFIG = {
   baseUrl: RAW_BASE_URL.replace(/\/+$/, ""),
@@ -50,7 +47,7 @@ export const SITE_CONFIG = {
     "web design di lusso",
     "esperienze web cinematiche",
     "React",
-    "Framer Motion",
+    "Next.js",
     "Italia",
   ],
   author: "Aura Web Studio",
@@ -82,91 +79,31 @@ export const SITE_CONFIG = {
   },
 } as const;
 
+export const LOCALES: readonly LanguageCode[] = LANGUAGES.map((l) => l.code);
+export type Locale = LanguageCode;
+export const DEFAULT_LOCALE: Locale = DEFAULT_LANGUAGE;
+
+/** OG locale strings, keyed the way Open Graph wants them. */
+const OG_LOCALE: Record<Locale, string> = {
+  it: "it_IT",
+  de: "de_DE",
+  en: "en_US",
+  es: "es_ES",
+};
+
 /** Absolute URL for a site-relative path. */
 export function absoluteUrl(path = "/"): string {
   if (/^https?:\/\//.test(path)) return path;
   return `${SITE_CONFIG.baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
-/** Build a page title with the brand suffix (homepage uses the default title). */
-export function buildTitle(pageTitle?: string): string {
-  if (!pageTitle) return SITE_CONFIG.defaultTitle;
-  return `${pageTitle} — ${SITE_CONFIG.titleSuffix}`;
-}
-
 /**
- * Site-wide meta that belong in the document head exactly once.
- * Used only by the root route — never duplicate these per page.
- */
-export function rootMeta(): MetaDescriptor[] {
-  const meta: MetaDescriptor[] = [
-    { charSet: "utf-8" },
-    {
-      name: "viewport",
-      content: "width=device-width, initial-scale=1, viewport-fit=cover",
-    },
-    { name: "keywords", content: SITE_CONFIG.keywords.join(", ") },
-    { name: "author", content: SITE_CONFIG.author },
-    { name: "creator", content: SITE_CONFIG.company },
-    { name: "publisher", content: SITE_CONFIG.company },
-    {
-      name: "robots",
-      content: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
-    },
-    { name: "googlebot", content: "index, follow" },
-    { name: "theme-color", content: "#000000" },
-    { name: "color-scheme", content: "dark light" },
-    { name: "format-detection", content: "telephone=no" },
-    { name: "application-name", content: SITE_CONFIG.name },
-    { name: "apple-mobile-web-app-capable", content: "yes" },
-    { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-    { name: "apple-mobile-web-app-title", content: "Aura Studio" },
-    { name: "mobile-web-app-capable", content: "yes" },
-    { name: "msapplication-TileColor", content: "#000000" },
-    { name: "msapplication-config", content: "/browserconfig.xml" },
-    // Open Graph / Twitter site-level
-    { property: "og:site_name", content: SITE_CONFIG.name },
-    { property: "og:locale", content: SITE_CONFIG.locale },
-    ...SITE_CONFIG.alternateLocales.map((locale) => ({
-      property: "og:locale:alternate",
-      content: locale,
-    })),
-    { name: "twitter:card", content: "summary_large_image" },
-  ];
-
-  if (SITE_CONFIG.verification.google) {
-    meta.push({ name: "google-site-verification", content: SITE_CONFIG.verification.google });
-  }
-  if (SITE_CONFIG.verification.bing) {
-    meta.push({ name: "msvalidate.01", content: SITE_CONFIG.verification.bing });
-  }
-
-  return meta;
-}
-
-/** Site-wide link tags (icons, manifest, preconnect). Canonical is per-page, not here. */
-export function rootLinks(): LinkDescriptor[] {
-  return [
-    { rel: "icon", href: "/favicon.ico", sizes: "any" },
-    { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-    { rel: "icon", href: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
-    { rel: "icon", href: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
-    { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
-    { rel: "manifest", href: "/manifest.webmanifest" },
-    { rel: "sitemap", type: "application/xml", href: "/sitemap.xml" },
-  ];
-}
-
-/** Locales with a real, fully-translated content route (see src/i18n). Privacy/admin/auth stay IT-only. */
-export const LOCALES: readonly LanguageCode[] = LANGUAGES.map((l) => l.code);
-export type Locale = LanguageCode;
-export const DEFAULT_LOCALE: Locale = DEFAULT_LANGUAGE;
-
-/**
- * Build the locale-prefixed path for a logical sub-path ("" for home, no leading slash).
- * No trailing slash on locale-home paths (e.g. "/de", not "/de/") — the router
- * strips trailing slashes with a 307, and canonical/hreflang must point at the
- * final URL, not a redirecting one.
+ * The public path for a logical sub-path in a given locale ("" for home).
+ *
+ * The default locale is unprefixed — see @/proxy, which is what makes that
+ * true at request time. No trailing slash on locale-home paths ("/de", not
+ * "/de/"): canonical and hreflang have to name the URL that actually answers,
+ * not one that redirects to it.
  */
 export function localizedPath(locale: Locale, subPath = ""): string {
   const clean = subPath.replace(/^\/+/, "");
@@ -174,91 +111,162 @@ export function localizedPath(locale: Locale, subPath = ""): string {
   return clean ? `/${locale}/${clean}` : `/${locale}`;
 }
 
-export type PageSeoOptions = {
-  /** Page-specific title (without brand suffix). Omit for the homepage. */
-  title?: string;
-  description?: string;
-  /** Site-relative path, e.g. "/pricing". Drives canonical + og:url. Ignored when `subPath` is set. */
-  path?: string;
-  /**
-   * Logical sub-path shared across locales ("" for home, "pricing" for /pricing).
-   * When set, `path`/canonical are derived from `locale` automatically and hreflang
-   * alternates are emitted for every entry in LOCALES plus x-default. Only pass this
-   * for pages that actually have translated content at every locale.
-   */
-  subPath?: string;
-  locale?: Locale;
-  /** Absolute or site-relative image. Defaults to the site OG image. */
-  image?: string;
-  type?: "website" | "article" | "profile";
-  /** Set true for private pages (admin/auth) to keep them out of the index. */
-  noindex?: boolean;
+/**
+ * Site-wide metadata, applied once in the root layout.
+ *
+ * Everything here is inherited by every page unless that page overrides it,
+ * so none of it should ever be repeated further down the tree.
+ */
+export const rootMetadata: Metadata = {
+  // Lets every other field in this file use site-relative paths and still
+  // render as absolute URLs, which og:image and canonical both require.
+  metadataBase: new URL(SITE_CONFIG.baseUrl),
+  title: {
+    default: SITE_CONFIG.defaultTitle,
+    // Pages set a bare title ("Piani e Prezzi") and the brand is appended
+    // here, so the suffix is written once rather than at every call site.
+    template: `%s — ${SITE_CONFIG.titleSuffix}`,
+  },
+  description: SITE_CONFIG.description,
+  applicationName: SITE_CONFIG.name,
+  keywords: [...SITE_CONFIG.keywords],
+  authors: [{ name: SITE_CONFIG.author }],
+  creator: SITE_CONFIG.company,
+  publisher: SITE_CONFIG.company,
+  formatDetection: { telephone: false },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    siteName: SITE_CONFIG.name,
+    locale: SITE_CONFIG.locale,
+    alternateLocale: [...SITE_CONFIG.alternateLocales],
+  },
+  twitter: { card: "summary_large_image" },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "Aura Studio",
+    statusBarStyle: "black-translucent",
+  },
+  other: {
+    "msapplication-TileColor": "#000000",
+    "msapplication-config": "/browserconfig.xml",
+  },
+  ...(SITE_CONFIG.verification.google || SITE_CONFIG.verification.bing
+    ? {
+        verification: {
+          ...(SITE_CONFIG.verification.google ? { google: SITE_CONFIG.verification.google } : {}),
+          ...(SITE_CONFIG.verification.bing
+            ? { other: { "msvalidate.01": SITE_CONFIG.verification.bing } }
+            : {}),
+        },
+      }
+    : {}),
 };
 
 /**
- * Per-page meta + links. Returns everything a route's `head()` needs:
- * canonical, og/twitter, page title & description, robots noindex when set,
- * and hreflang alternates when `subPath` is set.
+ * Viewport and theme, which Next requires as their own export rather than as
+ * part of `metadata` — they are resolved on a different pass.
  */
-export function pageSeo(options: PageSeoOptions = {}): {
-  meta: MetaDescriptor[];
-  links: LinkDescriptor[];
-} {
+export const rootViewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#000000",
+  colorScheme: "dark light",
+};
+
+export type PageSeoOptions = {
+  /** Page title without the brand suffix. Omit for the homepage. */
+  title?: string;
+  /** Set instead of `title` to bypass the "— Aura Web Studio" template. */
+  absoluteTitle?: string;
+  description?: string;
+  /** Site-relative path, e.g. "/privacy". Ignored when `subPath` is set. */
+  path?: string;
+  /**
+   * Logical sub-path shared across locales ("" for home, "pricing" for
+   * /pricing). When set, canonical is derived from `locale` and hreflang
+   * alternates are emitted for every locale plus x-default. Only pass this for
+   * pages that genuinely exist in every language.
+   */
+  subPath?: string;
+  locale?: Locale;
+  image?: string;
+  type?: "website" | "article" | "profile";
+  /** Private pages (admin/auth) — keeps them out of the index. */
+  noindex?: boolean;
+};
+
+/** Per-page metadata: canonical, hreflang, Open Graph, Twitter, robots. */
+export function pageMetadata(options: PageSeoOptions = {}): Metadata {
   const locale = options.locale ?? DEFAULT_LOCALE;
-  const title = buildTitle(options.title);
   const description = options.description ?? SITE_CONFIG.description;
   const path =
     options.subPath !== undefined ? localizedPath(locale, options.subPath) : (options.path ?? "/");
   const url = absoluteUrl(path);
   const image = absoluteUrl(options.image ?? SITE_CONFIG.ogImagePath);
-  const type = options.type ?? "website";
 
-  const meta: MetaDescriptor[] = [
-    { title },
-    { name: "description", content: description },
-    { property: "og:type", content: type },
-    { property: "og:url", content: url },
-    { property: "og:title", content: title },
-    { property: "og:description", content: description },
-    { property: "og:image", content: image },
-    { property: "og:image:width", content: String(SITE_CONFIG.ogImageWidth) },
-    { property: "og:image:height", content: String(SITE_CONFIG.ogImageHeight) },
-    { property: "og:image:alt", content: SITE_CONFIG.ogImageAlt },
-    { name: "twitter:title", content: title },
-    { name: "twitter:description", content: description },
-    { name: "twitter:image", content: image },
-    { name: "twitter:image:alt", content: SITE_CONFIG.ogImageAlt },
-  ];
+  const title: Metadata["title"] = options.absoluteTitle
+    ? { absolute: options.absoluteTitle }
+    : (options.title ?? { absolute: SITE_CONFIG.defaultTitle });
 
-  if (options.noindex) {
-    // Override the site-wide index directive for private pages.
-    meta.push({ name: "robots", content: "noindex, nofollow" });
-  }
-
-  const links: LinkDescriptor[] = options.noindex
-    ? [] // Don't advertise a canonical for pages we don't want indexed.
-    : [{ rel: "canonical", href: url }];
-
+  const languages: Record<string, string> = {};
   if (options.subPath !== undefined && !options.noindex) {
-    for (const l of LOCALES) {
-      links.push({
-        rel: "alternate",
-        // `hrefLang`, not `hreflang`: React does pass the lowercase form
-        // through to the HTML, but it logs an "Invalid DOM property" error
-        // for it on every single page load. The rendered attribute is
-        // identical either way — HTML attribute names are case-insensitive.
-        hrefLang: l,
-        href: absoluteUrl(localizedPath(l, options.subPath)),
-      });
-    }
-    links.push({
-      rel: "alternate",
-      hrefLang: "x-default",
-      href: absoluteUrl(localizedPath(DEFAULT_LOCALE, options.subPath)),
-    });
+    for (const l of LOCALES) languages[l] = absoluteUrl(localizedPath(l, options.subPath));
+    languages["x-default"] = absoluteUrl(localizedPath(DEFAULT_LOCALE, options.subPath));
   }
 
-  return { meta, links };
+  return {
+    title,
+    description,
+    alternates: {
+      // Deliberately absent on noindex pages: advertising a canonical for a
+      // page we are asking not to be indexed is a contradictory signal.
+      ...(options.noindex ? {} : { canonical: url }),
+      ...(Object.keys(languages).length ? { languages } : {}),
+    },
+    ...(options.noindex ? { robots: { index: false, follow: false } } : {}),
+    openGraph: {
+      type: options.type ?? "website",
+      url,
+      title: typeof title === "string" ? `${title} — ${SITE_CONFIG.titleSuffix}` : title.absolute,
+      description,
+      locale: OG_LOCALE[locale],
+      images: [
+        {
+          url: image,
+          width: SITE_CONFIG.ogImageWidth,
+          height: SITE_CONFIG.ogImageHeight,
+          alt: SITE_CONFIG.ogImageAlt,
+        },
+      ],
+    },
+    twitter: {
+      title: typeof title === "string" ? `${title} — ${SITE_CONFIG.titleSuffix}` : title.absolute,
+      description,
+      images: [{ url: image, alt: SITE_CONFIG.ogImageAlt }],
+    },
+  };
 }
 
 /** JSON-LD: the studio as a LocalBusiness / professional service. */

@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import DottedMap from "dotted-map";
@@ -14,10 +16,9 @@ interface MapProps {
 }
 
 /**
- * Adapted from an Aceternity-style Next.js component: this project runs on
- * Vite/TanStack Start (no next/image, no next-themes) and the site has no
- * light mode, so the map is hardcoded to the dark palette used everywhere
- * else rather than reading a theme.
+ * Adapted from an Aceternity-style component. The site has no light mode, so
+ * the map is hardcoded to the dark palette used everywhere else rather than
+ * reading a theme.
  */
 export function WorldMap({
   dots = [],
@@ -62,6 +63,10 @@ export function WorldMap({
 
   return (
     <div className="w-full aspect-[2/1] md:aspect-[2.5/1] lg:aspect-[2/1] bg-black rounded-2xl relative font-sans overflow-hidden">
+      {/* A data: URI generated at runtime by `dotted-map` — there is no file
+          for the image optimizer to fetch, and nothing to optimize if there
+          were. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={`data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`}
         className="h-full w-full [mask-image:linear-gradient(to_bottom,transparent,white_10%,white_90%,transparent)] pointer-events-none select-none object-cover"

@@ -1,4 +1,7 @@
+"use client";
+
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -243,13 +246,21 @@ function ProjectCard({ project }: { project: Project }) {
       style={{ background: project.bg }}
     >
       {project.image && (
-        <img
+        // `fill` rather than intrinsic dimensions: the card is a sized slot
+        // (see the carousel below) and the image's job is to cover it.
+        //
+        // The slot is clamp(200px, 22vw, 280px) wide and never larger, so the
+        // sizes hint names those two ends. That is the whole point of moving
+        // these off a plain <img>: at 280px on a 2x screen the browser fetches
+        // a 640px-wide AVIF instead of the full-resolution JPEG that was being
+        // shipped for a thumbnail, seventeen times over.
+        <Image
           src={project.image}
           alt={project.alt}
+          fill
+          sizes="(max-width: 640px) 200px, 280px"
           draggable={false}
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 w-full h-full object-cover opacity-70 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-out"
+          className="object-cover opacity-70 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-out"
         />
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />

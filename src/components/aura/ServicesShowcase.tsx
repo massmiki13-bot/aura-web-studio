@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -129,6 +131,13 @@ function SeoIllustration() {
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       className="w-full max-w-[280px] md:max-w-xs"
     >
+      {/* Not next/image, deliberately. This is an SMIL-animated SVG: the
+          optimizer has nothing to do to a vector file, and routing it through
+          /_next/image would require dangerouslyAllowSVG (which exists because
+          serving arbitrary SVG from an image endpoint is an XSS vector) to end
+          up serving the identical bytes. It is gzipped on the wire and sits
+          well below the fold. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/services/data-extraction.svg"
         alt="Illustrazione di estrazione ed elaborazione dati per SEO e performance"
@@ -155,6 +164,7 @@ function PrivacyIllustration() {
       {/* Source illustration is a raster asset with its own color palette —
           grayscale + contrast pulls it into the site's monochrome theme
           instead of leaving its original colors in. */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- animated SVG; see above */}
       <img
         src="/services/password-authentication.svg"
         alt="Illustrazione di autenticazione e protezione dei dati"

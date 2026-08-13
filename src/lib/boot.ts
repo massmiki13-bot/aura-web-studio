@@ -1,7 +1,12 @@
-import { useEffect, useState } from "react";
-
 /**
  * First-load orchestration for the landing page.
+ *
+ * Deliberately free of React. The root layout is a server component and needs
+ * INTRO_CURTAIN_SCRIPT from this module; a single `useState` import anywhere
+ * in the file makes the whole thing unimportable from the server, however
+ * unrelated the rest of it is. The subscription hook therefore lives next door
+ * in `use-boot-ready.ts`, behind its own "use client" boundary, and everything
+ * here is plain functions and module state that either side can call.
  *
  * The home page mounts several independent GPU workloads (the hero's shader
  * background, the hero's chrome blob, the Spline scene one section down) plus
@@ -182,7 +187,7 @@ export function onScrollIntent(cb: () => void, fallbackMs = 6000): () => void {
  * Two frames (so the first paint is on screen) then the first idle slot, with
  * a short timeout so a busy main thread can't hold the visuals back for long.
  */
-function openGateAfterFirstPaint() {
+export function openGateAfterFirstPaint() {
   requestAnimationFrame(() =>
     requestAnimationFrame(() => {
       if (typeof window.requestIdleCallback === "function") {
@@ -202,26 +207,10 @@ let armed = false;
  * must not stay behind a black curtain. The intro has a tighter failsafe of
  * its own; this one only covers the case where it never mounted at all.
  */
-function armFailsafe() {
+export function armFailsafe() {
   if (armed) return;
   armed = true;
   window.setTimeout(markBootReady, 9000);
 }
 
-/**
- * Subscribes a component to the gate. Starts false on the server and on the
- * hydration pass, then flips once — so the heavy children simply aren't in the
- * tree until it's their turn.
- */
-export function useBootReady(): boolean {
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-    if (!isBootReady()) {
-      // No curtain to hide behind: open on our own, just after first paint.
-      if (introWillPlay()) armFailsafe();
-      else openGateAfterFirstPaint();
-    }
-    return onBootReady(() => setOpen(true));
-  }, []);
-  return open;
-}
+/* The React subscription to this gate lives in ./use-boot-ready. */

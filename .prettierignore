@@ -1,8 +1,8 @@
-node_modules
-dist
-.output
-.vinxi
+﻿node_modules
+.next
+.vercel
+out
 pnpm-lock.yaml
 package-lock.json
 bun.lock
-routeTree.gen.ts
+public/services

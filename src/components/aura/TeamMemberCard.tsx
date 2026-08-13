@@ -1,3 +1,6 @@
+"use client";
+
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Phone, Mail, FileText } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -22,12 +25,26 @@ export function TeamMemberCard({ member: m, index }: { member: TeamMember; index
         className="relative aspect-square w-full rounded-2xl overflow-hidden mb-6 border border-white/10"
         style={{ background: `radial-gradient(circle at 50% 30%, ${m.accent}, #050108)` }}
       >
-        <img
+        {/* The container is aspect-square and already `relative`, so `fill`
+            has a box to cover. Three cards across a max-w-6xl grid works out
+            to roughly 360px each, full width once the grid collapses. */}
+        <Image
           src={m.image}
           alt={`${m.name} ${m.surname}`}
-          loading="lazy"
-          decoding="async"
-          className="w-full h-full object-cover"
+          fill
+          sizes="(min-width: 768px) 360px, 100vw"
+          // The first portrait is the LCP element on /team and /contact: it is
+          // the largest thing in the opening viewport on both. next/image is
+          // lazy by default, which meant the browser only discovered it after
+          // layout — measured at 2.1s, most of it spent not knowing the image
+          // existed. `priority` emits a preload instead, so the fetch starts
+          // with the document. The rest stay lazy; they are the same size but
+          // never the LCP candidate, and preloading all three would only make
+          // them compete with the fonts.
+          priority={index === 0}
+          className="object-cover"
+          // A missing portrait falls back to the accent gradient painted on
+          // the container behind it, rather than a broken-image icon.
           onError={(e) => {
             e.currentTarget.style.display = "none";
           }}

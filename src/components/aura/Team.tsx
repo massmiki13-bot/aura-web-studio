@@ -1,6 +1,9 @@
+"use client";
+
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { ServicesShowcase } from "./ServicesShowcase";
 import { ParticleText } from "@/components/ui/particle-text";
@@ -9,7 +12,7 @@ import { localizedPath } from "@/lib/seo";
 
 export function Team() {
   const { t } = useTranslation();
-  const locale = getLocaleFromPathname(useRouterState({ select: (s) => s.location.pathname }));
+  const locale = getLocaleFromPathname(usePathname());
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const bgX = useTransform(scrollYProgress, [0, 1], ["0%", "-40%"]);
@@ -115,7 +118,7 @@ export function Team() {
               transition={{ duration: 0.7, delay: 0.25 }}
               className="mt-12 w-full max-w-xs"
             >
-              <Link to={localizedPath(locale, "pricing")} className="block w-full cursor-pointer">
+              <Link href={localizedPath(locale, "pricing")} className="block w-full cursor-pointer">
                 <button
                   type="submit"
                   className="w-full cursor-pointer hover:shadow-(--shadow-neon) transition-shadow duration-300 rounded-full py-4 px-6 font-mono-spec text-xs uppercase tracking-[0.3em] text-black text-center transition-opacity"

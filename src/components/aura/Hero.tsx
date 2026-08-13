@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { gsap } from "@/lib/gsap";
@@ -5,7 +7,8 @@ import { HeroChrome, type HeroChromeMotion } from "./HeroChrome";
 import { FloatingShapesBackground } from "@/components/ui/floating-shapes-background";
 import { CanvasBoundary } from "@/components/CanvasBoundary";
 import { useIsDesktopViewport } from "@/hooks/use-desktop-viewport";
-import { introWillPlay, useBootReady } from "@/lib/boot";
+import { introWillPlay } from "@/lib/boot";
+import { useBootReady } from "@/lib/use-boot-ready";
 
 /**
  * The hero is one pinned scroll span built around a single object.

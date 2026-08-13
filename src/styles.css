@@ -5,47 +5,33 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Typefaces, self-hosted from /public/fonts.
+ * Typefaces, self-hosted.
  *
  * These used to come from fonts.googleapis.com, which cost a DNS lookup, a TLS
  * handshake and a render-blocking stylesheet to a third party before a single
  * glyph could be requested — on the critical path of the page's LCP. Served
  * from our own origin they ride the connection the document already has.
  *
- * All three are variable fonts, so one file covers every weight the site uses
+ * Clash Display and Satoshi are declared by next/font/local (see @/lib/fonts),
+ * which hashes them into the build output, writes their @font-face, and
+ * preloads exactly the faces a given route renders. They arrive here as the
+ * CSS variables that module defines, because the generated family name is
+ * hashed and cannot be written literally.
+ *
+ * JetBrains Mono stays hand-declared. It sets small spec labels only, never
+ * sits on the critical path, and is split into two unicode-range slices —
+ * exactly as Google served it — so the latin-ext file downloads only if the
+ * page actually uses a character from that range. next/font's `src` array has
+ * no way to express a per-file unicode-range, and the split is worth more here
+ * than the preload would be.
+ *
+ * All are variable fonts, so one file covers every weight the site uses
  * instead of one file per weight (the old link asked for eleven).
  *
  * Licensing: Clash Display and Satoshi are Indian Type Foundry releases under
  * the ITF Free Font License — free for commercial use and redistribution,
  * including self-hosting. JetBrains Mono is SIL OFL 1.1. See fonts/LICENSES.md.
- *
- * font-display: swap everywhere. The hero wordmark is the LCP element on the
- * home page and it is better to paint it in the fallback for a beat than to
- * hold the page on an invisible glyph.
  */
-@font-face {
-  font-family: "Clash Display";
-  src: url("/fonts/ClashDisplay-Variable.woff2") format("woff2");
-  font-weight: 200 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Satoshi";
-  src: url("/fonts/Satoshi-Variable.woff2") format("woff2");
-  font-weight: 300 900;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Satoshi";
-  src: url("/fonts/Satoshi-VariableItalic.woff2") format("woff2");
-  font-weight: 300 900;
-  font-style: italic;
-  font-display: swap;
-}
-/* Split exactly as Google served it: the latin-ext file only downloads if the
-   page actually uses a character from that range. */
 @font-face {
   font-family: "JetBrains Mono";
   src: url("/fonts/JetBrainsMono-latin.woff2") format("woff2");
@@ -236,7 +222,7 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: "Satoshi", system-ui, sans-serif;
+    font-family: var(--font-sans), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
   }
@@ -253,7 +239,7 @@
 
 @layer utilities {
   .font-display {
-    font-family: "Clash Display", "Satoshi", sans-serif;
+    font-family: var(--font-display), var(--font-sans), sans-serif;
     letter-spacing: -0.03em;
   }
   .font-mono-spec {

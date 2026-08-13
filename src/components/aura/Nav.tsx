@@ -1,7 +1,10 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link, useRouterState } from "@tanstack/react-router";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Globe, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LANGUAGES, getLocaleFromPathname, type LanguageCode } from "@/i18n";
@@ -38,7 +41,7 @@ function LanguageSwitcher({
   onSelect?: () => void;
   dropUp?: boolean;
 }) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const current = LANGUAGES.find((l) => l.code === getLocaleFromPathname(pathname)) ?? LANGUAGES[0];
 
@@ -101,7 +104,7 @@ function LanguageSwitcher({
 
 export function Nav() {
   const { t } = useTranslation();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = usePathname();
   const homeHref = localizedPath(getLocaleFromPathname(pathname), "");
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -184,7 +187,7 @@ export function Nav() {
             l.type === "route" ? (
               <Link
                 key={l.href}
-                to={l.href}
+                href={l.href}
                 className="story-link hover:text-primary transition-colors"
               >
                 {l.label}
@@ -284,7 +287,7 @@ export function Nav() {
                     };
                     return l.type === "route" ? (
                       <motion.div key={l.href} {...anim}>
-                        <Link to={l.href} onClick={() => setOpen(false)} className={cls}>
+                        <Link href={l.href} onClick={() => setOpen(false)} className={cls}>
                           {l.label}
                         </Link>
                       </motion.div>

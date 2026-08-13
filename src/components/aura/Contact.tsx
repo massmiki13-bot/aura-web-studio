@@ -1,6 +1,9 @@
+"use client";
+
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link, useRouterState } from "@tanstack/react-router";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +13,7 @@ import { getLocaleFromPathname } from "@/i18n";
 
 export function Contact() {
   const { t } = useTranslation();
-  const locale = getLocaleFromPathname(useRouterState({ select: (s) => s.location.pathname }));
+  const locale = getLocaleFromPathname(usePathname());
   const [focus, setFocus] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -78,7 +81,7 @@ export function Contact() {
             {t("contact.paragraph")}
           </p>
           <Link
-            to={localizedPath(locale, "team")}
+            href={localizedPath(locale, "team")}
             className="glass rounded-2xl p-5 flex items-center gap-4 group hover:border-primary/30 border border-transparent transition-colors cursor-pointer"
           >
             <div className="flex-1">
@@ -168,7 +171,7 @@ export function Contact() {
 
 export function Footer() {
   const { t } = useTranslation();
-  const locale = getLocaleFromPathname(useRouterState({ select: (s) => s.location.pathname }));
+  const locale = getLocaleFromPathname(usePathname());
   const homeHref = localizedPath(locale, "");
   return (
     <footer className="bg-black px-6 md:px-16 py-16 border-t border-white/10">
@@ -204,7 +207,7 @@ export function Footer() {
             </li>
             <li>
               <Link
-                to={localizedPath(locale, "pricing")}
+                href={localizedPath(locale, "pricing")}
                 className="hover:text-primary transition-colors"
               >
                 {t("pricing.title")}
@@ -212,7 +215,7 @@ export function Footer() {
             </li>
             <li>
               <Link
-                to={localizedPath(locale, "team")}
+                href={localizedPath(locale, "team")}
                 className="hover:text-primary transition-colors"
               >
                 {t("nav.team")}
@@ -220,7 +223,7 @@ export function Footer() {
             </li>
             <li>
               <Link
-                to={localizedPath(locale, "contact")}
+                href={localizedPath(locale, "contact")}
                 className="hover:text-primary transition-colors"
               >
                 {t("nav.contact")}
@@ -234,7 +237,7 @@ export function Footer() {
           <p className="text-white/50">{t("footer.legal")}</p>
           <ul className="space-y-2.5">
             <li>
-              <Link to="/privacy" className="hover:text-primary transition-colors">
+              <Link href="/privacy" className="hover:text-primary transition-colors">
                 {t("footer.privacy")}
               </Link>
             </li>
@@ -290,7 +293,7 @@ export function Footer() {
 
       <div className="max-w-7xl mx-auto w-full mt-12 pt-6 border-t border-white/10 font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30 flex flex-wrap items-center justify-between gap-3">
         <span>© 2026 Aura Web Studio</span>
-        <Link to="/auth" className="hover:text-white/60 transition-colors">
+        <Link href="/auth" className="hover:text-white/60 transition-colors">
           Area personale
         </Link>
       </div>

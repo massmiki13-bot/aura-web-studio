@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
@@ -344,7 +346,7 @@ function buildGenesis(): GenesisScene {
 function Genesis({ progress }: { progress: React.MutableRefObject<{ p: number }> }) {
   const gl = useThree((s) => s.gl);
   const camera = useThree((s) => s.camera);
-  const built = useMemo(buildGenesis, []);
+  const built = useMemo(() => buildGenesis(), []);
   const time = useRef(0);
 
   useEffect(() => () => built.dispose(), [built]);

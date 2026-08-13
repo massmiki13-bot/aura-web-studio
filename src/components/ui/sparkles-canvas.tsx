@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import { rafDebounce } from "@/lib/utils";
 
@@ -7,7 +9,13 @@ import { rafDebounce } from "@/lib/utils";
  * baked in beyond plain white (the site is monochrome already), and skips
  * entirely under prefers-reduced-motion.
  */
-export function SparklesCanvas({ className = "", count = 220 }: { className?: string; count?: number }) {
+export function SparklesCanvas({
+  className = "",
+  count = 220,
+}: {
+  className?: string;
+  count?: number;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {

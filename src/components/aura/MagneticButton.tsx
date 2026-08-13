@@ -1,4 +1,12 @@
-import { useRef, type ReactNode, type MouseEvent, type ButtonHTMLAttributes } from "react";
+"use client";
+
+import {
+  useRef,
+  type ComponentType,
+  type ReactNode,
+  type MouseEvent,
+  type ButtonHTMLAttributes,
+} from "react";
 import { motion } from "framer-motion";
 
 interface MagneticButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -39,7 +47,12 @@ export function MagneticButton({
     if (inner.current) inner.current.style.transform = "translate(0,0)";
   }
 
-  const Comp: any = motion[As as "div"];
+  // motion.div / motion.a / motion.button have genuinely different prop types,
+  // and `As` is only known at runtime — so the union cannot be resolved
+  // statically. ComponentType<Record<string, unknown>> keeps the escape hatch
+  // narrow: it says "some component taking arbitrary props", which is true,
+  // instead of `any`, which switches type checking off for everything below.
+  const Comp = motion[As] as ComponentType<Record<string, unknown>>;
   return (
     <Comp
       ref={ref}

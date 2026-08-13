@@ -1,9 +1,12 @@
+"use client";
+
 import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import type { Application } from "@splinetool/runtime";
 import { useNearViewport } from "@/hooks/use-near-viewport";
 import { CanvasBoundary } from "@/components/CanvasBoundary";
 import { getLenis } from "@/lib/lenis";
-import { onBootReady, onScrollIntent, useBootReady } from "@/lib/boot";
+import { onBootReady, onScrollIntent } from "@/lib/boot";
+import { useBootReady } from "@/lib/use-boot-ready";
 
 // The Spline runtime + WebGL scene are heavy, so the component is code-split
 // and only imported the first time the host element nears the viewport.
