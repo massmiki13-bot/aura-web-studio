@@ -1,11 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { VolumetricStudio } from "@/components/ui/volumetric-studio";
 
 export type ProjectCategory = "hospitality" | "beauty" | "automotive" | "other";
 
@@ -230,236 +229,291 @@ const categories: { key: "all" | ProjectCategory; label: string }[] = [
   { key: "other", label: "Altro" },
 ];
 
-function ProjectCard({ project }: { project: Project }) {
-  const { t } = useTranslation();
-  const Wrapper = project.domain ? "a" : "div";
-  const wrapperProps = project.domain
-    ? { href: project.domain, target: "_blank", rel: "noreferrer" }
-    : {};
-
-  return (
-    <Wrapper
-      {...wrapperProps}
-      className={`group relative block w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] transition-transform duration-500 hover:-translate-y-1 ${
-        project.domain ? "cursor-pointer" : "cursor-default"
-      }`}
-      style={{ background: project.bg }}
-    >
-      {project.image && (
-        // `fill` rather than intrinsic dimensions: the card is a sized slot
-        // (see the carousel below) and the image's job is to cover it.
-        //
-        // The slot is clamp(200px, 22vw, 280px) wide and never larger, so the
-        // sizes hint names those two ends. That is the whole point of moving
-        // these off a plain <img>: at 280px on a 2x screen the browser fetches
-        // a 640px-wide AVIF instead of the full-resolution JPEG that was being
-        // shipped for a thumbnail, seventeen times over.
-        <Image
-          src={project.image}
-          alt={project.alt}
-          fill
-          sizes="(max-width: 640px) 200px, 280px"
-          draggable={false}
-          className="object-cover opacity-70 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-out"
-        />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-
-      <div className="absolute top-5 left-5 right-5 flex items-center justify-between font-mono-spec text-[10px] uppercase tracking-widest text-white/50">
-        <span>{categories.find((c) => c.key === project.category)?.label}</span>
-        {project.domain ? (
-          <ArrowUpRight className="h-4 w-4 text-white/40 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-        ) : (
-          <span className="text-white/30">{t("projects.comingSoon", "Presto online")}</span>
-        )}
-      </div>
-
-      <div className="absolute bottom-5 left-5 right-5">
-        <h3 className="font-display text-xl md:text-2xl font-semibold tracking-tight text-white mb-1.5">
-          {project.name}
-        </h3>
-        <p className="text-white/50 text-xs md:text-sm font-light leading-relaxed line-clamp-2">
-          {t(`projects.items.${project.descKey}`, project.desc)}
-        </p>
-      </div>
-    </Wrapper>
-  );
-}
-
-const DRAG_THRESHOLD = 48;
-const WHEEL_THRESHOLD = 12;
-const STEP_COOLDOWN = 550;
-
 /**
- * Editorial line-arrow: a hairline that stretches toward its direction on
- * hover and ends in a small chevron, with a slow idle drift (CSS keyframes,
- * compositor-only) hinting that the deck can be flipped. Deliberately not a
- * boxed/circled arrow button — it should read as part of the studio, not UI
- * chrome.
+ * How many projects the index shows.
+ *
+ * The layout is designed for eight: eight rows at this type size is very close
+ * to one full screen on a laptop, which is the whole point — the section reads
+ * as a single held composition rather than something you scroll through. Past
+ * about ten it stops being an index and becomes a list, and the impact goes
+ * with it.
+ *
+ * The full array above is left intact so nothing is lost; trim or reorder it
+ * and this constant is the only other thing to touch.
  */
-function CarouselArrow({
-  dir,
-  label,
-  onClick,
-}: {
-  dir: -1 | 1;
-  label: string;
-  onClick: () => void;
-}) {
-  const isNext = dir === 1;
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      onClick={onClick}
-      // Don't let the press reach the drag surface underneath — a click on
-      // the arrow must never double as the start of a card drag.
-      onPointerDown={(e) => e.stopPropagation()}
-      onPointerUp={(e) => e.stopPropagation()}
-      className={`group absolute top-1/2 z-10 -translate-y-1/2 cursor-pointer select-none p-4 outline-none focus-visible:rounded-full focus-visible:outline focus-visible:outline-white/40 ${
-        isNext ? "-right-14 sm:-right-20 md:-right-28" : "-left-14 sm:-left-20 md:-left-28"
-      }`}
-    >
-      <span
-        className={`block transition-transform duration-300 ease-out ${
-          isNext ? "group-active:translate-x-1.5" : "group-active:-translate-x-1.5"
-        }`}
-      >
-        <span
-          className={`carousel-arrow-drift flex items-center ${isNext ? "" : "flex-row-reverse"}`}
-          style={{ "--drift": isNext ? "6px" : "-6px" } as React.CSSProperties}
-        >
-          <span className="h-px w-8 bg-white/35 transition-all duration-500 ease-out group-hover:w-14 group-hover:bg-white/90" />
-          <span
-            className={`h-[7px] w-[7px] rotate-45 transition-colors duration-500 ${
-              isNext
-                ? "-ml-[7px] border-t border-r border-white/35 group-hover:border-white/90"
-                : "-mr-[7px] border-b border-l border-white/35 group-hover:border-white/90"
-            }`}
-          />
-        </span>
-      </span>
-    </button>
-  );
+const FEATURED_LIMIT = 8;
+
+/** Preview travel, in the same damped idiom as the custom cursor. */
+const FOLLOW_DAMPING = 12;
+const TILT_DAMPING = 9;
+const TILT_PER_PX = 0.5;
+const TILT_MAX = 14;
+
+function categoryLabel(category: ProjectCategory) {
+  return categories.find((c) => c.key === category)?.label ?? "";
 }
 
 /**
- * The projects live inside a single spotlight-lit "studio" (VolumetricStudio):
- * one case study at a time sits front-and-center under the middle beam. A
- * leftward drag/scroll fades + slides the current card out to the left while
- * the next one slides in from the right to take its place — like flipping
- * through slides in the light, never more than one on screen.
+ * Selected work, as an index rather than a display case.
+ *
+ * What was here before was a spotlit "studio": one 280px card at a time,
+ * centred in a 680px-tall box, advanced by drag or wheel. It spent an enormous
+ * amount of screen on furniture — three modelled spotlights, a room, a floor —
+ * and showed the actual work at roughly a twelfth of the area. With eighteen
+ * projects behind a one-at-a-time carousel, most of them were never seen.
+ *
+ * This inverts that. The work is a typographic index: eight rows of display
+ * type at the scale the masthead uses, which is the site's own voice, and the
+ * imagery arrives only where the visitor is looking — a preview that tracks
+ * the cursor, damped, tilting into its own direction of travel the way the
+ * hero's chrome form and the site cursor both do. Nothing is decoration that
+ * isn't also information: the row you are on is the one that lights up, and
+ * the rest recede.
+ *
+ * It is also far cheaper. The studio was a full canvas with modelled geometry;
+ * this is DOM text, one rAF loop that idles, and a single ~320px preview image
+ * on screen at a time.
+ *
+ * The rows are plain anchors with real text, server-rendered — every project
+ * name, category and destination is in the HTML whether or not the pointer
+ * work ever runs.
  */
-function ProjectsCarousel({ projects: items }: { projects: Project[] }) {
+function ProjectsIndex({ items }: { items: Project[] }) {
   const { t } = useTranslation();
-  const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const locked = useRef(false);
-  const dragStart = useRef<{ x: number; y: number } | null>(null);
-  const didDrag = useRef(false);
+  const [active, setActive] = useState<number | null>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  // Written on every mousemove over the list, read by the frame loop — a ref
+  // so pointer motion never causes a React render.
+  const pointer = useRef({ x: 0, y: 0 });
 
-  const step = (dir: 1 | -1) => {
-    if (locked.current) return;
-    locked.current = true;
-    setDirection(dir);
-    setIndex((i) => (i + dir + items.length) % items.length);
-    setTimeout(() => {
-      locked.current = false;
-    }, STEP_COOLDOWN);
-  };
+  // The preview's travel. Position and tilt are written straight to the
+  // element; only `active` (which row) goes through React, and that changes
+  // once row crossed rather than once per frame.
+  useEffect(() => {
+    const el = previewRef.current;
+    if (!el || active === null) return;
 
-  const onWheel = (e: React.WheelEvent) => {
-    // Only a horizontal gesture (trackpad swipe / shift-scroll) advances the
-    // carousel — plain vertical scrolling must keep scrolling the page, so a
-    // visitor can pass over the section without getting stuck cycling cards.
-    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || Math.abs(e.deltaX) < WHEEL_THRESHOLD) return;
-    e.preventDefault();
-    step(e.deltaX > 0 ? 1 : -1);
-  };
+    /**
+     * Where the preview wants to be.
+     *
+     * Y tracks the pointer, which is what ties it to the row you are on. X is
+     * held in the empty channel between where the names stop and where the
+     * category column starts, drifting with the cursor inside it.
+     *
+     * Two other placements were tried and are worth not repeating. Centring it
+     * on the cursor put it straight over the name of the row being read, and
+     * capping the names to make room truncated them at rest ("La Cave Shisha
+     * Lo…") — the names are the section, so nothing may shrink them. Offsetting
+     * it vertically instead cleared the active row but, at 900px of viewport,
+     * had nowhere to go and flipped up over the section heading.
+     *
+     * So the preview is sized to the gap rather than the gap to the preview:
+     * narrow enough (max 240px) to sit between a full-length name and the
+     * category label at every desktop width.
+     */
+    const desired = () => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const { width, height } = el.getBoundingClientRect();
+      const halfH = (height || 300) / 2;
+      return {
+        x: Math.min(Math.max(pointer.current.x + 200, vw * 0.64), vw * 0.72),
+        y: Math.min(Math.max(pointer.current.y, halfH + 16), vh - halfH - 16),
+      };
+    };
 
-  const onPointerDown = (e: React.PointerEvent) => {
-    dragStart.current = { x: e.clientX, y: e.clientY };
-    didDrag.current = false;
-  };
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (!dragStart.current) return;
-    if (Math.abs(e.clientX - dragStart.current.x) > 8) didDrag.current = true;
-  };
-  const onPointerUp = (e: React.PointerEvent) => {
-    if (!dragStart.current) return;
-    const dx = e.clientX - dragStart.current.x;
-    dragStart.current = null;
-    if (Math.abs(dx) > DRAG_THRESHOLD) step(dx < 0 ? 1 : -1);
-  };
-  const onClickCapture = (e: React.MouseEvent) => {
-    if (didDrag.current) {
-      e.preventDefault();
-      e.stopPropagation();
-      didDrag.current = false;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // No follow: place it once, clear of the row that was entered, and
+      // leave it there.
+      const at = desired();
+      el.style.transform = `translate3d(${at.x}px, ${at.y}px, 0)`;
+      return;
     }
-  };
 
-  const active = items[index];
+    let { x, y } = desired();
+    let tilt = 0;
+    let last = 0;
+    let raf = 0;
+
+    const tick = (now: number) => {
+      const d = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
+      last = now;
+
+      const prevX = x;
+      const at = desired();
+      // exp() damping, frame-rate independent — identical feel at 30 or 144Hz.
+      const k = 1 - Math.exp(-FOLLOW_DAMPING * d);
+      x += (at.x - x) * k;
+      y += (at.y - y) * k;
+
+      // Lean into the direction of travel, derived from the *damped* position
+      // rather than the raw pointer so it inherits the smoothing instead of
+      // twitching on every mouse sample.
+      const target = Math.max(-TILT_MAX, Math.min(TILT_MAX, (x - prevX) * TILT_PER_PX));
+      tilt += (target - tilt) * (1 - Math.exp(-TILT_DAMPING * d));
+
+      el.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${tilt}deg)`;
+      raf = requestAnimationFrame(tick);
+    };
+
+    // Snap into the band on the first frame rather than flying in from
+    // wherever the last hover ended.
+    el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [active]);
+
+  const featured = items.slice(0, FEATURED_LIMIT);
 
   return (
-    <div className="relative select-none">
-      <VolumetricStudio className="min-h-0 h-[560px] sm:h-[620px] md:h-[680px] rounded-3xl border border-white/10">
-        <div
-          onWheel={onWheel}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerLeave={onPointerUp}
-          onClickCapture={onClickCapture}
-          className="pointer-events-auto relative h-full w-full flex items-end justify-center overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y pb-12 sm:pb-16 md:pb-24"
-        >
-          {/* Sized slot the card animates within — also the anchor for the
-              prev/next arrows so they stay centered on the card at every
-              breakpoint instead of floating somewhere in the studio. */}
-          <div className="relative aspect-[3/4]" style={{ width: "clamp(200px, 22vw, 280px)" }}>
-            <AnimatePresence initial={false} custom={direction} mode="popLayout">
-              <motion.div
-                key={active.id}
-                custom={direction}
-                variants={{
-                  enter: (dir: number) => ({ x: dir > 0 ? 140 : -140, opacity: 0 }),
-                  center: { x: 0, opacity: 1 },
-                  exit: (dir: number) => ({ x: dir > 0 ? -140 : 140, opacity: 0 }),
-                }}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{
-                  x: { type: "spring", stiffness: 260, damping: 30 },
-                  opacity: { duration: 0.45 },
-                }}
-                className="absolute inset-0"
+    <div
+      className="relative"
+      onMouseMove={(e) => {
+        pointer.current.x = e.clientX;
+        pointer.current.y = e.clientY;
+      }}
+      onMouseLeave={() => setActive(null)}
+    >
+      {/* The rows. A hairline above each one and below the last gives the
+          index its ruled-table feel without a border on every side. */}
+      <ul className="border-t border-white/10">
+        {featured.map((project, i) => {
+          const dimmed = active !== null && active !== i;
+          const lit = active === i;
+          return (
+            <li key={project.id} className="border-b border-white/10">
+              <a
+                href={project.domain ?? undefined}
+                target={project.domain ? "_blank" : undefined}
+                rel={project.domain ? "noreferrer" : undefined}
+                onMouseEnter={() => setActive(i)}
+                onFocus={() => setActive(i)}
+                onBlur={() => setActive(null)}
+                aria-label={`${project.name} — ${categoryLabel(project.category)}`}
+                className={`group relative block py-7 outline-none transition-opacity duration-500 md:grid md:grid-cols-[2.75rem_minmax(0,1fr)_auto_auto] md:items-center md:gap-8 md:py-8 ${
+                  project.domain ? "cursor-pointer" : "cursor-default"
+                } ${dimmed ? "opacity-30" : "opacity-100"}`}
               >
-                <ProjectCard project={active} />
-              </motion.div>
-            </AnimatePresence>
-            <CarouselArrow
-              dir={-1}
-              label={t("projects.prevProject", "Progetto precedente")}
-              onClick={() => step(-1)}
-            />
-            <CarouselArrow
-              dir={1}
-              label={t("projects.nextProject", "Progetto successivo")}
-              onClick={() => step(1)}
-            />
-          </div>
-        </div>
-      </VolumetricStudio>
+                {/* Mobile meta line. The name needs the full width to itself
+                    below (it was being truncated to "La Cave…", which tells a
+                    visitor nothing), so the number, category and arrow are
+                    lifted into their own line above it. */}
+                <div className="mb-3 flex items-center justify-between gap-4 md:hidden">
+                  <span className="font-mono-spec text-[10px] tracking-[0.25em] text-white/40 tabular-nums">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-mono-spec flex items-center gap-3 text-[10px] tracking-[0.2em] text-white/40 uppercase">
+                    {categoryLabel(project.category)}
+                    {project.domain && <ArrowUpRight className="h-4 w-4" />}
+                  </span>
+                </div>
 
-      <div className="mt-6 flex items-center justify-between">
-        <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
-          Trascina o scorri per esplorare
-        </p>
-        <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
-          {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
-        </p>
+                {/* Desktop index number. Its own grid column, so every name
+                    starts on the same axis regardless of digit shapes. */}
+                <span className="font-mono-spec hidden text-[11px] tracking-[0.25em] text-white/40 tabular-nums md:block">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+
+                {/* Name. The whole reason this section reads at a glance: the
+                    same display face and tracking as the masthead, at a size
+                    that makes eight rows fill a screen. Truncated only from md
+                    up, where there is a single row to stay on; below that it
+                    wraps and is allowed the space to do it. */}
+                <h3
+                  className={`font-display text-[8vw] leading-[1.03] font-semibold tracking-tighter transition-[transform,color] duration-500 ease-out sm:text-[6vw] md:truncate md:text-[3.4vw] ${
+                    lit ? "text-white md:translate-x-3" : "text-white/70"
+                  }`}
+                >
+                  {project.name}
+                </h3>
+
+                {/* Mobile imagery, since there is no pointer to reveal it with.
+                    display:none from md up, which also keeps these off the
+                    network there — a lazy image with no layout box is never
+                    fetched. */}
+                {project.image && (
+                  <div className="relative mt-4 aspect-[16/10] w-full overflow-hidden rounded-xl border border-white/10 md:hidden">
+                    <Image
+                      src={project.image}
+                      alt={project.alt}
+                      fill
+                      sizes="(max-width: 767px) 100vw, 1px"
+                      className="object-cover opacity-90"
+                    />
+                  </div>
+                )}
+
+                <span className="font-mono-spec hidden text-[10px] tracking-[0.2em] text-white/40 uppercase lg:block">
+                  {categoryLabel(project.category)}
+                </span>
+
+                <span className="hidden md:block">
+                  {project.domain ? (
+                    <ArrowUpRight
+                      className={`h-6 w-6 transition-all duration-500 ease-out ${
+                        lit ? "translate-x-0.5 -translate-y-0.5 text-white" : "text-white/30"
+                      }`}
+                    />
+                  ) : (
+                    <span className="font-mono-spec text-[10px] tracking-[0.2em] text-white/25 uppercase">
+                      {t("projects.comingSoon", "Presto online")}
+                    </span>
+                  )}
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+
+      {/*
+        The preview.
+
+        Fixed, not absolute: the pointer is in viewport coordinates and so is
+        this, so the two stay locked together no matter what Lenis is doing to
+        the page underneath. Positioned by transform only, on its own layer.
+
+        Every featured image is mounted at once and cross-faded by opacity
+        rather than swapped on hover — at 320px these are ~15 kB apiece, and
+        mounting on demand would mean the first hover of each row waits on a
+        network round trip, which is exactly the moment that has to feel
+        instant. Hidden below md, where there is no pointer to follow and the
+        rows carry their own thumbnails instead.
+      */}
+      <div
+        aria-hidden
+        ref={previewRef}
+        className="pointer-events-none fixed top-0 left-0 z-40 hidden will-change-transform md:block"
+      >
+        <div
+          className={`relative -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl border border-white/15 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.9)] transition-[opacity,scale] duration-500 ease-out ${
+            active === null ? "scale-90 opacity-0" : "scale-100 opacity-100"
+          }`}
+          // Sized to the channel between the names and the category column,
+          // not to what looks good in isolation — see `desired()` above.
+          style={{ width: "clamp(170px, 16vw, 240px)", aspectRatio: "4 / 5" }}
+        >
+          {featured.map((project, i) =>
+            project.image ? (
+              <Image
+                key={project.id}
+                src={project.image}
+                alt=""
+                fill
+                sizes="300px"
+                className={`object-cover transition-opacity duration-300 ${
+                  active === i ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ) : null,
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+        </div>
       </div>
+
+      <p className="font-mono-spec mt-8 text-[10px] tracking-[0.3em] text-white/25 uppercase">
+        {featured.length} {t("projects.caseStudies", "Aura — Case Studies")}
+      </p>
     </div>
   );
 }
@@ -469,14 +523,14 @@ export function Projects() {
 
   return (
     <section id="projects" className="relative bg-black py-32 md:py-48">
-      <div className="max-w-[1600px] mx-auto px-6 md:px-16">
+      <div className="mx-auto max-w-[1600px] px-6 md:px-16">
         <div className="mb-16 max-w-2xl">
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="font-mono-spec text-[11px] uppercase tracking-[0.35em] text-muted-foreground mb-6"
+            className="font-mono-spec text-muted-foreground mb-6 text-[11px] tracking-[0.35em] uppercase"
           >
             {t("projects.selectedWork", "Lavori selezionati")}
           </motion.p>
@@ -485,18 +539,14 @@ export function Projects() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter leading-[1.02]"
+            className="font-display text-4xl leading-[1.02] font-bold tracking-tighter sm:text-5xl md:text-6xl"
           >
             {t("projects.mobileTitle", "Progetti reali, per settori reali.")}
           </motion.h2>
         </div>
 
-        <ProjectsCarousel projects={projects} />
+        <ProjectsIndex items={projects} />
       </div>
     </section>
   );
-}
-
-export function ProjectsMobile() {
-  return null;
 }
