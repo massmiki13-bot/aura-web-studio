@@ -5,6 +5,14 @@ const nextConfig: NextConfig = {
   // Nothing gained by telling the world what the server runs on.
   poweredByHeader: false,
 
+  turbopack: {
+    // Pinned, because Turbopack infers the workspace root from the nearest
+    // lockfile and there is a stray package-lock.json in the user's home
+    // directory — outside this repository entirely. Left to infer, it warns
+    // on every start and could resolve modules from the wrong tree.
+    root: import.meta.dirname,
+  },
+
   images: {
     // AVIF first, WebP behind it. Every image on this site is either a dark
     // photographic project shot or a screenshot — both are exactly the content
