@@ -69,20 +69,7 @@ const resources = {
       projects: {
         selectedWork: "Lavori selezionati",
         mobileTitle: "Case study cinematici.",
-        prevProject: "Progetto precedente",
-        nextProject: "Progetto successivo",
-        project: "Progetto",
         caseStudies: "Aura — Case Studies",
-        live: "live →",
-        items: {
-          "01": "Esperienza dark mode per uno shisha bar di lusso, con accenti dorati luminosi, overlay glassmorphici e scie di fumo 3D reattive allo scroll.",
-          "02": "Estetica street-pop vibrante guidata da effetti di scroll dinamici, posate cinetiche ed esplosioni di particelle interattive.",
-          "03": "Layout di lusso dark-slate impreziosito da fluide piastrelle in parallax e un menu di navigazione premium in vetro smerigliato.",
-          "04": "Esperienza per un ristorante fusion italo-indiano costruita su un dark mode editoriale con accenti dorati premium e transizioni cinematiche.",
-          "05": "Vetrina per beauty studio in light mode elegante con animazioni fluide, branding cosmetico custom e micro-interazioni.",
-          "06": "Sofisticata interfaccia wellness in light mode con layout raffinati, animazioni fluide e un flusso di prenotazione intuitivo e senza intoppi.",
-          "07": "Shop online e portfolio per modding FiveM, progettato con immersivi toni dark e blu neon, animazioni fluide e griglie prodotto interattive.",
-        },
       },
       product: {
         label: "Il Prodotto",
@@ -293,20 +280,7 @@ const resources = {
       projects: {
         selectedWork: "Ausgewählte Arbeiten",
         mobileTitle: "Filmreife Case Studies.",
-        prevProject: "Vorheriges Projekt",
-        nextProject: "Nächstes Projekt",
-        project: "Projekt",
         caseStudies: "Aura — Case Studies",
-        live: "live →",
-        items: {
-          "01": "Dark-Mode-Erlebnis für eine luxuriöse Shisha-Bar mit leuchtenden Goldakzenten, glasartigen Overlays und scroll-reaktiven 3D-Rauchschwaden.",
-          "02": "Lebendige Street-Pop-Ästhetik mit dynamischen Scroll-Effekten, kinetischen Besteck-Assets und interaktiven Partikel-Effekten.",
-          "03": "Luxuriöses Dark-Slate-Layout mit sanften Parallax-Kacheln und einem edlen Navigationsmenü aus Milchglas.",
-          "04": "Erlebnis für ein italienisch-indisches Fusion-Restaurant auf editorialem Dark Mode mit edlen Goldakzenten und filmischen Übergängen.",
-          "05": "Eleganter Light-Mode-Auftritt für ein Beauty-Studio mit flüssigen Animationen, individuellem Kosmetik-Branding und Mikrointeraktionen.",
-          "06": "Anspruchsvolle Wellness-Oberfläche im Light Mode mit raffinierten Layouts, flüssigen Animationen und einem nahtlosen, nutzerfreundlichen Buchungsablauf.",
-          "07": "Online-Shop und Portfolio für FiveM-Modding mit immersiven Dark- und Neonblau-Tönen, flüssigen Animationen und interaktiven Produktrastern.",
-        },
       },
       product: {
         label: "Das Produkt",
@@ -517,20 +491,7 @@ const resources = {
       projects: {
         selectedWork: "Selected Work",
         mobileTitle: "Cinematic case studies.",
-        prevProject: "Previous project",
-        nextProject: "Next project",
-        project: "Project",
         caseStudies: "Aura — Case Studies",
-        live: "live →",
-        items: {
-          "01": "Luxury shisha bar dark mode experience featuring glowing gold accents, glassmorphic overlays, and scroll-reactive 3D smoke trails.",
-          "02": "Vibrant street-pop aesthetic driven by dynamic scroll effects, kinetic cutlery assets, and interactive particle bursts.",
-          "03": "Dark-slate luxury layout enhanced by smooth parallax tiles and a premium frosted glass navigation menu.",
-          "04": "Italian-Indian fusion restaurant experience built on an editorial dark mode with premium gold accents and cinematic transitions.",
-          "05": "Elegant light mode beauty studio showcase with fluid animations, custom cosmetics branding, and micro-interactions.",
-          "06": "Sophisticated light mode wellness interface featuring refined layouts, fluid animations, and a seamless user-friendly booking flow.",
-          "07": "FiveM modding online shop and portfolio engineered with immersive dark and neon-blue tones, fluid animations, and interactive product grids.",
-        },
       },
       product: {
         label: "The Product",
@@ -741,20 +702,7 @@ const resources = {
       projects: {
         selectedWork: "Trabajos seleccionados",
         mobileTitle: "Casos de estudio cinematográficos.",
-        prevProject: "Proyecto anterior",
-        nextProject: "Proyecto siguiente",
-        project: "Proyecto",
         caseStudies: "Aura — Casos de estudio",
-        live: "en vivo →",
-        items: {
-          "01": "Experiencia en modo oscuro para un bar de shisha de lujo, con destellos dorados, superposiciones glassmorphic y estelas de humo 3D reactivas al scroll.",
-          "02": "Estética street-pop vibrante impulsada por efectos de scroll dinámicos, cubiertos cinéticos y estallidos de partículas interactivos.",
-          "03": "Diseño de lujo en pizarra oscura realzado con suaves mosaicos en parallax y un menú de navegación premium en vidrio esmerilado.",
-          "04": "Experiencia para un restaurante de fusión italo-india construida sobre un modo oscuro editorial con destellos dorados premium y transiciones cinematográficas.",
-          "05": "Escaparate de estudio de belleza en modo claro elegante con animaciones fluidas, branding cosmético a medida y microinteracciones.",
-          "06": "Sofisticada interfaz de bienestar en modo claro con diseños refinados, animaciones fluidas y un flujo de reservas intuitivo y sin fricciones.",
-          "07": "Tienda online y portfolio de modding FiveM, diseñada con inmersivos tonos oscuros y azul neón, animaciones fluidas y cuadrículas de producto interactivas.",
-        },
       },
       product: {
         label: "El Producto",
