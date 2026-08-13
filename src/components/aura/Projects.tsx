@@ -22,39 +22,6 @@ type Project = {
 
 const projects: Project[] = [
   {
-    id: "la-cave",
-    name: "La Cave Shisha Lounge",
-    category: "hospitality",
-    descKey: "01",
-    desc: "Esperienza dark mode per uno shisha bar di lusso, con accenti dorati luminosi e overlay glassmorphici.",
-    domain: "https://la-cave-eosin.vercel.app",
-    image: "/projects/la_cave.jpg",
-    alt: "Sito web per shisha bar di lusso La Cave, dark mode con dettagli dorati — progetto Aura Web Studio",
-    bg: "radial-gradient(ellipse at 30% 30%, oklch(0.22 0.02 305) 0%, #050108 60%)",
-  },
-  {
-    id: "triclinium",
-    name: "Triclinium Cotoletteria",
-    category: "hospitality",
-    descKey: "02",
-    desc: "Estetica street-pop vibrante guidata da effetti di scroll dinamici e particelle interattive.",
-    domain: "https://triclinium-cotoletteria.vercel.app",
-    image: "/projects/triclinium.png",
-    alt: "Sito web ristorante Triclinium Cotoletteria con animazioni scroll dinamiche — progetto Aura Web Studio",
-    bg: "radial-gradient(ellipse at 70% 40%, oklch(0.25 0.03 95) 0%, #0a0700 70%)",
-  },
-  {
-    id: "enoteca-aldo",
-    name: "Enoteca da Aldo",
-    category: "hospitality",
-    descKey: "03",
-    desc: "Layout di lusso dark-slate impreziosito da fluide piastrelle in parallax.",
-    domain: "https://enotecadaaldo.vercel.app",
-    image: "/projects/enoteca_da_aldo.jpg",
-    alt: "Sito web enoteca di lusso Enoteca da Aldo con effetto parallax — progetto Aura Web Studio",
-    bg: "radial-gradient(ellipse at 50% 60%, oklch(0.2 0.01 250) 0%, #02040a 70%)",
-  },
-  {
     id: "piccola-italia",
     name: "Piccola Italia",
     category: "hospitality",
@@ -86,28 +53,6 @@ const projects: Project[] = [
     image: "/projects/central_merano.jpg",
     alt: "Sito web bar e ristorante Central nel centro di Merano — progetto Aura Web Studio",
     bg: "radial-gradient(ellipse at 60% 50%, oklch(0.2 0.02 40) 0%, #060402 70%)",
-  },
-  {
-    id: "snail-saloon",
-    name: "S.nail & Saloon",
-    category: "beauty",
-    descKey: "05",
-    desc: "Vetrina per beauty studio in light mode elegante con branding cosmetico custom.",
-    domain: "https://s-nail-beauty-studio.vercel.app",
-    image: "/projects/snail_saloon.jpg",
-    alt: "Sito web beauty studio S.nail & Saloon in light mode elegante — progetto Aura Web Studio",
-    bg: "radial-gradient(ellipse at 60% 30%, oklch(0.2 0.02 340) 0%, #060106 65%)",
-  },
-  {
-    id: "be-beauty",
-    name: "Be Beauty",
-    category: "beauty",
-    descKey: "06",
-    desc: "Interfaccia wellness raffinata con flusso di prenotazione intuitivo.",
-    domain: "https://be-beauty-wellness.vercel.app",
-    image: "/projects/bebeauty_saloon.jpg",
-    alt: "Sito web centro wellness Be Beauty con flusso di prenotazione online — progetto Aura Web Studio",
-    bg: "radial-gradient(ellipse at 40% 50%, oklch(0.2 0.02 180) 0%, #00060a 70%)",
   },
   {
     id: "sahal-barber",
@@ -165,17 +110,6 @@ const projects: Project[] = [
     bg: "radial-gradient(ellipse at 30% 60%, oklch(0.2 0.02 150) 0%, #02070a 70%)",
   },
   {
-    id: "manna-italia",
-    name: "Manna Italia",
-    category: "other",
-    descKey: "14",
-    desc: "Florovivaismo professionale dal 1979: catalogo prodotti, percorsi hobbisti/professionisti e richiesta preventivo.",
-    domain: "https://manna-italia.vercel.app",
-    image: "/projects/manna_italia.jpg",
-    alt: "Sito web florovivaismo professionale Manna Italia dal 1979 con catalogo prodotti — progetto Aura Web Studio",
-    bg: "radial-gradient(ellipse at 35% 40%, oklch(0.24 0.04 145) 0%, #010a04 70%)",
-  },
-  {
     id: "hotel-rosa",
     name: "Hotel Rosa Resort",
     category: "hospitality",
@@ -229,19 +163,20 @@ const categories: { key: "all" | ProjectCategory; label: string }[] = [
   { key: "other", label: "Altro" },
 ];
 
-/**
- * How many projects the index shows.
+/*
+ * The index renders every project in the array above — there is no cap.
  *
- * The layout is designed for eight: eight rows at this type size is very close
- * to one full screen on a laptop, which is the whole point — the section reads
- * as a single held composition rather than something you scroll through. Past
- * about ten it stops being an index and becomes a list, and the impact goes
- * with it.
+ * It is *tuned* for around eight: eight rows at this type size is close to one
+ * full screen on a laptop, which is what lets the section read as a single held
+ * composition rather than something you scroll through. Past about ten it
+ * becomes a list, and some of that impact goes with it. That is a known trade,
+ * accepted deliberately — the alternative was a constant silently hiding the
+ * tail of the array, which is how the carousel this replaced ended up with
+ * eighteen projects almost nobody ever saw.
  *
- * The full array above is left intact so nothing is lost; trim or reorder it
- * and this constant is the only other thing to touch.
+ * So: the array is the list. Cutting a project means deleting it here, and
+ * nothing else needs touching.
  */
-const FEATURED_LIMIT = 8;
 
 /** Preview travel, in the same damped idiom as the custom cursor. */
 const FOLLOW_DAMPING = 12;
@@ -363,8 +298,6 @@ function ProjectsIndex({ items }: { items: Project[] }) {
     return () => cancelAnimationFrame(raf);
   }, [active]);
 
-  const featured = items.slice(0, FEATURED_LIMIT);
-
   return (
     <div
       className="relative"
@@ -377,7 +310,7 @@ function ProjectsIndex({ items }: { items: Project[] }) {
       {/* The rows. A hairline above each one and below the last gives the
           index its ruled-table feel without a border on every side. */}
       <ul className="border-t border-white/10">
-        {featured.map((project, i) => {
+        {items.map((project, i) => {
           const dimmed = active !== null && active !== i;
           const lit = active === i;
           return (
@@ -473,7 +406,7 @@ function ProjectsIndex({ items }: { items: Project[] }) {
         this, so the two stay locked together no matter what Lenis is doing to
         the page underneath. Positioned by transform only, on its own layer.
 
-        Every featured image is mounted at once and cross-faded by opacity
+        Every project image is mounted at once and cross-faded by opacity
         rather than swapped on hover — at 320px these are ~15 kB apiece, and
         mounting on demand would mean the first hover of each row waits on a
         network round trip, which is exactly the moment that has to feel
@@ -493,7 +426,7 @@ function ProjectsIndex({ items }: { items: Project[] }) {
           // not to what looks good in isolation — see `desired()` above.
           style={{ width: "clamp(170px, 16vw, 240px)", aspectRatio: "4 / 5" }}
         >
-          {featured.map((project, i) =>
+          {items.map((project, i) =>
             project.image ? (
               <Image
                 key={project.id}
@@ -512,7 +445,7 @@ function ProjectsIndex({ items }: { items: Project[] }) {
       </div>
 
       <p className="font-mono-spec mt-8 text-[10px] tracking-[0.3em] text-white/25 uppercase">
-        {featured.length} {t("projects.caseStudies", "Aura — Case Studies")}
+        {items.length} {t("projects.caseStudies", "Aura — Case Studies")}
       </p>
     </div>
   );
