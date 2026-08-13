@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { getLocaleFromPathname } from "../i18n";
 import { Toaster } from "@/components/ui/sonner";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import { CustomCursor } from "@/components/CustomCursor";
 import { INTRO_CURTAIN_SCRIPT } from "@/lib/boot";
 import {
   rootMeta,
@@ -102,9 +103,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       ...rootLinks(),
+      // Fonts are self-hosted now (see the @font-face block in styles.css) —
+      // no stylesheet request to a third party on the critical path.
+      //
+      // Only the two faces that are on screen at first paint are preloaded:
+      // Clash Display draws the hero wordmark (the LCP element) and Satoshi
+      // draws everything else. JetBrains Mono is deliberately left out — it
+      // only sets small spec labels, and preloading it would have it compete
+      // for bandwidth with the two that decide when the page looks finished.
+      //
+      // crossOrigin is required on font preloads even same-origin: fonts are
+      // fetched in CORS mode, and without it the preload is discarded and the
+      // file is simply downloaded a second time.
       {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+        rel: "preload",
+        href: "/fonts/ClashDisplay-Variable.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: "/fonts/Satoshi-Variable.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
       },
     ],
     scripts: [
@@ -160,6 +183,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <SmoothScroll />
+      <CustomCursor />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <Toaster theme="dark" position="bottom-right" />

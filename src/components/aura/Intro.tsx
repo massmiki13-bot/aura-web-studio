@@ -468,7 +468,7 @@ function ParticleWordmark({
     // wait: nothing assembles until a second into the sequence.
     const fontReady: Promise<unknown> = document.fonts
       ? Promise.race([
-          document.fonts.load(`800 100px "Space Grotesk"`),
+          document.fonts.load(`700 100px "Clash Display"`),
           new Promise((r) => setTimeout(r, 700)),
         ])
       : Promise.resolve();
@@ -486,7 +486,7 @@ function ParticleWordmark({
       // and the glyphs stop reading as letters at all.
       let fontSize = Math.min(h * 0.3, 200);
       const fit = () => {
-        octx.font = `700 ${fontSize}px "Space Grotesk", Inter, sans-serif`;
+        octx.font = `700 ${fontSize}px "Clash Display", Satoshi, sans-serif`;
         return octx.measureText(text).width;
       };
       while (fit() > Math.min(w * 0.62, 780) && fontSize > 24) fontSize -= 4;

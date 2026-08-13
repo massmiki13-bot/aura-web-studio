@@ -443,7 +443,7 @@ function ProjectsCarousel({ projects: items }: { projects: Project[] }) {
 
       <div className="mt-6 flex items-center justify-between">
         <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
-          {"// Trascina o scorri per esplorare"}
+          Trascina o scorri per esplorare
         </p>
         <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30">
           {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
@@ -467,7 +467,7 @@ export function Projects() {
             transition={{ duration: 0.7 }}
             className="font-mono-spec text-[11px] uppercase tracking-[0.35em] text-muted-foreground mb-6"
           >
-            {t("projects.selectedWork", "// Lavori selezionati")}
+            {t("projects.selectedWork", "Lavori selezionati")}
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 24 }}

@@ -165,11 +165,11 @@ export function ParticleText({ words, className = "" }: { words: string[]; class
 
       const targetWidth = w * 0.8;
       let fontSize = Math.min(h * 0.55, 180);
-      octx.font = `800 ${fontSize}px Space Grotesk, Inter, sans-serif`;
+      octx.font = `800 ${fontSize}px "Clash Display", Satoshi, sans-serif`;
       let metrics = octx.measureText(word);
       while (metrics.width > targetWidth && fontSize > 14) {
         fontSize -= 3;
-        octx.font = `800 ${fontSize}px Space Grotesk, Inter, sans-serif`;
+        octx.font = `800 ${fontSize}px "Clash Display", Satoshi, sans-serif`;
         metrics = octx.measureText(word);
       }
 

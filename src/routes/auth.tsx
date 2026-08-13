@@ -49,7 +49,7 @@ function AuthPage() {
         </a>
         <h1 className="font-display text-3xl font-bold tracking-tight mt-8 mb-2">Admin Access</h1>
         <p className="text-white/50 text-sm mb-8 font-mono-spec uppercase tracking-widest text-[10px]">
-          // Aura Web Studio dashboard
+          Aura Web Studio dashboard
         </p>
         <form
           onSubmit={submit}

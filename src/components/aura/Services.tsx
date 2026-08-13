@@ -128,7 +128,7 @@ function ServicesLabel() {
   const { t } = useTranslation();
   return (
     <p className="absolute top-16 md:top-20 left-1/2 -translate-x-1/2 z-10 font-mono-spec text-[11px] uppercase tracking-[0.35em] text-white/50 pointer-events-none">
-      {t("services.label", "// Cosa offriamo")}
+      {t("services.label", "Cosa offriamo")}
     </p>
   );
 }

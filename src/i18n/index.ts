@@ -29,7 +29,7 @@ const resources = {
         skip: "Salta",
       },
       hero: {
-        badge: "[ Creative Digital Solutions ]",
+        badge: "Creative Digital Solutions",
         scroll: "Scorri",
         actTwoTitle: "Il tuo brand, elevato.",
         actTwoSub: "Web design su misura per chi non si accontenta.",
@@ -37,7 +37,7 @@ const resources = {
         actTwoSub2: "Performance, SEO e conversioni — di serie.",
       },
       services: {
-        label: "// Cosa offriamo",
+        label: "Cosa offriamo",
         caption1: "Progettiamo esperienze digitali che lasciano il segno.",
         caption2: "Valore che cresce, progetto dopo progetto.",
         mobileItems: [
@@ -60,7 +60,7 @@ const resources = {
         ],
       },
       projects: {
-        selectedWork: "// Selected Work",
+        selectedWork: "Lavori selezionati",
         mobileTitle: "Case study cinematici.",
         prevProject: "Progetto precedente",
         nextProject: "Progetto successivo",
@@ -78,20 +78,19 @@ const resources = {
         },
       },
       product: {
-        label: "// 03 — Il Prodotto",
+        label: "Il Prodotto",
         headingPre: "Costruiamo siti ",
         headingHighlight: "su misura",
         headingPost: ".",
         headingLine2: "Dalla landing allo shop.",
         paragraph:
           "Niente template. Niente compromessi. Ogni progetto nasce dalle tue esigenze: landing che converte, vetrine eleganti, e-commerce performanti o web app custom — sempre con la stessa cura cinematica.",
-        morphLabel: "// scroll = morph",
         morphTitlePre: "Una sola filosofia, ",
         morphTitleHighlight: "infinite forme",
         morphParagraph:
           "Scrolla e guarda come la stessa interfaccia diventa landing, vetrina, shop o web app. È così che lavoriamo: una base solida, modellata su di te.",
         frames: { landing: "Landing", showcase: "Vetrina", shop: "Shop", webapp: "Web App" },
-        pricingLabel: "// 03 — Piani e Prezzi",
+        pricingLabel: "Piani e Prezzi",
         pricingHeadingLine1: "Soluzioni su misura.",
         pricingHeadingPre: "Piani ",
         pricingHeadingHighlight: "trasparenti",
@@ -100,7 +99,7 @@ const resources = {
         pricingCta: "Scopri i nostri piani →",
       },
       contact: {
-        label: "// 04 — Get in touch",
+        label: "Contattaci",
         headingPre: "Hai in mente qualcosa di ",
         headingHighlight: "più",
         headingPost: "?",
@@ -211,7 +210,7 @@ const resources = {
       },
       team: {
         backHome: "Torna alla Home",
-        label: "// Il Team",
+        label: "Il Team",
         titlePre: "Le persone dietro ad ",
         titleHighlight: "Aura",
         subtitle:
@@ -222,7 +221,7 @@ const resources = {
       },
       contactPage: {
         backHome: "Torna alla Home",
-        label: "// Contatti Diretti",
+        label: "Contatti Diretti",
         titlePre: "Parla direttamente con ",
         titleHighlight: "Aura",
         titlePost: ".",
@@ -254,7 +253,7 @@ const resources = {
         skip: "Überspringen",
       },
       hero: {
-        badge: "[ Creative Digital Solutions ]",
+        badge: "Creative Digital Solutions",
         scroll: "Scrollen",
         actTwoTitle: "Deine Marke, auf neuem Niveau.",
         actTwoSub: "Maßgeschneidertes Webdesign für alle, die sich nicht zufriedengeben.",
@@ -262,7 +261,7 @@ const resources = {
         actTwoSub2: "Performance, SEO und Conversions — serienmäßig.",
       },
       services: {
-        label: "// Was wir bieten",
+        label: "Was wir bieten",
         caption1: "Wir gestalten digitale Erlebnisse, die Eindruck hinterlassen.",
         caption2: "Wert, der wächst — Projekt für Projekt.",
         mobileItems: [
@@ -285,7 +284,7 @@ const resources = {
         ],
       },
       projects: {
-        selectedWork: "// Ausgewählte Arbeiten",
+        selectedWork: "Ausgewählte Arbeiten",
         mobileTitle: "Filmreife Case Studies.",
         prevProject: "Vorheriges Projekt",
         nextProject: "Nächstes Projekt",
@@ -303,20 +302,19 @@ const resources = {
         },
       },
       product: {
-        label: "// 03 — Das Produkt",
+        label: "Das Produkt",
         headingPre: "Wir bauen ",
         headingHighlight: "maßgeschneiderte",
         headingPost: " Websites.",
         headingLine2: "Von der Landingpage bis zum Shop.",
         paragraph:
           "Keine Templates. Keine Kompromisse. Jedes Projekt entsteht aus deinen Anforderungen: Landingpages, die konvertieren, elegante Schaufenster, performante E-Commerce-Shops oder individuelle Web-Apps — immer mit derselben filmischen Sorgfalt.",
-        morphLabel: "// scroll = morph",
         morphTitlePre: "Eine Philosophie, ",
         morphTitleHighlight: "unendliche Formen",
         morphParagraph:
           "Scrolle und sieh, wie dieselbe Oberfläche zu Landingpage, Schaufenster, Shop oder Web-App wird. So arbeiten wir: ein solides Fundament, geformt nach dir.",
         frames: { landing: "Landing", showcase: "Schaufenster", shop: "Shop", webapp: "Web-App" },
-        pricingLabel: "// 03 — Pakete & Preise",
+        pricingLabel: "Pakete & Preise",
         pricingHeadingLine1: "Maßgeschneiderte Lösungen.",
         pricingHeadingPre: "Transparente ",
         pricingHeadingHighlight: "Pakete",
@@ -325,7 +323,7 @@ const resources = {
         pricingCta: "Entdecke unsere Pakete →",
       },
       contact: {
-        label: "// 04 — Kontakt aufnehmen",
+        label: "Kontakt aufnehmen",
         headingPre: "Hast du etwas ",
         headingHighlight: "Größeres",
         headingPost: " im Sinn?",
@@ -436,7 +434,7 @@ const resources = {
       },
       team: {
         backHome: "Zurück zur Startseite",
-        label: "// Das Team",
+        label: "Das Team",
         titlePre: "Die Menschen hinter ",
         titleHighlight: "Aura",
         subtitle:
@@ -447,7 +445,7 @@ const resources = {
       },
       contactPage: {
         backHome: "Zurück zur Startseite",
-        label: "// Direkter Kontakt",
+        label: "Direkter Kontakt",
         titlePre: "Sprich direkt mit ",
         titleHighlight: "Aura",
         titlePost: ".",
@@ -479,7 +477,7 @@ const resources = {
         skip: "Skip",
       },
       hero: {
-        badge: "[ Creative Digital Solutions ]",
+        badge: "Creative Digital Solutions",
         scroll: "Scroll",
         actTwoTitle: "Your brand, elevated.",
         actTwoSub: "Bespoke web design for those who won't settle.",
@@ -487,7 +485,7 @@ const resources = {
         actTwoSub2: "Performance, SEO and conversions — built in.",
       },
       services: {
-        label: "// What we offer",
+        label: "What we offer",
         caption1: "We design digital experiences that leave a mark.",
         caption2: "Value that grows, project after project.",
         mobileItems: [
@@ -510,7 +508,7 @@ const resources = {
         ],
       },
       projects: {
-        selectedWork: "// Selected Work",
+        selectedWork: "Selected Work",
         mobileTitle: "Cinematic case studies.",
         prevProject: "Previous project",
         nextProject: "Next project",
@@ -528,20 +526,19 @@ const resources = {
         },
       },
       product: {
-        label: "// 03 — The Product",
+        label: "The Product",
         headingPre: "We build ",
         headingHighlight: "bespoke",
         headingPost: " websites.",
         headingLine2: "From landing page to shop.",
         paragraph:
           "No templates. No compromises. Every project starts from your needs: landing pages that convert, elegant showcases, high-performance e-commerce or custom web apps — always with the same cinematic care.",
-        morphLabel: "// scroll = morph",
         morphTitlePre: "One philosophy, ",
         morphTitleHighlight: "infinite forms",
         morphParagraph:
           "Scroll and watch the same interface become a landing page, showcase, shop or web app. That's how we work: a solid foundation, shaped around you.",
         frames: { landing: "Landing", showcase: "Showcase", shop: "Shop", webapp: "Web App" },
-        pricingLabel: "// 03 — Pricing & Plans",
+        pricingLabel: "Pricing & Plans",
         pricingHeadingLine1: "Bespoke solutions.",
         pricingHeadingPre: "Transparent ",
         pricingHeadingHighlight: "plans",
@@ -550,7 +547,7 @@ const resources = {
         pricingCta: "Discover our plans →",
       },
       contact: {
-        label: "// 04 — Get in touch",
+        label: "Get in touch",
         headingPre: "Got something ",
         headingHighlight: "more",
         headingPost: " in mind?",
@@ -661,7 +658,7 @@ const resources = {
       },
       team: {
         backHome: "Back to Home",
-        label: "// The Team",
+        label: "The Team",
         titlePre: "The people behind ",
         titleHighlight: "Aura",
         subtitle:
@@ -672,7 +669,7 @@ const resources = {
       },
       contactPage: {
         backHome: "Back to Home",
-        label: "// Direct Contacts",
+        label: "Direct Contacts",
         titlePre: "Talk directly to ",
         titleHighlight: "Aura",
         titlePost: ".",
@@ -704,7 +701,7 @@ const resources = {
         skip: "Saltar",
       },
       hero: {
-        badge: "[ Creative Digital Solutions ]",
+        badge: "Creative Digital Solutions",
         scroll: "Desplázate",
         actTwoTitle: "Tu marca, elevada.",
         actTwoSub: "Diseño web a medida para quienes no se conforman.",
@@ -712,7 +709,7 @@ const resources = {
         actTwoSub2: "Rendimiento, SEO y conversiones — de serie.",
       },
       services: {
-        label: "// Qué ofrecemos",
+        label: "Qué ofrecemos",
         caption1: "Diseñamos experiencias digitales que dejan huella.",
         caption2: "Valor que crece, proyecto a proyecto.",
         mobileItems: [
@@ -735,7 +732,7 @@ const resources = {
         ],
       },
       projects: {
-        selectedWork: "// Trabajos seleccionados",
+        selectedWork: "Trabajos seleccionados",
         mobileTitle: "Casos de estudio cinematográficos.",
         prevProject: "Proyecto anterior",
         nextProject: "Proyecto siguiente",
@@ -753,20 +750,19 @@ const resources = {
         },
       },
       product: {
-        label: "// 03 — El Producto",
+        label: "El Producto",
         headingPre: "Creamos sitios ",
         headingHighlight: "a medida",
         headingPost: ".",
         headingLine2: "De la landing a la tienda.",
         paragraph:
           "Sin plantillas. Sin compromisos. Cada proyecto nace de tus necesidades: landings que convierten, escaparates elegantes, e-commerce de alto rendimiento o web apps a medida — siempre con el mismo cuidado cinematográfico.",
-        morphLabel: "// scroll = morph",
         morphTitlePre: "Una sola filosofía, ",
         morphTitleHighlight: "infinitas formas",
         morphParagraph:
           "Desplázate y observa cómo la misma interfaz se convierte en landing, escaparate, tienda o web app. Así trabajamos: una base sólida, moldeada a tu medida.",
         frames: { landing: "Landing", showcase: "Escaparate", shop: "Tienda", webapp: "Web App" },
-        pricingLabel: "// 03 — Planes y Precios",
+        pricingLabel: "Planes y Precios",
         pricingHeadingLine1: "Soluciones a medida.",
         pricingHeadingPre: "Planes ",
         pricingHeadingHighlight: "transparentes",
@@ -775,7 +771,7 @@ const resources = {
         pricingCta: "Descubre nuestros planes →",
       },
       contact: {
-        label: "// 04 — Ponte en contacto",
+        label: "Ponte en contacto",
         headingPre: "¿Tienes algo ",
         headingHighlight: "más",
         headingPost: " en mente?",
@@ -885,7 +881,7 @@ const resources = {
       },
       team: {
         backHome: "Volver al Inicio",
-        label: "// El Equipo",
+        label: "El Equipo",
         titlePre: "Las personas detrás de ",
         titleHighlight: "Aura",
         subtitle:
@@ -896,7 +892,7 @@ const resources = {
       },
       contactPage: {
         backHome: "Volver al Inicio",
-        label: "// Contactos Directos",
+        label: "Contactos Directos",
         titlePre: "Habla directamente con ",
         titleHighlight: "Aura",
         titlePost: ".",

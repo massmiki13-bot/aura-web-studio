@@ -88,7 +88,9 @@ export function FloatingShapesBackground({
     let smY = 0;
     let spotX = mouseX;
     let spotY = mouseY;
-    const pushState = SHAPES.map(() => ({ x: 0, y: 0, rot: 0 }));
+    // `o` tracks the last opacity written, so the entrance stops touching the
+    // property once it has settled at 1 instead of re-assigning it forever.
+    const pushState = SHAPES.map(() => ({ x: 0, y: 0, rot: 0, o: -1 }));
     let rects: { cx: number; cy: number }[] = [];
     let rectsStamp = 0;
 
@@ -186,7 +188,10 @@ export function FloatingShapesBackground({
         const rot = s.base + entranceRot + tiltRot + ps.rot;
 
         el.style.transform = `translate(${tx}px, ${ty}px) rotate(${rot}deg)`;
-        el.style.opacity = String(opacity);
+        if (ps.o !== opacity) {
+          ps.o = opacity;
+          el.style.opacity = String(opacity);
+        }
       });
 
       raf = requestAnimationFrame(tick);
@@ -232,7 +237,11 @@ export function FloatingShapesBackground({
 
   return (
     <div data-floating-shapes className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}>
-      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-white/[0.03] blur-3xl" />
+      {/* No blur on this one. It is a two-stop linear gradient across the
+          whole viewport — there is no detail in it for a 64px Gaussian to
+          soften, so the filter was buying a viewport-sized backing store and
+          a blur pass in exchange for a visually identical result. */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-white/[0.03]" />
       <div
         className="absolute inset-0 opacity-60"
         style={{
@@ -264,7 +273,10 @@ export function FloatingShapesBackground({
             ref={(el) => {
               shapeRefs.current[i] = el;
             }}
-            className="relative rounded-full border border-white/15 shadow-[0_8px_32px_0_rgba(255,255,255,0.08)]"
+            // will-change so the per-frame transform stays a compositor move.
+            // Each bar carries a border and a 32px shadow; without its own
+            // layer the browser is free to re-rasterise both every frame.
+            className="relative rounded-full border border-white/15 shadow-[0_8px_32px_0_rgba(255,255,255,0.08)] will-change-transform"
             style={{
               width: s.width,
               height: s.height,

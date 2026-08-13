@@ -153,8 +153,6 @@ export function rootLinks(): LinkDescriptor[] {
     { rel: "icon", href: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
     { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
     { rel: "manifest", href: "/manifest.webmanifest" },
-    { rel: "preconnect", href: "https://fonts.googleapis.com" },
-    { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
     { rel: "sitemap", type: "application/xml", href: "/sitemap.xml" },
   ];
 }
