@@ -36,3 +36,6 @@ bun.lockb
 *.njsproj
 *.sln
 *.sw?
+
+# TypeScript incremental build cache
+*.tsbuildinfo
