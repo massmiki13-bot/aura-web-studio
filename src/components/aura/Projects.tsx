@@ -147,11 +147,26 @@ const categories: { key: "all" | ProjectCategory; label: string }[] = [
  * nothing else needs touching.
  */
 
+/**
+ * The preview's width, and by the same token the width of the grid column that
+ * holds a place for it. 16:9, because every project image is a landscape
+ * screenshot of a website — a portrait frame took a narrow vertical slice out
+ * of the middle and threw away the composition the screenshot was of.
+ *
+ * Wide enough at the top end to read as an image rather than a thumbnail, and
+ * scaled by vw so that on a 1280 or 1024 desktop it shrinks with the column
+ * instead of pushing the names out.
+ */
+const PREVIEW_WIDTH = "clamp(190px, 23vw, 340px)";
+
 /** Preview travel, in the same damped idiom as the custom cursor. */
 const FOLLOW_DAMPING = 12;
 const TILT_DAMPING = 9;
 const TILT_PER_PX = 0.5;
-const TILT_MAX = 14;
+// Softer than it was for the portrait frame: rotating a wide box swings its
+// corners much further, and at 14° a 340px-wide preview threw them into the
+// rows above and below.
+const TILT_MAX = 8;
 
 function categoryLabel(category: ProjectCategory) {
   return categories.find((c) => c.key === category)?.label ?? "";
@@ -186,6 +201,9 @@ function ProjectsIndex({ items }: { items: Project[] }) {
   const { t } = useTranslation();
   const [active, setActive] = useState<number | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+  // The reserved channel in the first row's grid — see PREVIEW_WIDTH. Measured
+  // rather than assumed, so the preview follows the real layout at any width.
+  const channelRef = useRef<HTMLDivElement>(null);
   // Written on every mousemove over the list, read by the frame loop — a ref
   // so pointer motion never causes a React render.
   const pointer = useRef({ x: 0, y: 0 });
@@ -200,28 +218,36 @@ function ProjectsIndex({ items }: { items: Project[] }) {
     /**
      * Where the preview wants to be.
      *
-     * Y tracks the pointer, which is what ties it to the row you are on. X is
-     * held in the empty channel between where the names stop and where the
-     * category column starts, drifting with the cursor inside it.
+     * Y tracks the pointer, which is what ties it to the row you are on. X sits
+     * in a column the grid *reserves* for it (see PREVIEW_WIDTH), drifting a
+     * little with the cursor inside that column so it still reads as attached
+     * to the pointer rather than parked in a slot.
      *
-     * Two other placements were tried and are worth not repeating. Centring it
-     * on the cursor put it straight over the name of the row being read, and
-     * capping the names to make room truncated them at rest ("La Cave Shisha
-     * Lo…") — the names are the section, so nothing may shrink them. Offsetting
-     * it vertically instead cleared the active row but, at 900px of viewport,
-     * had nowhere to go and flipped up over the section heading.
+     * Reserving the column is what makes this robust. Three earlier placements
+     * are worth not repeating. Centring it on the cursor put it over the name
+     * of the row being read. Capping the names to clear a right-hand band
+     * truncated them at rest ("La Cave Shisha Lo…") — the names are the
+     * section, so nothing may shrink them. Offsetting it vertically cleared the
+     * active row but, at 900px of viewport, had nowhere to go and flipped up
+     * over the heading. A hardcoded percentage band worked at 1440 and
+     * collided with the category label at 1024.
      *
-     * So the preview is sized to the gap rather than the gap to the preview:
-     * narrow enough (max 240px) to sit between a full-length name and the
-     * category label at every desktop width.
+     * Space that the layout has actually set aside cannot collide with
+     * anything, at any width, whatever the names say.
      */
+    // The preview is exactly as wide as its column, so any drift takes it
+    // outside. 16px keeps it inside the 32px grid gutters on either side —
+    // enough to feel attached to the pointer, never enough to reach the name
+    // text on the left or the category label on the right.
+    const DRIFT = 16;
     const desired = () => {
-      const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const { width, height } = el.getBoundingClientRect();
-      const halfH = (height || 300) / 2;
+      const { height } = el.getBoundingClientRect();
+      const halfH = (height || 200) / 2;
+      const channel = channelRef.current?.getBoundingClientRect();
+      const centre = channel ? channel.left + channel.width / 2 : window.innerWidth * 0.7;
       return {
-        x: Math.min(Math.max(pointer.current.x + 200, vw * 0.64), vw * 0.72),
+        x: centre + Math.max(-DRIFT, Math.min(DRIFT, pointer.current.x - centre)),
         y: Math.min(Math.max(pointer.current.y, halfH + 16), vh - halfH - 16),
       };
     };
@@ -270,6 +296,9 @@ function ProjectsIndex({ items }: { items: Project[] }) {
   return (
     <div
       className="relative"
+      // One custom property drives both the grid column that reserves the
+      // space and the preview that occupies it, so the two can never disagree.
+      style={{ "--preview-w": PREVIEW_WIDTH } as React.CSSProperties}
       onMouseMove={(e) => {
         pointer.current.x = e.clientX;
         pointer.current.y = e.clientY;
@@ -292,7 +321,7 @@ function ProjectsIndex({ items }: { items: Project[] }) {
                 onFocus={() => setActive(i)}
                 onBlur={() => setActive(null)}
                 aria-label={`${project.name} — ${categoryLabel(project.category)}`}
-                className={`group relative block py-7 outline-none transition-opacity duration-500 md:grid md:grid-cols-[2.75rem_minmax(0,1fr)_auto_auto] md:items-center md:gap-8 md:py-8 ${
+                className={`group relative block py-7 outline-none transition-opacity duration-500 md:grid md:grid-cols-[2.75rem_minmax(0,1fr)_var(--preview-w)_auto_auto] md:items-center md:gap-8 md:py-8 ${
                   project.domain ? "cursor-pointer" : "cursor-default"
                 } ${dimmed ? "opacity-30" : "opacity-100"}`}
               >
@@ -328,6 +357,17 @@ function ProjectsIndex({ items }: { items: Project[] }) {
                 >
                   {project.name}
                 </h3>
+
+                {/* The reserved channel the preview flies in. Empty by design:
+                    it is the layout setting aside the space rather than the
+                    preview hoping to find some. Only the first row's is
+                    measured — every row's is identical, since it is a grid
+                    column. */}
+                <div
+                  ref={i === 0 ? channelRef : undefined}
+                  aria-hidden
+                  className="hidden md:block"
+                />
 
                 {/* Mobile imagery, since there is no pointer to reveal it with.
                     display:none from md up, which also keeps these off the
@@ -391,9 +431,9 @@ function ProjectsIndex({ items }: { items: Project[] }) {
           className={`relative -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl border border-white/15 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.9)] transition-[opacity,scale] duration-500 ease-out ${
             active === null ? "scale-90 opacity-0" : "scale-100 opacity-100"
           }`}
-          // Sized to the channel between the names and the category column,
-          // not to what looks good in isolation — see `desired()` above.
-          style={{ width: "clamp(170px, 16vw, 240px)", aspectRatio: "4 / 5" }}
+          // Exactly the width the grid reserved for it — same custom property,
+          // so the frame and the space set aside for it cannot drift apart.
+          style={{ width: "var(--preview-w)", aspectRatio: "16 / 9" }}
         >
           {items.map((project, i) =>
             project.image ? (
@@ -402,7 +442,7 @@ function ProjectsIndex({ items }: { items: Project[] }) {
                 src={project.image}
                 alt=""
                 fill
-                sizes="300px"
+                sizes="340px"
                 className={`object-cover transition-opacity duration-300 ${
                   active === i ? "opacity-100" : "opacity-0"
                 }`}
