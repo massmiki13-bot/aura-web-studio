@@ -18,48 +18,14 @@ export type SplineSceneProps = {
   className?: string;
 };
 
-/**
- * Silences one specific, diagnosed line of noise from the Spline runtime.
- *
- * The Services scene (0CM1l3LnIBHakUny) contains a looping timeline whose
- * tween references a state the runtime cannot resolve. When that timeline
- * first completes, `buildTimeline` constructs the tween, the constructor
- * throws `new Error("Missing property")`, and buildTimeline's *own* try/catch
- * swallows it and calls `console.error(err.message)` — a bare string with no
- * stack. Nothing else happens: the scene loads, renders and animates, and the
- * only real consequence is that one interaction in the scene never fires.
- *
- * It is emitted exactly once per page load (measured: one occurrence, then
- * nothing across 45s parked on the section), so this costs no frames. What it
- * does cost is a Next dev-overlay panel in your face every time you scroll
- * past the hero, because the overlay intercepts console.error.
- *
- * This is a mitigation, not a repair — the defect is in the published scene
- * binary and cannot be fixed from this repository. The durable fix is to
- * correct the event in the Spline editor and re-publish, or to replace the
- * scene. Delete this function when either happens.
- *
- * Deliberately narrow:
- * - development only, so production logging and any error monitoring you add
- *   later still see everything;
- * - installed from this module, so it exists only on pages that actually mount
- *   a Spline scene rather than being global surgery in the root layout;
- * - matches a lone string argument by exact value. Spline logs `err.message`,
- *   so an Error object with the same text — from anything else — is a
- *   different type and still gets through.
+/*
+ * There was a console-noise filter here, silencing the bare "Missing
+ * property" that the Services scene's broken timeline logged once per load.
+ * That scene is no longer used anywhere on the site — this row's robot scene
+ * (kZDDjO5HuC9GJUM2) does not have the defect, verified at zero occurrences —
+ * so the filter had nothing left to catch. A dead error-silencer is worse
+ * than none, so it is gone. If that scene ever comes back, so does the log.
  */
-const SPLINE_TIMELINE_NOISE = "Missing property";
-let noiseFiltered = false;
-function silenceSplineTimelineNoise() {
-  if (noiseFiltered || process.env.NODE_ENV !== "development") return;
-  if (typeof window === "undefined") return;
-  noiseFiltered = true;
-  const original = console.error;
-  console.error = (...args: unknown[]) => {
-    if (args.length === 1 && args[0] === SPLINE_TIMELINE_NOISE) return;
-    original(...args);
-  };
-}
 
 // Fetching + evaluating the runtime chunk costs several MB and a long main-
 // thread task. Left to the scroll, that task lands in the middle of the
@@ -139,7 +105,6 @@ export function SplineScene({
   const appRef = useRef<Application | null>(null);
 
   useEffect(warmSplineRuntime, []);
-  useEffect(silenceSplineTimelineNoise, []);
 
   // Kill Spline's scroll-wheel zoom. Spline binds a native `wheel` listener on
   // its canvas; a capture-phase listener on the wrapper fires first and stops

@@ -21,9 +21,9 @@ export function SmoothScroll() {
     });
 
     lenis.on("scroll", ScrollTrigger.update);
-    // Published so components that intercept wheel events (the Spline scenes
-    // block the runtime's scroll-zoom) can forward the gesture back here
-    // instead of dropping the page onto native scroll — see @/lib/lenis.
+    // Published so components that intercept wheel events — the intro's scroll
+    // lock, the nav's menu — can forward the gesture back here instead of
+    // dropping the page onto native scroll. See @/lib/lenis.
     setLenis(lenis);
 
     // Named so cleanup can actually remove it — removing `lenis.raf` (a

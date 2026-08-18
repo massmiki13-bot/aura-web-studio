@@ -89,7 +89,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
         <div className="mb-12">
           <Link
             href={homeHref}
-            className="inline-flex items-center gap-2 font-mono-spec text-[10px] uppercase tracking-[0.25em] text-white/50 hover:text-primary transition-colors cursor-pointer"
+            className="font-mono-spec -my-4 inline-flex cursor-pointer items-center gap-2 py-4 text-[10px] tracking-[0.25em] text-white/50 uppercase transition-colors hover:text-primary"
           >
             <ArrowLeft className="h-3 w-3" /> {t("pricing.backHome")}
           </Link>
@@ -203,7 +203,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
                 {/* Features Divider */}
                 <div className="relative flex items-center justify-center my-6">
                   <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-                  <span className="relative px-3 bg-black/40 backdrop-blur-sm font-mono-spec text-[9px] uppercase tracking-[0.25em] text-white/40 z-10">
+                  <span className="relative px-3 bg-black/40 backdrop-blur-sm font-mono-spec text-[10px] uppercase tracking-[0.25em] text-white/40 z-10">
                     {t("pricing.features")}
                   </span>
                 </div>
@@ -267,7 +267,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
             <div>
               <div className="relative flex items-center justify-center mb-6">
                 <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-                <span className="relative px-3 bg-black/40 backdrop-blur-sm font-mono-spec text-[9px] uppercase tracking-[0.25em] text-white/40 z-10">
+                <span className="relative px-3 bg-black/40 backdrop-blur-sm font-mono-spec text-[10px] uppercase tracking-[0.25em] text-white/40 z-10">
                   {t("pricing.maintenance.included")}
                 </span>
               </div>

@@ -178,7 +178,7 @@ export function Nav() {
       >
         <a
           href={`${homeHref}#hero`}
-          className="font-display text-lg font-bold tracking-tight text-white"
+          className="font-display -my-2 inline-flex items-center py-2 text-lg font-bold tracking-tight text-white"
         >
           AURA<span className="text-accent">.</span>
         </a>
@@ -219,7 +219,7 @@ export function Nav() {
           onClick={() => setOpen((v) => !v)}
           // Above the overlay it opens (z-40): the button is the close control
           // too, and a tap on it must never be swallowed by the overlay.
-          className="md:hidden relative z-50 w-10 h-10 flex flex-col items-center justify-center gap-1.5"
+          className="md:hidden relative z-50 -m-0.5 h-11 w-11 flex flex-col items-center justify-center gap-1.5"
           style={{ willChange: "transform" }}
         >
           <motion.span

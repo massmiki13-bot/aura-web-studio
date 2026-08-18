@@ -9,13 +9,12 @@
  * here is plain functions and module state that either side can call.
  *
  * The home page mounts several independent GPU workloads (the hero's shader
- * background, the hero's chrome blob, the Spline scene one section down) plus
- * the intro overlay. Left to themselves they all spin up inside the same few
- * hundred milliseconds as hydration, font loading and ScrollTrigger's first
- * pin — which is exactly why the hero background used to stutter for the first
- * seconds of a cold visit: three WebGL contexts compiling shaders and a
- * multi-megabyte runtime downloading while the compositor is trying to hold
- * 60fps.
+ * background, the hero's chrome blob, the services crystal and the Spline
+ * robot further down) plus the intro overlay. Left to themselves they all
+ * spin up inside the same few hundred milliseconds as hydration, font loading
+ * and ScrollTrigger's first pin — which is exactly why the hero background
+ * used to stutter for the first seconds of a cold visit: several WebGL
+ * contexts compiling shaders while the compositor is trying to hold 60fps.
  *
  * So there is one gate. Nothing heavy starts until `markBootReady()` fires:
  *
@@ -157,12 +156,16 @@ export function onBootReady(cb: () => void): () => void {
  * they never do.
  *
  * The first seconds on the hero are spent watching its shader background
- * animate. Anything heavy that belongs further down the page — the chrome
- * blob's WebGL context, the multi-megabyte Spline runtime — visibly stutters
- * that animation if it mounts or parses in the same window (measured: a ~280ms
- * main-thread task right as the chrome canvas comes up). Gating that work on
- * the first real scroll intent keeps it out of the hero's moment entirely, and
- * moves its cost into a scroll gesture, where the motion hides the hitch.
+ * animate. Anything heavy that belongs further down the page — a WebGL context
+ * coming up, a large chunk parsing — visibly stutters that animation if it
+ * lands in the same window (measured: a ~280ms main-thread task right as the
+ * chrome canvas came up). Gating that work on the first real scroll intent
+ * keeps it out of the hero's moment entirely, and moves its cost into a scroll
+ * gesture, where the motion hides the hitch.
+ *
+ * Its heaviest consumer is the Spline runtime pre-warm behind the showcase
+ * robot — several megabytes of runtime and a long parse, which is exactly the
+ * shape of work this gate exists for.
  */
 export function onScrollIntent(cb: () => void, fallbackMs = 6000): () => void {
   if (typeof window === "undefined") return () => {};

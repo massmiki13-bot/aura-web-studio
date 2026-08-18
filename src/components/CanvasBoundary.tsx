@@ -8,7 +8,8 @@ import { markBootReady } from "@/lib/boot";
  * Error boundary for the decorative canvases.
  *
  * The home page runs several WebGL contexts at once — the intro, the hero's
- * shader background, the hero's chrome blob, the Spline scene. Browsers cap
+ * shader background, the hero's chrome blob, the services crystal, the Spline
+ * robot one section further down. Browsers cap
  * how many can be live, drivers lose contexts under memory pressure, and
  * three.js throws when it is asked to render into one that has gone away. With
  * nothing between those canvases and the router, a single lost context takes

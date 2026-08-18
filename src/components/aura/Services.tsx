@@ -1,18 +1,17 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollTrigger } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useIsDesktopViewport } from "@/hooks/use-desktop-viewport";
 import { tList } from "@/lib/utils";
-import { SplineScene } from "./SplineScene";
+import { ChromeCrystal } from "@/components/three/ChromeCrystal";
 
 /**
- * "Cosa offriamo": a full-screen section whose entire space is the mouse-
- * interactive Spline scene. Previously an R3F staircase with a procedural coin
- * climbing it under two crossfading headlines; that set piece and its captions
- * have been removed so the Spline animation stands on its own. Only the small
- * section label and the approach reveal-fade remain.
+ * "Cosa offriamo": a full-screen section whose entire space is the chrome
+ * crystal. It has held a Spline scene, an R3F staircase with a procedural coin
+ * and a WebGPU depth-scan before this; only the small section label and the
+ * approach reveal-fade have survived all of them.
  */
 
 export function Services() {
@@ -56,29 +55,24 @@ export function Services() {
       id="services"
       ref={sectionRef}
       // Desktop keeps the exact original box (h-screen, clipped) since it's
-      // a full-bleed backdrop for the Spline scene. Mobile sizes to its own
+      // a full-bleed backdrop for the canvas. Mobile sizes to its own
       // content instead — it previously carried `min-h-screen` from when a
       // full-bleed scene lived here, which left a screen-height of dead black
       // under the last offer card before the next section.
       className="relative md:h-screen w-full overflow-visible md:overflow-hidden bg-black"
     >
-      {/* The Spline scene fills the section and receives pointer events so it
-          reacts to the mouse the same way it does in the Spline editor.
-          Desktop-only: the scene's camera framing is authored for a wide
-          viewport and doesn't recompose for a narrow, tall one, and the
-          runtime alone is several megabytes plus a long parse.
+      {/* The crystal fills the section. Desktop-only: it is framed for a wide
+          viewport and reads as a cropped smear on a narrow, tall one, and a
+          phone has better uses for a GPU context than this.
 
           Gated on `=== true`, not `!== false`. On the render before the media
-          query is measured `isDesktop` is null, and rendering <SplineScene>
-          for even that one pass was enough: its mount effect registers the
-          runtime pre-warm on the boot/scroll-intent gates, and those fire
-          later regardless of whether the component is still mounted. Phones
-          were still downloading and parsing the whole Spline runtime for a
-          scene they never showed. */}
+          query is measured `isDesktop` is null, and rendering the scene for
+          even that one pass used to be enough to start work that outlived the
+          component — the Spline wrapper registered a multi-megabyte runtime
+          pre-warm on gates that fired later whether or not it was still
+          mounted. The strict gate is cheap insurance and stays. */}
       {isDesktop === true && (
-        <div className="absolute inset-0">
-          <SplineScene className="absolute inset-0" />
-        </div>
+        <ChromeCrystal className="absolute inset-0" fullBleed offsetX={0.44} />
       )}
 
       {/* Mobile replacement: what used to be a Spline scene (badly cropped at
@@ -92,7 +86,7 @@ export function Services() {
         </div>
       )}
 
-      <ServicesLabel />
+      {isDesktop === true && <ServicesSteps />}
       {/* Reveal overlay stays click-through so it never blocks the scene. */}
       <div ref={fadeInRef} className="absolute inset-0 z-20 bg-black pointer-events-none" />
     </section>
@@ -126,11 +120,126 @@ function ServicesMobileOffer() {
   );
 }
 
-function ServicesLabel() {
+/**
+ * The three headers that cross-fade down the left of the section as the
+ * visitor scrolls through it.
+ *
+ * The section is pinned for two extra screens and the timeline is scrubbed
+ * against that, so the copy is tied to scroll position rather than played on a
+ * timer — scroll back up and it runs backwards, exactly in step.
+ *
+ * Built to stay smooth under the two things that usually ruin this:
+ *
+ * - `scrub: true`, not a smoothed number. Lenis already smooths the scroll
+ *   itself, and a second smoothing layer here makes the copy visibly trail the
+ *   rest of the page — the hero learned this the same way, see Hero.
+ * - No React state in the loop. GSAP writes opacity and transform straight to
+ *   the DOM nodes, so a scrubbed frame costs no render, no reconciliation and
+ *   no layout; both properties are compositor-only.
+ *
+ * Under prefers-reduced-motion there is no pin and no scrub at all: a section
+ * that only advances when you scroll *is* the motion being opted out of. The
+ * three steps are simply laid out in flow, all readable at once.
+ */
+function ServicesSteps() {
   const { t } = useTranslation();
+  const wrapRef = useRef<HTMLDivElement>(null);
+  // Decided once on mount. It changes the layout, not just the animation, so
+  // it has to reach the render rather than only the effect.
+  const [reduced, setReduced] = useState(false);
+
+  const steps = tList<{ kicker: string; title: string }>(
+    t("services.steps", { returnObjects: true }),
+  );
+
+  useEffect(() => {
+    setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+
+  useEffect(() => {
+    if (reduced) return;
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    const section = wrap.closest("section");
+    if (!section) return;
+
+    const items = Array.from(wrap.querySelectorAll<HTMLElement>("[data-step]"));
+    if (items.length < 2) return;
+
+    const ctx = gsap.context(() => {
+      // First visible, the rest parked below and transparent.
+      gsap.set(items[0], { autoAlpha: 1, y: 0 });
+      gsap.set(items.slice(1), { autoAlpha: 0, y: 34 });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: "+=200%",
+          scrub: true,
+          pin: true,
+          // Engage slightly early on a fast flick so the section never
+          // overshoots before it snaps into place.
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // One unit of timeline per hand-off. The outgoing header starts leaving
+      // before the incoming one arrives, so there is always a beat with
+      // neither at full strength — a cross-dissolve rather than a swap.
+      for (let i = 1; i < items.length; i++) {
+        tl.to(
+          items[i - 1],
+          { autoAlpha: 0, y: -34, duration: 0.55, ease: "power2.inOut" },
+          i - 1,
+        ).to(items[i], { autoAlpha: 1, y: 0, duration: 0.55, ease: "power2.inOut" }, i - 1 + 0.28);
+      }
+      // A held beat on the last one, so the final line is readable for a
+      // stretch of scroll rather than arriving exactly as the pin releases.
+      tl.to({}, { duration: 0.6 });
+    }, wrap);
+
+    return () => ctx.revert();
+  }, [reduced, steps.length]);
+
+  if (!steps.length) return null;
+
   return (
-    <p className="absolute top-16 md:top-20 left-1/2 -translate-x-1/2 z-10 font-mono-spec text-[11px] uppercase tracking-[0.35em] text-white/50 pointer-events-none">
-      {t("services.label", "Cosa offriamo")}
-    </p>
+    <div
+      ref={wrapRef}
+      className="pointer-events-none absolute inset-y-0 left-0 z-10 flex w-full max-w-md items-start px-6 pt-28 md:px-16 lg:max-w-xl lg:items-center lg:pt-0"
+    >
+      {/*
+        Stacked in one grid cell when animated, in flow when not.
+
+        Stacking this way rather than with absolute positioning keeps the block
+        sized to its tallest member, so the vertical centre never moves as the
+        titles change length — the fade happens with nothing underneath it
+        shifting.
+      */}
+      <div className={reduced ? "w-full space-y-10" : "grid w-full"}>
+        {steps.map((step) => (
+          <div
+            key={step.title}
+            data-step
+            className={reduced ? "" : "col-start-1 row-start-1 will-change-[transform,opacity]"}
+          >
+            <p className="font-mono-spec mb-4 text-[11px] tracking-[0.35em] text-white/45 uppercase">
+              {step.kicker}
+            </p>
+            <p
+              className={`font-display font-semibold tracking-tighter text-white ${
+                reduced
+                  ? "text-2xl leading-[1.15] lg:text-3xl"
+                  : "text-4xl leading-[1.05] lg:text-5xl xl:text-6xl"
+              }`}
+            >
+              {step.title}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

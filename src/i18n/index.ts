@@ -23,7 +23,6 @@ const resources = {
   it: {
     translation: {
       nav: {
-        home: "Home",
         work: "Lavori",
         product: "Il Prodotto",
         pricing: "Prezzi",
@@ -44,9 +43,11 @@ const resources = {
         actTwoSub2: "Performance, SEO e conversioni — di serie.",
       },
       services: {
-        label: "Cosa offriamo",
-        caption1: "Progettiamo esperienze digitali che lasciano il segno.",
-        caption2: "Valore che cresce, progetto dopo progetto.",
+        steps: [
+          { kicker: "Approccio", title: "Ogni progetto parte da una pagina bianca." },
+          { kicker: "Esecuzione", title: "Il dettaglio non è un extra. È il lavoro." },
+          { kicker: "Risultato", title: "Valore che cresce, progetto dopo progetto." },
+        ],
         mobileItems: [
           {
             title: "Design su misura",
@@ -79,11 +80,8 @@ const resources = {
         headingLine2: "Dalla landing allo shop.",
         paragraph:
           "Niente template. Niente compromessi. Ogni progetto nasce dalle tue esigenze: landing che converte, vetrine eleganti, e-commerce performanti o web app custom — sempre con la stessa cura cinematica.",
-        morphTitlePre: "Una sola filosofia, ",
-        morphTitleHighlight: "infinite forme",
         morphParagraph:
           "Scrolla e guarda come la stessa interfaccia diventa landing, vetrina, shop o web app. È così che lavoriamo: una base solida, modellata su di te.",
-        frames: { landing: "Landing", showcase: "Vetrina", shop: "Shop", webapp: "Web App" },
         pricingLabel: "Piani e Prezzi",
         pricingHeadingLine1: "Soluzioni su misura.",
         pricingHeadingPre: "Piani ",
@@ -99,7 +97,6 @@ const resources = {
         headingPost: "?",
         paragraph:
           "I nostri piani coprono la maggior parte delle esigenze, ma ogni progetto ambizioso ha le sue. Se cerchi una soluzione su misura, parliamone: costruiamo qualcosa di unico, pensato solo per te. Ti rispondiamo entro 24 ore.",
-        callLabel: "Chiamaci",
         teamLabel: "Conosci il team",
         teamCta: "Scopri chi siamo →",
         formName: "Nome della tua attività/progetto",
@@ -117,7 +114,6 @@ const resources = {
         explore: "Esplora",
         legal: "Legale",
         privacy: "Privacy & Cookie",
-        terms: "Termini di Servizio",
       },
       pricing: {
         backHome: "Torna alla Home",
@@ -193,7 +189,6 @@ const resources = {
           formMessage: "Descrivi brevemente la tua richiesta",
           customizeToggle: "Proponi un budget diverso",
           priceLabel: "Budget proposto",
-          pricePlaceholder: "Es. 1500",
           btnIdle: "Invia richiesta →",
           btnLoading: "Invio in corso…",
           btnSent: "Richiesta inviata ✓",
@@ -209,9 +204,7 @@ const resources = {
         titleHighlight: "Aura",
         subtitle:
           "Siamo in tre. Pochi, affiatati e ossessionati dai dettagli. Ecco chi siamo e come raggiungerci.",
-        call: "Telefono",
         pec: "PEC",
-        email: "Email",
       },
       contactPage: {
         backHome: "Torna alla Home",
@@ -234,7 +227,6 @@ const resources = {
   de: {
     translation: {
       nav: {
-        home: "Home",
         work: "Projekte",
         product: "Das Produkt",
         pricing: "Preise",
@@ -255,9 +247,11 @@ const resources = {
         actTwoSub2: "Performance, SEO und Conversions — serienmäßig.",
       },
       services: {
-        label: "Was wir bieten",
-        caption1: "Wir gestalten digitale Erlebnisse, die Eindruck hinterlassen.",
-        caption2: "Wert, der wächst — Projekt für Projekt.",
+        steps: [
+          { kicker: "Ansatz", title: "Jedes Projekt beginnt mit einem leeren Blatt." },
+          { kicker: "Umsetzung", title: "Das Detail ist kein Extra. Es ist die Arbeit." },
+          { kicker: "Ergebnis", title: "Wert, der wächst — Projekt für Projekt." },
+        ],
         mobileItems: [
           {
             title: "Maßgeschneidertes Design",
@@ -290,11 +284,8 @@ const resources = {
         headingLine2: "Von der Landingpage bis zum Shop.",
         paragraph:
           "Keine Templates. Keine Kompromisse. Jedes Projekt entsteht aus deinen Anforderungen: Landingpages, die konvertieren, elegante Schaufenster, performante E-Commerce-Shops oder individuelle Web-Apps — immer mit derselben filmischen Sorgfalt.",
-        morphTitlePre: "Eine Philosophie, ",
-        morphTitleHighlight: "unendliche Formen",
         morphParagraph:
           "Scrolle und sieh, wie dieselbe Oberfläche zu Landingpage, Schaufenster, Shop oder Web-App wird. So arbeiten wir: ein solides Fundament, geformt nach dir.",
-        frames: { landing: "Landing", showcase: "Schaufenster", shop: "Shop", webapp: "Web-App" },
         pricingLabel: "Pakete & Preise",
         pricingHeadingLine1: "Maßgeschneiderte Lösungen.",
         pricingHeadingPre: "Transparente ",
@@ -310,7 +301,6 @@ const resources = {
         headingPost: " im Sinn?",
         paragraph:
           "Unsere Pakete decken die meisten Anforderungen ab, aber jedes ehrgeizige Projekt hat seine eigenen. Wenn du eine maßgeschneiderte Lösung suchst, lass uns reden: Wir bauen etwas Einzigartiges, nur für dich. Wir antworten innerhalb von 24 Stunden.",
-        callLabel: "Ruf uns an",
         teamLabel: "Lerne das Team kennen",
         teamCta: "Erfahre, wer wir sind →",
         formName: "Name deines Unternehmens/Projekts",
@@ -328,7 +318,6 @@ const resources = {
         explore: "Entdecken",
         legal: "Rechtliches",
         privacy: "Datenschutz & Cookies",
-        terms: "Nutzungsbedingungen",
       },
       pricing: {
         backHome: "Zurück zur Startseite",
@@ -404,7 +393,6 @@ const resources = {
           formMessage: "Beschreibe kurz dein Anliegen",
           customizeToggle: "Anderes Budget vorschlagen",
           priceLabel: "Vorgeschlagenes Budget",
-          pricePlaceholder: "Z.B. 1500",
           btnIdle: "Anfrage senden →",
           btnLoading: "Wird gesendet…",
           btnSent: "Anfrage gesendet ✓",
@@ -420,9 +408,7 @@ const resources = {
         titleHighlight: "Aura",
         subtitle:
           "Wir sind zu dritt. Klein, eingespielt und besessen von Details. Hier sind wir und so erreichst du uns.",
-        call: "Telefon",
         pec: "PEC",
-        email: "E-Mail",
       },
       contactPage: {
         backHome: "Zurück zur Startseite",
@@ -445,7 +431,6 @@ const resources = {
   en: {
     translation: {
       nav: {
-        home: "Home",
         work: "Work",
         product: "The Product",
         pricing: "Pricing",
@@ -466,9 +451,11 @@ const resources = {
         actTwoSub2: "Performance, SEO and conversions — built in.",
       },
       services: {
-        label: "What we offer",
-        caption1: "We design digital experiences that leave a mark.",
-        caption2: "Value that grows, project after project.",
+        steps: [
+          { kicker: "Approach", title: "Every project starts from a blank page." },
+          { kicker: "Craft", title: "The detail isn't an extra. It's the work." },
+          { kicker: "Outcome", title: "Value that grows, project after project." },
+        ],
         mobileItems: [
           {
             title: "Custom Design",
@@ -501,11 +488,8 @@ const resources = {
         headingLine2: "From landing page to shop.",
         paragraph:
           "No templates. No compromises. Every project starts from your needs: landing pages that convert, elegant showcases, high-performance e-commerce or custom web apps — always with the same cinematic care.",
-        morphTitlePre: "One philosophy, ",
-        morphTitleHighlight: "infinite forms",
         morphParagraph:
           "Scroll and watch the same interface become a landing page, showcase, shop or web app. That's how we work: a solid foundation, shaped around you.",
-        frames: { landing: "Landing", showcase: "Showcase", shop: "Shop", webapp: "Web App" },
         pricingLabel: "Pricing & Plans",
         pricingHeadingLine1: "Bespoke solutions.",
         pricingHeadingPre: "Transparent ",
@@ -521,7 +505,6 @@ const resources = {
         headingPost: " in mind?",
         paragraph:
           "Our plans cover most needs, but every ambitious project has its own. If you're looking for a tailor-made solution, let's talk: we'll build something unique, made just for you. We reply within 24 hours.",
-        callLabel: "Call us",
         teamLabel: "Meet the team",
         teamCta: "Discover who we are →",
         formName: "Name of your business/project",
@@ -539,7 +522,6 @@ const resources = {
         explore: "Explore",
         legal: "Legal",
         privacy: "Privacy & Cookies",
-        terms: "Terms of Service",
       },
       pricing: {
         backHome: "Back to Home",
@@ -615,7 +597,6 @@ const resources = {
           formMessage: "Briefly describe your request",
           customizeToggle: "Propose a different budget",
           priceLabel: "Proposed budget",
-          pricePlaceholder: "E.g. 1500",
           btnIdle: "Send request →",
           btnLoading: "Sending…",
           btnSent: "Request sent ✓",
@@ -631,9 +612,7 @@ const resources = {
         titleHighlight: "Aura",
         subtitle:
           "There are three of us. Small, tight-knit and obsessed with detail. Here's who we are and how to reach us.",
-        call: "Phone",
         pec: "PEC",
-        email: "Email",
       },
       contactPage: {
         backHome: "Back to Home",
@@ -656,7 +635,6 @@ const resources = {
   es: {
     translation: {
       nav: {
-        home: "Inicio",
         work: "Trabajos",
         product: "El Producto",
         pricing: "Precios",
@@ -677,9 +655,11 @@ const resources = {
         actTwoSub2: "Rendimiento, SEO y conversiones — de serie.",
       },
       services: {
-        label: "Qué ofrecemos",
-        caption1: "Diseñamos experiencias digitales que dejan huella.",
-        caption2: "Valor que crece, proyecto a proyecto.",
+        steps: [
+          { kicker: "Enfoque", title: "Cada proyecto empieza desde una página en blanco." },
+          { kicker: "Ejecución", title: "El detalle no es un extra. Es el trabajo." },
+          { kicker: "Resultado", title: "Valor que crece, proyecto a proyecto." },
+        ],
         mobileItems: [
           {
             title: "Diseño a medida",
@@ -712,11 +692,8 @@ const resources = {
         headingLine2: "De la landing a la tienda.",
         paragraph:
           "Sin plantillas. Sin compromisos. Cada proyecto nace de tus necesidades: landings que convierten, escaparates elegantes, e-commerce de alto rendimiento o web apps a medida — siempre con el mismo cuidado cinematográfico.",
-        morphTitlePre: "Una sola filosofía, ",
-        morphTitleHighlight: "infinitas formas",
         morphParagraph:
           "Desplázate y observa cómo la misma interfaz se convierte en landing, escaparate, tienda o web app. Así trabajamos: una base sólida, moldeada a tu medida.",
-        frames: { landing: "Landing", showcase: "Escaparate", shop: "Tienda", webapp: "Web App" },
         pricingLabel: "Planes y Precios",
         pricingHeadingLine1: "Soluciones a medida.",
         pricingHeadingPre: "Planes ",
@@ -732,7 +709,6 @@ const resources = {
         headingPost: " en mente?",
         paragraph:
           "Nuestros planes cubren la mayoría de las necesidades, pero cada proyecto ambicioso tiene las suyas. Si buscas una solución a medida, hablemos: construiremos algo único, pensado solo para ti. Respondemos en 24 horas.",
-        callLabel: "Llámanos",
         teamLabel: "Conoce al equipo",
         teamCta: "Descubre quiénes somos →",
         formName: "Nombre de tu negocio/proyecto",
@@ -750,7 +726,6 @@ const resources = {
         explore: "Explora",
         legal: "Legal",
         privacy: "Privacidad y Cookies",
-        terms: "Términos del Servicio",
       },
       pricing: {
         backHome: "Volver al Inicio",
@@ -825,7 +800,6 @@ const resources = {
           formMessage: "Describe brevemente tu solicitud",
           customizeToggle: "Proponer un presupuesto diferente",
           priceLabel: "Presupuesto propuesto",
-          pricePlaceholder: "Ej. 1500",
           btnIdle: "Enviar solicitud →",
           btnLoading: "Enviando…",
           btnSent: "Solicitud enviada ✓",
@@ -841,9 +815,7 @@ const resources = {
         titleHighlight: "Aura",
         subtitle:
           "Somos tres. Pocos, compenetrados y obsesionados con los detalles. Estos somos y así puedes contactarnos.",
-        call: "Teléfono",
         pec: "PEC",
-        email: "Email",
       },
       contactPage: {
         backHome: "Volver al Inicio",

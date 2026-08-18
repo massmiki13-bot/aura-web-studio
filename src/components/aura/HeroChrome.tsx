@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
+import { getChromeMatcap } from "@/components/three/chrome-matcap";
+
 /**
  * The hero's second act: a liquid-chrome form that undulates, melts further
  * as the visitor scrolls through the pin, and leans toward the cursor.
@@ -32,69 +34,10 @@ export type HeroChromeMotion = {
   progress: number;
 };
 
-// Monochrome "studio softbox" matcap, drawn procedurally: a bright key
-// reflection band, two thinner fill bands, and a dark grazing-angle rim.
-// Keeps the look on-palette and avoids shipping/fetching a texture.
-//
-// 256², not 512²: every stop in this thing is a wide radial or linear gradient,
-// so there is no detail above that resolution to lose — and a quarter of the
-// texels is a quarter of the sampler traffic on the one texture read the
-// fragment shader makes per pixel.
-function makeMatcapTexture(): THREE.CanvasTexture {
-  const size = 256;
-  const cv = document.createElement("canvas");
-  cv.width = cv.height = size;
-  const g = cv.getContext("2d")!;
-
-  const base = g.createRadialGradient(
-    size * 0.38,
-    size * 0.34,
-    size * 0.05,
-    size * 0.5,
-    size * 0.5,
-    size * 0.62,
-  );
-  base.addColorStop(0, "#e8eaee");
-  base.addColorStop(0.3, "#8b8e96");
-  base.addColorStop(0.62, "#26272c");
-  base.addColorStop(1, "#020203");
-  g.fillStyle = base;
-  g.fillRect(0, 0, size, size);
-
-  g.save();
-  g.translate(size / 2, size / 2);
-  g.rotate(-0.55);
-  const band = (y: number, h: number, alpha: number) => {
-    const grad = g.createLinearGradient(0, y - h / 2, 0, y + h / 2);
-    grad.addColorStop(0, "rgba(255,255,255,0)");
-    grad.addColorStop(0.5, `rgba(255,255,255,${alpha})`);
-    grad.addColorStop(1, "rgba(255,255,255,0)");
-    g.fillStyle = grad;
-    g.fillRect(-size, y - h / 2, size * 2, h);
-  };
-  band(-size * 0.27, size * 0.16, 0.9);
-  band(-size * 0.02, size * 0.07, 0.45);
-  band(size * 0.18, size * 0.05, 0.22);
-  g.restore();
-
-  const rim = g.createRadialGradient(
-    size / 2,
-    size / 2,
-    size * 0.36,
-    size / 2,
-    size / 2,
-    size * 0.5,
-  );
-  rim.addColorStop(0, "rgba(0,0,0,0)");
-  rim.addColorStop(0.75, "rgba(0,0,0,0.25)");
-  rim.addColorStop(1, "rgba(0,0,0,0.82)");
-  g.fillStyle = rim;
-  g.fillRect(0, 0, size, size);
-
-  const tex = new THREE.CanvasTexture(cv);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  return tex;
-}
+// The chrome material now lives in @/components/three/chrome-matcap, shared
+// with the services crystal — both metal surfaces on this page are lit by one
+// light rather than two near-copies of it. See that module for how the matcap
+// is drawn.
 
 // Ashima 3D simplex noise (webgl-noise, MIT) — the standard GPU noise.
 const GLSL_SIMPLEX = /* glsl */ `
@@ -351,8 +294,7 @@ function ChromeBlob({
   // used to keep the scroll zoom inside the canvas — see the clamp below.
   const viewport = useThree((s) => s.viewport);
 
-  const matcap = useMemo(() => makeMatcapTexture(), []);
-  useEffect(() => () => matcap.dispose(), [matcap]);
+  const matcap = useMemo(() => getChromeMatcap(), []);
 
   const geometry = useMemo(() => makeChromeGeometry(1.45, detail), [detail]);
   useEffect(() => () => geometry.dispose(), [geometry]);

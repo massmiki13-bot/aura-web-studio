@@ -9,8 +9,7 @@ import { useIsDesktopViewport } from "@/hooks/use-desktop-viewport";
 import { SplineScene } from "./SplineScene";
 
 // The eye-tracking robot. Passed explicitly because SplineScene's default is
-// the scene used by the full-screen Services section further up the page —
-// this row keeps its own.
+// the scene that used to fill the Services section — this row keeps its own.
 const ROBOT_SCENE = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
 
 function RowLabel({ children }: { children: React.ReactNode }) {
@@ -33,16 +32,13 @@ function RowHeading({ children }: { children: React.ReactNode }) {
  * Three alternating service rows, each its own spotlit dark card — the
  * showcase for what we actually build. Row 1's right-hand panel is the
  * eye-tracking robot Spline scene. Rows 2 and 3 use lightweight custom
- * widgets (no WebGL) so the section doesn't turn into three heavy 3D
- * canvases.
+ * widgets (no WebGL) so the section doesn't turn into three heavy 3D canvases.
  */
 export function ServicesShowcase() {
   const { t } = useTranslation();
-  // The robot below is a Spline scene: ~2 MB of runtime, a WASM module and the
-  // scene file itself. It was rendered unconditionally, so a phone downloaded
-  // all of it — a second full Spline payload on top of the one the Services
-  // section was already (wrongly) loading — for a decorative panel that is
-  // framed for a wide viewport and reads as a cropped smear on a narrow one.
+  // Desktop-only, still: the panel is framed for a wide viewport and reads as
+  // a cropped smear on a narrow one, so on mobile it is dropped and the copy
+  // takes the full card.
   const isDesktop = useIsDesktopViewport();
 
   return (
@@ -61,13 +57,14 @@ export function ServicesShowcase() {
               )}
             </p>
           </div>
-          {/* Gated on `=== true`, not `!== false`: rendering <SplineScene> for
-              even the single pass before the media query is measured is enough
-              to register its runtime pre-warm, which then fires later whether
-              or not the component is still mounted. On mobile the panel is
-              simply dropped and the copy takes the full card. */}
+          {/* Gated on `=== true`, not `!== false`: on the render before the
+              media query is measured `isDesktop` is null, and rendering
+              SplineScene for even that single pass is enough to register its
+              multi-megabyte runtime pre-warm, which fires later whether or not
+              the component is still mounted. On mobile the panel is dropped and
+              the copy takes the full card. */}
           {isDesktop === true && (
-            <div className="flex-1 relative min-h-70">
+            <div className="relative min-h-70 flex-1">
               <SplineScene scene={ROBOT_SCENE} className="absolute inset-0" />
             </div>
           )}

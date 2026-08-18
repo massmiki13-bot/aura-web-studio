@@ -180,7 +180,7 @@ export function Footer() {
         <div className="space-y-3 md:col-span-2">
           <a
             href={`${homeHref}#hero`}
-            className="font-display text-xl font-bold tracking-tight text-white"
+            className="font-display -my-2 inline-flex items-center py-2 text-xl font-bold tracking-tight text-white"
           >
             AURA<span className="text-primary">.</span>
           </a>
@@ -293,7 +293,10 @@ export function Footer() {
 
       <div className="max-w-7xl mx-auto w-full mt-12 pt-6 border-t border-white/10 font-mono-spec text-[10px] uppercase tracking-[0.3em] text-white/30 flex flex-wrap items-center justify-between gap-3">
         <span>© 2026 Aura Web Studio</span>
-        <Link href="/auth" className="hover:text-white/60 transition-colors">
+        <Link
+          href="/auth"
+          className="-my-4 inline-flex items-center py-4 transition-colors hover:text-white/60"
+        >
           Area personale
         </Link>
       </div>

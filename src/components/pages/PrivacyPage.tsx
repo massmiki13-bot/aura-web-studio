@@ -29,7 +29,7 @@ export function PrivacyPage() {
         <div className="mb-12">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 font-mono-spec text-[10px] uppercase tracking-[0.25em] text-white/50 hover:text-primary transition-colors cursor-pointer"
+            className="font-mono-spec -my-4 inline-flex cursor-pointer items-center gap-2 py-4 text-[10px] tracking-[0.25em] text-white/50 uppercase transition-colors hover:text-primary"
           >
             <ArrowLeft className="h-3 w-3" /> Torna alla Home
           </Link>

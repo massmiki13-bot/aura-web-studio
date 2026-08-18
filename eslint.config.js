@@ -47,7 +47,12 @@ export default tseslint.config(
      * Scoped to these paths on purpose, so the rules keep working everywhere
      * a normal component might genuinely get this wrong.
      */
-    files: ["src/components/aura/**", "src/components/ui/**", "src/lib/overlay-root.ts"],
+    files: [
+      "src/components/aura/**",
+      "src/components/three/**",
+      "src/components/ui/**",
+      "src/lib/overlay-root.ts",
+    ],
     rules: {
       "react-hooks/immutability": "off",
       "react-hooks/set-state-in-effect": "off",
