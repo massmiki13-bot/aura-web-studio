@@ -8,8 +8,9 @@ import { Nav } from "@/components/aura/Nav";
 import { Footer } from "@/components/aura/Contact";
 import { localizedPath, type Locale } from "@/lib/seo";
 import { SparklesCanvas } from "@/components/ui/sparkles-canvas";
-import { members } from "@/lib/team-members";
+import { members, collaborators } from "@/lib/team-members";
 import { TeamMemberCard } from "@/components/aura/TeamMemberCard";
+import { CollaboratorCard } from "@/components/aura/CollaboratorCard";
 
 export function TeamPage({ locale }: { locale: Locale }) {
   const { t } = useTranslation();
@@ -108,6 +109,33 @@ export function TeamPage({ locale }: { locale: Locale }) {
             <TeamMemberCard key={`${m.name}-${index}`} member={m} index={index} />
           ))}
         </div>
+
+        {/* The people who work with the studio without having founded it.
+            Its own section under the trio, with its own heading, rather than
+            two more cards in the grid above — the distinction is real and the
+            page should say so. */}
+        {collaborators.length > 0 && (
+          <section className="mt-20 max-w-6xl md:mt-28">
+            <div className="mb-8 flex items-baseline justify-between gap-6 border-b border-white/10 pb-5">
+              <h2 className="font-display text-2xl font-bold tracking-tighter text-white md:text-3xl">
+                {t("team.collaborators", "Collaboratori")}
+              </h2>
+            </div>
+
+            <p className="mb-8 max-w-xl text-sm leading-relaxed font-light text-white/50 md:text-base">
+              {t(
+                "team.collaboratorsLead",
+                "Chi lavora con noi sui progetti, oltre confine e oltre lo studio.",
+              )}
+            </p>
+
+            <div className="grid gap-5 lg:grid-cols-2">
+              {collaborators.map((c, index) => (
+                <CollaboratorCard key={`${c.name}-${index}`} person={c} index={index} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
 
       <Footer />

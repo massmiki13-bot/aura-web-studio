@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { SITE_CONFIG, localizedPath } from "@/lib/seo";
+import { ChromeVines } from "@/components/three/ChromeVines";
 import { getLocaleFromPathname } from "@/i18n";
 
 export function Contact() {
@@ -96,74 +97,89 @@ export function Contact() {
           </Link>
         </div>
 
-        <motion.form
-          onSubmit={onSubmit}
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          style={{ willChange: "transform, opacity" }}
-          className="glass rounded-3xl p-6 md:p-10 space-y-6"
-        >
-          <div className="relative">
-            <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
-              {t("contact.formName")}
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onFocus={() => setFocus("name")}
-              onBlur={() => setFocus(null)}
-              maxLength={120}
-              required
-              className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-primary"
-            />
-          </div>
-          <div className="relative">
-            <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
-              {t("contact.formEmail")}
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onFocus={() => setFocus("email")}
-              onBlur={() => setFocus(null)}
-              maxLength={200}
-              required
-              className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-primary"
-            />
-          </div>
-          <div className="relative">
-            <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
-              {t("contact.formProject")}
-            </label>
-            <textarea
-              rows={4}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onFocus={() => setFocus("msg")}
-              onBlur={() => setFocus(null)}
-              maxLength={4000}
-              required
-              className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-secondary resize-none"
-            />
-          </div>
+        <div className="relative">
+          {/* The vine grows around the panel, not inside it: the canvas is
+              wider and taller than the form so a few branches can cross the
+              border and pass in front of it. Desktop only — at phone width the
+              form is the full column and there is no margin for it to climb. */}
+          <ChromeVines
+            inset={58}
+            className="hidden lg:block -inset-x-[70px] -top-[90px] -bottom-[90px] z-20"
+          />
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full cursor-pointer hover:shadow-(--shadow-neon) transition-shadow duration-300 rounded-full py-4 px-6 font-mono-spec text-xs uppercase tracking-[0.3em] text-black text-center transition-opacity"
-            style={{
-              background: "var(--gradient-aura)",
-              boxShadow: "",
-              opacity: loading ? 0.6 : 1,
-            }}
+          <motion.form
+            onSubmit={onSubmit}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            style={{ willChange: "transform, opacity" }}
+            className="glass rounded-3xl p-6 md:p-10 space-y-6"
           >
-            {loading ? t("contact.btnLoading") : sent ? t("contact.btnSent") : t("contact.btnIdle")}
-          </button>
-        </motion.form>
+            <div className="relative">
+              <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+                {t("contact.formName")}
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onFocus={() => setFocus("name")}
+                onBlur={() => setFocus(null)}
+                maxLength={120}
+                required
+                className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-primary"
+              />
+            </div>
+            <div className="relative">
+              <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+                {t("contact.formEmail")}
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => setFocus("email")}
+                onBlur={() => setFocus(null)}
+                maxLength={200}
+                required
+                className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-primary"
+              />
+            </div>
+            <div className="relative">
+              <label className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+                {t("contact.formProject")}
+              </label>
+              <textarea
+                rows={4}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onFocus={() => setFocus("msg")}
+                onBlur={() => setFocus(null)}
+                maxLength={4000}
+                required
+                className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-secondary resize-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full cursor-pointer hover:shadow-(--shadow-neon) transition-shadow duration-300 rounded-full py-4 px-6 font-mono-spec text-xs uppercase tracking-[0.3em] text-black text-center transition-opacity"
+              style={{
+                background: "var(--gradient-aura)",
+                boxShadow: "",
+                opacity: loading ? 0.6 : 1,
+              }}
+            >
+              {loading
+                ? t("contact.btnLoading")
+                : sent
+                  ? t("contact.btnSent")
+                  : t("contact.btnIdle")}
+            </button>
+          </motion.form>
+        </div>
       </div>
     </section>
   );
@@ -196,9 +212,12 @@ export function Footer() {
           <p className="text-white/50">{t("footer.explore")}</p>
           <ul className="space-y-2.5">
             <li>
-              <a href={`${homeHref}#projects`} className="hover:text-primary transition-colors">
+              <Link
+                href={localizedPath(locale, "lavori")}
+                className="hover:text-primary transition-colors"
+              >
                 {t("nav.work")}
-              </a>
+              </Link>
             </li>
             <li>
               <a href={`${homeHref}#team`} className="hover:text-primary transition-colors">

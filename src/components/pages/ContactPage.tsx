@@ -13,27 +13,12 @@ import { members } from "@/lib/team-members";
 import { TeamMemberCard } from "@/components/aura/TeamMemberCard";
 import { useNearViewport } from "@/hooks/use-near-viewport";
 // Code-split, and mounted only once it's actually approaching the viewport.
-// WorldMap renders its dot grid with `dotted-map`, which drags in proj4, mgrs
-// and wkt-parser — around 700 kB of geo libraries, for a decorative graphic
-// well below the fold that a visitor here for the phone number may never
-// reach. Statically imported it was the single largest thing on this route.
-const WorldMap = lazy(() =>
-  import("@/components/ui/world-map").then((m) => ({ default: m.WorldMap })),
+// The two plates carry about 110 kB of path data between them — cheap for
+// what they are, but still not something to put in the entry chunk of a page
+// somebody opens for the phone number.
+const NetworkMap = lazy(() =>
+  import("@/components/aura/NetworkMap").then((m) => ({ default: m.NetworkMap })),
 );
-
-// Bolzano as the studio's hub, fanning out to a worldwide set of cities —
-// a deliberate "reachable anywhere" statement to pair with the h24 remote
-// availability messaging above.
-const BOLZANO = { lat: 46.4983, lng: 11.3548, label: "Bolzano" };
-const studioDots = [
-  { start: BOLZANO, end: { lat: 40.7128, lng: -74.006, label: "New York" } },
-  { start: BOLZANO, end: { lat: 34.0522, lng: -118.2437, label: "Los Angeles" } },
-  { start: BOLZANO, end: { lat: -34.6037, lng: -58.3816, label: "Buenos Aires" } },
-  { start: BOLZANO, end: { lat: 39.9042, lng: 116.4074, label: "Pechino" } },
-  { start: BOLZANO, end: { lat: 35.6762, lng: 139.6503, label: "Tokyo" } },
-  { start: BOLZANO, end: { lat: -26.2041, lng: 28.0473, label: "Johannesburg" } },
-  { start: BOLZANO, end: { lat: -33.8688, lng: 151.2093, label: "Sydney" } },
-];
 
 export function ContactPage({ locale }: { locale: Locale }) {
   const { t } = useTranslation();
@@ -183,7 +168,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
           <p className="text-white/50 text-sm md:text-base font-light leading-relaxed max-w-2xl mb-8">
             {t("contactPage.mapCaption")}
           </p>
-          <LazyWorldMap />
+          <LazyNetworkMap />
         </motion.div>
 
         {/* Founders Grid */}
@@ -200,30 +185,27 @@ export function ContactPage({ locale }: { locale: Locale }) {
 }
 
 /**
- * The world map, deferred twice over: the chunk is only fetched when the
- * graphic nears the viewport, and the box it will fill is reserved at exactly
- * its final aspect ratio so nothing below it shifts when it arrives.
+ * The map, deferred twice over: the chunk is only fetched when the graphic
+ * nears the viewport, and the box it will fill is reserved at roughly its
+ * final height so nothing below it jumps when it arrives.
  */
-function LazyWorldMap() {
+function LazyNetworkMap() {
   const ref = useRef<HTMLDivElement>(null);
   const { mounted } = useNearViewport(ref, 600);
 
   return (
-    <div ref={ref} className="rounded-[2rem] border border-white/10 p-2 bg-neutral-950">
+    <div ref={ref}>
       {mounted ? (
-        <Suspense fallback={<WorldMapPlaceholder />}>
-          <WorldMap dots={studioDots} lineColor="oklch(0.85 0.18 200)" />
+        <Suspense fallback={<MapPlaceholder />}>
+          <NetworkMap />
         </Suspense>
       ) : (
-        <WorldMapPlaceholder />
+        <MapPlaceholder />
       )}
     </div>
   );
 }
 
-// Same box the real map occupies at every breakpoint — see WorldMap's root.
-function WorldMapPlaceholder() {
-  return (
-    <div className="w-full aspect-[2/1] md:aspect-[2.5/1] lg:aspect-[2/1] rounded-2xl bg-black" />
-  );
+function MapPlaceholder() {
+  return <div className="min-h-[520px] w-full rounded-2xl border border-white/10 bg-neutral-950" />;
 }

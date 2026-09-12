@@ -10,13 +10,17 @@ import { Nav } from "@/components/aura/Nav";
 import { localizedPath, type Locale } from "@/lib/seo";
 import { tList } from "@/lib/utils";
 import { SparklesCanvas } from "@/components/ui/sparkles-canvas";
+import { RockField } from "@/components/three/RockField";
 import { WordRevealHeading } from "@/components/ui/word-reveal-heading";
 import { PlanRequestModal, type PlanRequestTarget } from "@/components/aura/PlanRequestModal";
 
 const planConfig = [
-  { key: "base", price: "€750,00", priceValue: 750, popular: false },
-  { key: "professional", price: "€2000,00", priceValue: 2000, popular: true },
-  { key: "premium", price: "€5000,00", priceValue: 5000, popular: false },
+  { key: "base", price: "€2000,00", priceValue: 2000, popular: false },
+  { key: "professional", price: "€4500,00", priceValue: 4500, popular: true },
+  // The top tier is a floor, not a price: "+" because what it covers is
+  // scoped per project. `priceValue` stays a plain number because it is only
+  // ever used as the prefilled budget in the request form.
+  { key: "premium", price: "€7000+", priceValue: 7000, popular: false },
 ] as const;
 
 export function PricingPage({ locale }: { locale: Locale }) {
@@ -84,6 +88,19 @@ export function PricingPage({ locale }: { locale: Locale }) {
         <SparklesCanvas className="absolute inset-0" count={180} />
       </div>
 
+      {/* The same drift of rock as the works page and the services section,
+          shallower here: the pricing cards start high on the page and rock
+          tumbling behind a price is a distraction, not an atmosphere. */}
+      <RockField
+        className="pointer-events-none absolute top-0 right-0 left-0 z-0 h-[520px]"
+        count={20}
+        spread={[11, 4, 4.5]}
+        size={[0.05, 0.4]}
+        drift={0.16}
+        distance={13}
+        opacity={0.45}
+      />
+
       <div className="relative max-w-7xl mx-auto w-full px-6 md:px-16 pt-32 pb-24 z-10 flex-1">
         {/* Navigation & Back Button */}
         <div className="mb-12">
@@ -143,8 +160,16 @@ export function PricingPage({ locale }: { locale: Locale }) {
                   )}
                 </div>
 
-                <div className="mb-1 flex items-baseline gap-1">
-                  <span className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-white">
+                {/* The size steps back down for as long as the three-up grid
+                    is narrow, and only returns to full at xl.
+
+                    At four figures the price is two characters longer than the
+                    three-figure one this card was set for, and text-5xl in a
+                    290px column ran it straight out of the card. Measured at
+                    every breakpoint rather than guessed: the worst case is
+                    "€4500,00" between md and xl. */}
+                <div className="mb-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                  <span className="font-display text-4xl font-bold tracking-tighter text-white sm:text-5xl md:text-[2rem] lg:text-[2.35rem] xl:text-5xl">
                     {plan.price}
                   </span>
                   <span className="font-mono-spec text-[10px] uppercase tracking-widest text-white/40">

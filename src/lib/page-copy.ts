@@ -102,3 +102,26 @@ export const CONTACT_SEO: Record<Locale, SeoCopy> = {
       "Contacta con la agencia web de Bolzano Aura Web Studio: teléfono, email y PEC. Disponibles 24h en remoto y siempre listos para una reunión presencial.",
   },
 };
+
+export const WORKS_SEO: Record<Locale, SeoCopy> = {
+  it: {
+    title: "Lavori — Portfolio Siti Web Bolzano",
+    description:
+      "Tutti i progetti di Aura Web Studio: siti su misura per ristorazione, hotel, beauty, automotive, aziende e studi legali, con il link a ogni sito online.",
+  },
+  de: {
+    title: "Projekte — Portfolio Webseiten Bozen",
+    description:
+      "Alle Projekte von Aura Web Studio: maßgeschneiderte Webseiten für Gastronomie, Hotels, Beauty, Automotive, Unternehmen und Kanzleien, mit Link zu jeder Live-Seite.",
+  },
+  en: {
+    title: "Work — Website Portfolio Bolzano",
+    description:
+      "Every Aura Web Studio project: bespoke websites for restaurants, hotels, beauty, automotive, industry and law firms, each with a link to the live site.",
+  },
+  es: {
+    title: "Trabajos — Portfolio Sitios Web Bolzano",
+    description:
+      "Todos los proyectos de Aura Web Studio: sitios a medida para restauración, hoteles, beauty, automoción, empresas y despachos, con enlace a cada sitio online.",
+  },
+};

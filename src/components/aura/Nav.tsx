@@ -137,7 +137,9 @@ export function Nav() {
 
   const locale = getLocaleFromPathname(pathname);
   const links = [
-    { label: t("nav.work"), href: `${homeHref}#projects`, type: "hash" as const },
+    // The works page, not the home section: the section only carries five
+    // projects now and exists to lead here.
+    { label: t("nav.work"), href: localizedPath(locale, "lavori"), type: "route" as const },
     { label: t("nav.pricing"), href: localizedPath(locale, "pricing"), type: "route" as const },
     { label: t("nav.team"), href: localizedPath(locale, "team"), type: "route" as const },
     { label: t("nav.contact"), href: localizedPath(locale, "contact"), type: "route" as const },

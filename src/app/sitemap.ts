@@ -23,6 +23,7 @@ import { LOCALES, DEFAULT_LOCALE, absoluteUrl, localizedPath } from "@/lib/seo";
 /** Logical sub-paths that exist, translated, in every locale. */
 const ROUTES = [
   { subPath: "", priority: 1.0, changeFrequency: "monthly" as const },
+  { subPath: "lavori", priority: 0.9, changeFrequency: "monthly" as const },
   { subPath: "pricing", priority: 0.9, changeFrequency: "monthly" as const },
   { subPath: "team", priority: 0.7, changeFrequency: "yearly" as const },
   { subPath: "contact", priority: 0.8, changeFrequency: "yearly" as const },

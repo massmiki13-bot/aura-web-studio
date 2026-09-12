@@ -5,13 +5,13 @@ import { useTranslation } from "react-i18next";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useIsDesktopViewport } from "@/hooks/use-desktop-viewport";
 import { tList } from "@/lib/utils";
-import { ChromeCrystal } from "@/components/three/ChromeCrystal";
+import { LunarGravity } from "@/components/three/LunarGravity";
 
 /**
- * "Cosa offriamo": a full-screen section whose entire space is the chrome
- * crystal. It has held a Spline scene, an R3F staircase with a procedural coin
- * and a WebGPU depth-scan before this; only the small section label and the
- * approach reveal-fade have survived all of them.
+ * "Cosa offriamo": a full-screen section whose entire space is the scene. It
+ * has held a Spline robot, an R3F staircase with a procedural coin, a WebGPU
+ * depth-scan and a faceted chrome crystal before this; only the section copy
+ * and the approach reveal-fade have survived all of them.
  */
 
 export function Services() {
@@ -71,9 +71,7 @@ export function Services() {
           component — the Spline wrapper registered a multi-megabyte runtime
           pre-warm on gates that fired later whether or not it was still
           mounted. The strict gate is cheap insurance and stays. */}
-      {isDesktop === true && (
-        <ChromeCrystal className="absolute inset-0" fullBleed offsetX={0.44} />
-      )}
+      {isDesktop === true && <LunarGravity className="absolute inset-0" offsetX={0.44} />}
 
       {/* Mobile replacement: what used to be a Spline scene (badly cropped at
           a portrait aspect ratio) is now a short list of concrete offerings —
@@ -218,27 +216,30 @@ function ServicesSteps() {
         titles change length — the fade happens with nothing underneath it
         shifting.
       */}
-      <div className={reduced ? "w-full space-y-10" : "grid w-full"}>
-        {steps.map((step) => (
-          <div
-            key={step.title}
-            data-step
-            className={reduced ? "" : "col-start-1 row-start-1 will-change-[transform,opacity]"}
-          >
-            <p className="font-mono-spec mb-4 text-[11px] tracking-[0.35em] text-white/45 uppercase">
-              {step.kicker}
-            </p>
-            <p
-              className={`font-display font-semibold tracking-tighter text-white ${
-                reduced
-                  ? "text-2xl leading-[1.15] lg:text-3xl"
-                  : "text-4xl leading-[1.05] lg:text-5xl xl:text-6xl"
-              }`}
+      <div className="w-full">
+        <div className={reduced ? "w-full space-y-14" : "grid w-full"}>
+          {steps.map((step, i) => (
+            <div
+              key={step.title}
+              data-step
+              className={reduced ? "" : "col-start-1 row-start-1 will-change-[transform,opacity]"}
             >
-              {step.title}
-            </p>
-          </div>
-        ))}
+              <p
+                className={`font-display font-semibold tracking-tighter text-white ${
+                  reduced
+                    ? "text-2xl leading-[1.15] lg:text-3xl"
+                    : "text-4xl leading-[1.02] lg:text-5xl xl:text-[3.9rem]"
+                }`}
+                // The scene behind this can drift under the copy at narrow
+                // desktop widths. A shadow rather than a scrim: a panel would
+                // cut a visible rectangle out of the moon.
+                style={{ textShadow: "0 2px 40px rgba(0,0,0,0.85), 0 1px 8px rgba(0,0,0,0.6)" }}
+              >
+                {step.title}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

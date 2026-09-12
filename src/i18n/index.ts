@@ -71,6 +71,21 @@ const resources = {
         selectedWork: "Lavori selezionati",
         mobileTitle: "Case study cinematici.",
         caseStudies: "Aura — Case Studies",
+        visit: "Visita il sito",
+        comingSoon: "Presto online",
+        previous: "Progetto precedente",
+        next: "Progetto successivo",
+        seeAll: "Vedi tutti i lavori",
+        allTitle: "I nostri lavori",
+        pageIntro:
+          "Ogni progetto nasce su misura: nessun template, codice scritto per il brand che lo porta.",
+        backHome: "Torna alla home",
+        bySector: "Progetti per settore",
+        projectsLabel: "progetti",
+        ctaLine: "Il prossimo potrebbe essere il tuo.",
+        ctaAction: "Parliamo del tuo progetto",
+        sectorsLabel: "settori",
+        onlineLabel: "online",
       },
       product: {
         label: "Il Prodotto",
@@ -198,6 +213,8 @@ const resources = {
         },
       },
       team: {
+        collaborators: "Collaboratori",
+        collaboratorsLead: "Chi lavora con noi sui progetti, oltre confine e oltre lo studio.",
         backHome: "Torna alla Home",
         label: "Il Team",
         titlePre: "Le persone dietro ad ",
@@ -219,6 +236,18 @@ const resources = {
         availabilityDesc:
           "Scrivici o chiamaci in qualsiasi momento: monitoriamo i contatti costantemente e rispondiamo rapidamente. Se preferisci parlarne di persona, siamo sempre disponibili per un incontro dal vivo — anche più di uno, finché il progetto non è chiaro al 100%.",
         mapTitle: "Con sede a Bolzano, operativi ovunque.",
+        mapItaly: "Italia",
+        mapSouthTyrol: "Alto Adige",
+        mapSouthTyrolCaption:
+          "Casa. La maggior parte dei siti che abbiamo costruito sta entro un’ora di macchina da qui.",
+        mapWorld: "Mondo",
+        mapSwipe: "Scorri →",
+        mapBase: "Base operativa",
+        mapReach: "Dove arriviamo",
+        mapProject: "progetto",
+        mapRemote: "Da remoto",
+        mapItalyCaption: "Ogni punto è una città dove un sito che abbiamo costruito è online.",
+        mapWorldCaption: "Lavoriamo da remoto: il fuso orario non è mai stato il problema.",
         mapCaption:
           "Il nostro studio nasce in Alto Adige, ma lavoriamo da remoto con clienti in tutto il mondo — sempre disponibili anche per un incontro dal vivo quando serve.",
       },
@@ -275,6 +304,21 @@ const resources = {
         selectedWork: "Ausgewählte Arbeiten",
         mobileTitle: "Filmreife Case Studies.",
         caseStudies: "Aura — Case Studies",
+        visit: "Website ansehen",
+        comingSoon: "Bald online",
+        previous: "Vorheriges Projekt",
+        next: "Nächstes Projekt",
+        seeAll: "Alle Arbeiten ansehen",
+        allTitle: "Unsere Arbeiten",
+        pageIntro:
+          "Jedes Projekt entsteht maßgeschneidert: keine Templates, Code für die Marke, die ihn trägt.",
+        backHome: "Zurück zur Startseite",
+        bySector: "Projekte nach Branche",
+        projectsLabel: "Projekte",
+        ctaLine: "Das nächste könnte deines sein.",
+        ctaAction: "Sprechen wir über dein Projekt",
+        sectorsLabel: "Branchen",
+        onlineLabel: "online",
       },
       product: {
         label: "Das Produkt",
@@ -402,6 +446,9 @@ const resources = {
         },
       },
       team: {
+        collaborators: "Mitarbeiter",
+        collaboratorsLead:
+          "Wer mit uns an den Projekten arbeitet — über die Grenze und über das Studio hinaus.",
         backHome: "Zurück zur Startseite",
         label: "Das Team",
         titlePre: "Die Menschen hinter ",
@@ -423,6 +470,19 @@ const resources = {
         availabilityDesc:
           "Schreib oder ruf uns jederzeit an: wir überwachen unsere Kontakte ständig und antworten schnell. Wenn du lieber persönlich sprichst, sind wir jederzeit für ein Treffen vor Ort verfügbar — auch mehrmals, bis das Projekt zu 100% klar ist.",
         mapTitle: "Mit Sitz in Bozen, überall einsatzbereit.",
+        mapItaly: "Italien",
+        mapSouthTyrol: "Südtirol",
+        mapSouthTyrolCaption:
+          "Zuhause. Die meisten Websites, die wir gebaut haben, liegen keine Autostunde von hier entfernt.",
+        mapWorld: "Welt",
+        mapSwipe: "Wischen →",
+        mapBase: "Standort",
+        mapReach: "Wohin wir kommen",
+        mapProject: "Projekt",
+        mapRemote: "Remote",
+        mapItalyCaption:
+          "Jeder Punkt ist eine Stadt, in der eine von uns gebaute Website online ist.",
+        mapWorldCaption: "Wir arbeiten remote: die Zeitzone war noch nie das Problem.",
         mapCaption:
           "Unser Studio ist in Südtirol zuhause, aber wir arbeiten remote mit Kunden auf der ganzen Welt — und sind jederzeit auch für ein persönliches Treffen verfügbar, wenn es hilft.",
       },
@@ -476,9 +536,24 @@ const resources = {
         ],
       },
       projects: {
-        selectedWork: "Selected Work",
+        selectedWork: "Selected work",
         mobileTitle: "Cinematic case studies.",
         caseStudies: "Aura — Case Studies",
+        visit: "Visit the site",
+        comingSoon: "Coming soon",
+        previous: "Previous project",
+        next: "Next project",
+        seeAll: "See all our work",
+        allTitle: "Our work",
+        pageIntro:
+          "Every project is built to measure: no templates, code written for the brand that carries it.",
+        backHome: "Back to home",
+        bySector: "Projects by sector",
+        projectsLabel: "projects",
+        ctaLine: "The next one could be yours.",
+        ctaAction: "Let's talk about your project",
+        sectorsLabel: "sectors",
+        onlineLabel: "live",
       },
       product: {
         label: "The Product",
@@ -606,6 +681,9 @@ const resources = {
         },
       },
       team: {
+        collaborators: "Collaborators",
+        collaboratorsLead:
+          "The people who work with us on projects, beyond the border and beyond the studio.",
         backHome: "Back to Home",
         label: "The Team",
         titlePre: "The people behind ",
@@ -627,6 +705,18 @@ const resources = {
         availabilityDesc:
           "Message or call us anytime: we monitor our contacts constantly and reply quickly. If you'd rather talk in person, we're always available for a face-to-face meeting — more than one if needed, until the project is 100% clear.",
         mapTitle: "Based in Bolzano, reachable everywhere.",
+        mapItaly: "Italy",
+        mapSouthTyrol: "South Tyrol",
+        mapSouthTyrolCaption:
+          "Home. Most of the sites we have built are within an hour’s drive of here.",
+        mapWorld: "World",
+        mapSwipe: "Swipe →",
+        mapBase: "Home base",
+        mapReach: "Where we reach",
+        mapProject: "project",
+        mapRemote: "Remote",
+        mapItalyCaption: "Every dot is a town where a site we built is live.",
+        mapWorldCaption: "We work remotely: the time zone has never been the problem.",
         mapCaption:
           "Our studio is rooted in South Tyrol, but we work remotely with clients around the world — always available for a face-to-face meeting too, whenever it helps.",
       },
@@ -681,8 +771,23 @@ const resources = {
       },
       projects: {
         selectedWork: "Trabajos seleccionados",
-        mobileTitle: "Casos de estudio cinematográficos.",
-        caseStudies: "Aura — Casos de estudio",
+        mobileTitle: "Case studies cinematográficos.",
+        caseStudies: "Aura — Case Studies",
+        visit: "Visitar el sitio",
+        comingSoon: "Próximamente",
+        previous: "Proyecto anterior",
+        next: "Proyecto siguiente",
+        seeAll: "Ver todos los trabajos",
+        allTitle: "Nuestros trabajos",
+        pageIntro:
+          "Cada proyecto nace a medida: sin plantillas, código escrito para la marca que lo lleva.",
+        backHome: "Volver al inicio",
+        bySector: "Proyectos por sector",
+        projectsLabel: "proyectos",
+        ctaLine: "El próximo podría ser el tuyo.",
+        ctaAction: "Hablemos de tu proyecto",
+        sectorsLabel: "sectores",
+        onlineLabel: "online",
       },
       product: {
         label: "El Producto",
@@ -809,6 +914,9 @@ const resources = {
         },
       },
       team: {
+        collaborators: "Colaboradores",
+        collaboratorsLead:
+          "Quienes trabajan con nosotros en los proyectos, más allá de la frontera y del estudio.",
         backHome: "Volver al Inicio",
         label: "El Equipo",
         titlePre: "Las personas detrás de ",
@@ -830,6 +938,19 @@ const resources = {
         availabilityDesc:
           "Escríbenos o llámanos cuando quieras: supervisamos los contactos constantemente y respondemos rápido. Si prefieres hablar en persona, siempre estamos disponibles para una reunión presencial — más de una si hace falta, hasta que el proyecto esté 100% claro.",
         mapTitle: "Con sede en Bolzano, disponibles en todas partes.",
+        mapItaly: "Italia",
+        mapSouthTyrol: "Alto Adigio",
+        mapSouthTyrolCaption:
+          "Casa. La mayoría de los sitios que hemos construido están a menos de una hora en coche de aquí.",
+        mapWorld: "Mundo",
+        mapSwipe: "Desliza →",
+        mapBase: "Base operativa",
+        mapReach: "Hasta dónde llegamos",
+        mapProject: "proyecto",
+        mapRemote: "En remoto",
+        mapItalyCaption:
+          "Cada punto es una ciudad donde un sitio que hemos construido está online.",
+        mapWorldCaption: "Trabajamos en remoto: la zona horaria nunca ha sido el problema.",
         mapCaption:
           "Nuestro estudio nace en el Alto Adigio, pero trabajamos a distancia con clientes de todo el mundo — siempre disponibles también para una reunión presencial cuando haga falta.",
       },

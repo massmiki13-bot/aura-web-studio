@@ -541,3 +541,304 @@ html.has-custom-cursor
 .animate-spotlight {
   animation: spotlight 2s ease 0.75s 1 forwards;
 }
+
+/* ------------------------------------------------------------------------ *
+ * The vine (see components/ui/vine.tsx)
+ *
+ * Monochrome, because the site is: the two greens the Manna version used
+ * become two weights of white, and the plant reads as drawn in light rather
+ * than as a plant that happens to be on a dark page.
+ *
+ * Everything keys off one custom property, `--grow`, which the component
+ * writes from its own scroll position. The stem is clipped to it and every
+ * leaf, curl and glint carries the point `--t` along the stem where it sits,
+ * so it fades in exactly as the growth passes over it.
+ * ------------------------------------------------------------------------ */
+.vine-host {
+  --grow: 0;
+}
+
+.vine {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.vine__stem {
+  /* The growth itself: the ribbon is whole, and only as much of it as
+     `--grow` allows is ever painted. Clipping rather than a dash offset
+     because the stem is a filled shape, not a stroke. */
+  clip-path: inset(0 calc((1 - var(--grow)) * 100%) 0 0);
+}
+
+.vine__stem--a {
+  fill: rgb(255 255 255 / 0.5);
+}
+
+.vine__stem--b {
+  fill: rgb(255 255 255 / 0.22);
+}
+
+/* Each of these appears when the growth reaches its own place on the stem.
+   The x7 turns the 0-1 range into a short fade rather than a pop. */
+.vine__leaf,
+.vine__glint,
+.vine__curl {
+  opacity: clamp(0, calc((var(--grow) - var(--t)) * 7), 1);
+}
+
+.vine__blade {
+  fill: rgb(255 255 255 / 0.1);
+  stroke: rgb(255 255 255 / 0.55);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+}
+
+.vine__stalk {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.5);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+
+.vine__vein {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.4);
+  stroke-width: 0.55;
+}
+
+.vine__vein--thin {
+  stroke-width: 0.4;
+  stroke: rgb(255 255 255 / 0.28);
+}
+
+.vine__curl {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.45);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+
+.vine__curl--b {
+  stroke: rgb(255 255 255 / 0.28);
+}
+
+/* The glints stand in for the Manna version's buds, so the plant carries the
+   same mark the sparkles in the page header do. */
+.vine__glint {
+  fill: rgb(255 255 255 / 0.85);
+}
+
+/* Two weights of leaf: a real sprig does not have one blade repeated. */
+.vine__leaf.is-pale .vine__blade {
+  fill: rgb(255 255 255 / 0.05);
+  stroke: rgb(255 255 255 / 0.34);
+}
+
+.vine__leaf.is-pale .vine__vein {
+  stroke: rgb(255 255 255 / 0.22);
+}
+
+/* ------------------------------------------------------------------------ *
+ * The network map (see components/aura/NetworkMap.tsx)
+ *
+ * Monochrome, like the rest of the site: the two greens the Manna version of
+ * this used become two weights of white.
+ *
+ * The land outline draws itself once, on entry, with `pathLength: 1` doing the
+ * normalising — every region and every country is one unit long whatever its
+ * real perimeter, so a dash offset of 1 is "undrawn" for all of them and the
+ * stagger reads evenly instead of racing through the small ones.
+ * ------------------------------------------------------------------------ */
+.map-land {
+  fill: rgb(255 255 255 / 0.05);
+  stroke: rgb(255 255 255 / 0.28);
+  /* In viewBox units, scaled by the component to land on ~1 device pixel —
+     see --land-stroke and the note on .is-settled below. */
+  stroke-width: var(--land-stroke, 1);
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.map-plate.is-drawn .map-land {
+  stroke-dashoffset: 0;
+  transition:
+    stroke-dashoffset 1.4s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 42ms),
+    fill 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    stroke 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/*
+ * Once the outline has finished drawing, the dash pattern comes off.
+ *
+ * `stroke-dasharray` and `vector-effect: non-scaling-stroke` are each
+ * affordable alone and ruinous together: the pair makes the browser recompute
+ * the dash pattern in device space on every raster, for every path. Measured
+ * on the Alto Adige plate's 282 comuni, that halved the whole contact page to
+ * 30fps while scrolling — and it kept doing it forever, long after the one
+ * animation that needed a dash had finished.
+ *
+ * So the vector-effect is gone for good (the width is scaled by hand instead)
+ * and the dasharray is dropped the moment it has served its purpose.
+ */
+.map-plate.is-settled .map-land {
+  stroke-dasharray: none;
+}
+
+.map-land.is-lit {
+  fill: rgb(255 255 255 / 0.1);
+  stroke: rgb(255 255 255 / 0.6);
+}
+
+/* --- the arcs ------------------------------------------------------------ */
+.map-link {
+  fill: none;
+  stroke: rgb(255 255 255);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.map-plate.is-drawn .map-link {
+  opacity: 0.2;
+}
+
+.map-plate.is-drawn .map-link.is-on {
+  opacity: 0.85;
+  stroke-width: 1.6;
+  stroke-dasharray: 7 6;
+  animation: map-flow 1.1s linear infinite;
+}
+
+@keyframes map-flow {
+  to {
+    stroke-dashoffset: -13;
+  }
+}
+
+/* --- the pins ------------------------------------------------------------ */
+.map-pin {
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.map-plate.is-drawn .map-pin {
+  opacity: 1;
+  transition-delay: calc(0.9s + var(--i) * 80ms);
+}
+
+.map-dot {
+  fill: rgb(255 255 255 / 0.7);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    fill 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.map-halo {
+  fill: rgb(255 255 255 / 0.12);
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.3);
+  opacity: 0;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.map-pin.is-on .map-halo,
+.map-pin:hover .map-halo,
+.map-pin:focus-within .map-halo {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* The chosen pin gets a ring: white on a pale halo would otherwise vanish. */
+.map-pin.is-on .map-dot {
+  fill: #000;
+  stroke: rgb(255 255 255);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+  transform: scale(1.24);
+}
+
+.map-pin.is-hq .map-dot {
+  fill: rgb(255 255 255);
+  stroke: rgb(255 255 255 / 0.5);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+/* The pulse leaving the chosen pin. */
+.map-ping {
+  fill: none;
+  stroke: rgb(255 255 255);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: map-ping 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes map-ping {
+  0% {
+    transform: scale(0.35);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.map-label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  fill: rgb(255 255 255 / 0.4);
+  pointer-events: none;
+  transition: fill 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.map-pin.is-on .map-label,
+.map-pin:hover .map-label {
+  fill: rgb(255 255 255);
+}
+
+.map-hit {
+  fill: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.map-pin:focus-within .map-dot {
+  fill: rgb(255 255 255);
+}
+
+/* The plate scroller: snapping is the interaction, the scrollbar is not. */
+.map-scroller {
+  scrollbar-width: none;
+}
+
+.map-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-plate .map-land,
+  .map-plate .map-link,
+  .map-plate .map-pin {
+    transition: none;
+  }
+  .map-ping,
+  .map-plate.is-drawn .map-link.is-on {
+    animation: none;
+  }
+}

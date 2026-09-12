@@ -6,6 +6,7 @@ import { Projects } from "@/components/aura/Projects";
 import { Team } from "@/components/aura/Team";
 import { Contact, Footer } from "@/components/aura/Contact";
 import { CanvasBoundary } from "@/components/CanvasBoundary";
+import type { Locale } from "@/lib/seo";
 
 /**
  * Deliberately not a client component. It holds no state and calls no hook —
@@ -13,7 +14,7 @@ import { CanvasBoundary } from "@/components/CanvasBoundary";
  * the boundary falls to each section instead. Marking it "use client" would
  * pull every one of these into a single client entry for no gain.
  */
-export function HomePage() {
+export function HomePage({ locale }: { locale: Locale }) {
   return (
     <main className="bg-black text-white">
       {/* Renders nothing at all unless this is a fresh, full-motion visit —
@@ -26,7 +27,7 @@ export function HomePage() {
       <Nav />
       <Hero />
       <Services />
-      <Projects />
+      <Projects locale={locale} />
       <Team />
       <Contact />
       <Footer />

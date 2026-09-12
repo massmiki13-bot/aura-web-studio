@@ -42,8 +42,44 @@ export const members: TeamMember[] = [
   },
 ];
 
+/**
+ * People who work with the studio without being part of the trio that founded
+ * it. A separate list, and a separate section on the team page, because the
+ * difference is real and flattening it into one grid of six would misrepresent
+ * both sides of it.
+ *
+ * No PEC here: a founder has one because the company's paperwork goes through
+ * it. A collaborator abroad does not.
+ */
+export type Collaborator = {
+  name: string;
+  surname: string;
+  roleKey: string;
+  /** Where they work from, shown next to the role. */
+  based: string;
+  image: string;
+  phone: string;
+  email: string;
+};
+
+export const collaborators: Collaborator[] = [
+  {
+    name: "Martino",
+    surname: "Galleni",
+    // Neutral on purpose: nobody has said what Martino actually does on the
+    // projects, and a job title invented for him would be the one thing on
+    // this page that isn't true. Swap the key when the real one is known.
+    roleKey: "collaborator",
+    based: "Germania",
+    image: "/team/collaborator-1.jpg",
+    phone: "+49 15906654533",
+    email: "martino.galleni@gmail.com",
+  },
+];
+
 export const roles: Record<string, string> = {
   founder: "Design, 3D & Marketing",
   developer: "Business Development & Brand Ambassador",
   designer: "Sviluppo & SEO Tecnica",
+  collaborator: "Collaboratore",
 };
