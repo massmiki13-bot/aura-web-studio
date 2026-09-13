@@ -122,6 +122,9 @@ const resources = {
         btnSent: "Inviato ✓ — manda un altro",
         errFill: "Compila tutti i campi",
         errSend: "Invio non riuscito. Controlla i dati e riprova.",
+        failHelp:
+          "Non siamo riusciti a registrare la richiesta. Il testo che hai scritto non è perso: mandacelo direttamente, ti rispondiamo lo stesso.",
+        failMail: "Invia per email",
         success: "Richiesta inviata. Ti rispondiamo a breve.",
       },
       footer: {
@@ -355,6 +358,9 @@ const resources = {
         btnSent: "Gesendet ✓ — sende eine weitere",
         errFill: "Bitte alle Felder ausfüllen",
         errSend: "Senden fehlgeschlagen. Prüfe die Daten und versuche es erneut.",
+        failHelp:
+          "Wir konnten die Anfrage nicht speichern. Dein Text ist nicht verloren: schick ihn uns direkt, wir antworten trotzdem.",
+        failMail: "Per E-Mail senden",
         success: "Anfrage gesendet. Wir melden uns in Kürze.",
       },
       footer: {
@@ -590,6 +596,9 @@ const resources = {
         btnSent: "Sent ✓ — send another",
         errFill: "Please fill in all fields",
         errSend: "Sending failed. Check your details and try again.",
+        failHelp:
+          "We could not record your request. What you wrote is not lost: send it to us directly and we will answer all the same.",
+        failMail: "Send by email",
         success: "Request sent. We'll get back to you shortly.",
       },
       footer: {
@@ -824,6 +833,9 @@ const resources = {
         btnSent: "Enviado ✓ — envía otro",
         errFill: "Rellena todos los campos",
         errSend: "Envío fallido. Revisa los datos e inténtalo de nuevo.",
+        failHelp:
+          "No hemos podido registrar la solicitud. Lo que has escrito no se pierde: mándanoslo directamente y te respondemos igual.",
+        failMail: "Enviar por email",
         success: "Solicitud enviada. Te responderemos en breve.",
       },
       footer: {

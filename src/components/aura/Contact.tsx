@@ -21,6 +21,16 @@ export function Contact() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  /**
+   * Set when the submit could not reach the database.
+   *
+   * The form used to end a failure at a toast that said "invio non riuscito"
+   * and nothing else: the visitor had written a brief, the studio never saw
+   * it, and there was no second door. Whatever is wrong with the backend on
+   * any given day, a lead that has already been typed out must not evaporate —
+   * so a failure opens a fallback with the same text ready to send by mail.
+   */
+  const [failed, setFailed] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +40,7 @@ export function Contact() {
       return;
     }
     setLoading(true);
+    setFailed(false);
     try {
       // `supabase` is a lazily-built proxy that *throws* on first use if its
       // env vars are missing (see integrations/supabase/client). Uncaught, that
@@ -46,11 +57,21 @@ export function Contact() {
       setMessage("");
       toast.success(t("contact.success"));
     } catch {
+      setFailed(true);
       toast.error(t("contact.errSend"));
     } finally {
       setLoading(false);
     }
   };
+
+  /** The same brief, addressed to the studio, for the fallback link. */
+  const mailtoHref = `mailto:${SITE_CONFIG.companyEmail}?subject=${encodeURIComponent(
+    `Richiesta dal sito — ${name.trim() || "senza nome"}`,
+  )}&body=${encodeURIComponent(`${message.trim()}
+
+—
+${name.trim()}
+${email.trim()}`)}`;
 
   return (
     <section
@@ -178,6 +199,29 @@ export function Contact() {
                   ? t("contact.btnSent")
                   : t("contact.btnIdle")}
             </button>
+
+            {/* The second door, opened only when the first one failed.
+                Everything the visitor typed is already in the link, so the
+                fallback costs them a click rather than retyping the brief. */}
+            {failed && (
+              <div className="rounded-2xl border border-white/15 bg-black/40 p-5">
+                <p className="text-sm leading-relaxed text-white/70">{t("contact.failHelp")}</p>
+                <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+                  <a
+                    href={mailtoHref}
+                    className="font-mono-spec text-[11px] tracking-[0.2em] text-white uppercase underline underline-offset-4 hover:text-white/70"
+                  >
+                    {t("contact.failMail")}
+                  </a>
+                  <a
+                    href={`tel:${SITE_CONFIG.phone.replace(/\s/g, "")}`}
+                    className="font-mono-spec text-[11px] tracking-[0.2em] text-white/60 uppercase hover:text-white"
+                  >
+                    {SITE_CONFIG.phone}
+                  </a>
+                </div>
+              </div>
+            )}
           </motion.form>
         </div>
       </div>
