@@ -842,3 +842,29 @@ html.has-custom-cursor
     animation: none;
   }
 }
+
+/* ── Mobile rebuild ──────────────────────────────────────────────────────
+   Additions only. Nothing above this line is edited, so the desktop
+   rendering is untouched by everything below.
+   ─────────────────────────────────────────────────────────────────────── */
+
+/* The travelling tick under the hero's "scroll" label. Animates transform
+   only, so it never leaves the compositor. */
+@keyframes hero-scroll-sweep {
+  0% {
+    transform: translate3d(-100%, 0, 0);
+  }
+  100% {
+    transform: translate3d(280%, 0, 0);
+  }
+}
+
+.hero-scroll-rule > span {
+  animation: hero-scroll-sweep 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-rule > span {
+    animation: none;
+  }
+}
