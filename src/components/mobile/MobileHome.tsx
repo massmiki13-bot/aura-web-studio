@@ -6,6 +6,7 @@ import { MobileHero, MobileHeroCoda } from "@/components/mobile/home/Hero";
 import { MobileProducts } from "@/components/mobile/home/Product";
 import { MobileProjects } from "@/components/mobile/home/Projects";
 import { MobileServices } from "@/components/mobile/home/Services";
+import { MobileWorkStrip } from "@/components/mobile/home/WorkStrip";
 import type { Locale } from "@/lib/seo";
 
 /**
@@ -33,6 +34,7 @@ export function MobileHome({ locale }: { locale: Locale }) {
       <Nav />
       <MobileHero />
       <MobileHeroCoda />
+      <MobileWorkStrip />
       <MobileServices />
       <MobileProjects locale={locale} />
       <MobileProducts locale={locale} />

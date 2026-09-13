@@ -891,3 +891,32 @@ html.has-custom-cursor
     overflow-x: clip;
   }
 }
+
+/* The drifting band of work under the phone masthead.
+ *
+ * -50% is exact rather than approximate: the track holds two identical runs,
+ * so when the first has travelled its own width the second sits precisely
+ * where the first began and the loop has no visible seam.
+ *
+ * `transform` only, and no JavaScript at all — the compositor runs this on
+ * its own thread, so it keeps moving smoothly even while the main thread is
+ * busy laying out the rest of the page. */
+@keyframes work-strip-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.work-strip {
+  animation: work-strip-drift 42s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-strip {
+    animation: none;
+  }
+}

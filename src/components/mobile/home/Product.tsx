@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,8 +23,27 @@ import type { Locale } from "@/lib/seo";
  * which is the part that actually did the work.
  */
 
-/** The four shapes the base takes. Mirrors the desktop morph's own order. */
-const SHAPES = ["Landing", "Vetrina", "Shop", "Web App"] as const;
+/**
+ * The four shapes the base takes, each with a real site that is that shape.
+ *
+ * The desktop morphs an actual interface between these; the first version of
+ * this section kept only the words, which left the whole passage as abstract
+ * type on black — a claim with nothing behind it. Showing the built work
+ * instead makes the same argument and makes it checkable: these are four of
+ * the studio's own projects, not illustrations.
+ *
+ * Mirrors the desktop morph's order.
+ */
+const SHAPES = [
+  { word: "Landing", image: "/projects/pernthaler_premium.webp", alt: "Landing page Pernthaler" },
+  {
+    word: "Vetrina",
+    image: "/projects/schlosshof_resort.webp",
+    alt: "Sito vetrina Schlosshof Resort",
+  },
+  { word: "Shop", image: "/projects/abigio.webp", alt: "E-commerce ricambi ABIGIO" },
+  { word: "Web App", image: "/projects/sport_id.webp", alt: "Web app SportID" },
+] as const;
 
 export function MobileProducts({ locale }: { locale: Locale }) {
   const { t } = useTranslation();
@@ -106,7 +126,7 @@ export function MobileProducts({ locale }: { locale: Locale }) {
           >
             {SHAPES.map((shape, i) => (
               <span
-                key={shape}
+                key={shape.word}
                 className="font-display absolute inset-x-0 top-0 text-[2.6rem] leading-[1.2] font-bold tracking-[-0.03em] text-white will-change-transform"
                 style={
                   reduced
@@ -122,12 +142,42 @@ export function MobileProducts({ locale }: { locale: Locale }) {
                       }
                 }
               >
-                {shape}
+                {shape.word}
               </span>
             ))}
           </div>
 
-          <Reveal delay={0.1} className="mt-4">
+          {/* The work itself, swapping with the word.
+           *
+           * All four screenshots are stacked and only the active one is
+           * opaque, rather than one <Image> whose `src` changes: swapping a
+           * src means a decode mid-scroll and a blank frame while it
+           * happens. Four eager images cost more up front and nothing at
+           * all during the animation, which is the trade that matters
+           * here.
+           *
+           * The frame keeps the 16:9 of the assets, so nothing is cropped,
+           * and the aspect-ratio box means the copy below never shifts as
+           * the pictures load. */}
+          <div className="relative mt-6 aspect-[16/9] w-full overflow-hidden rounded-[1.1rem] border border-white/10 bg-neutral-900">
+            {SHAPES.map((shape, i) => (
+              <Image
+                key={shape.word}
+                src={shape.image}
+                alt={shape.alt}
+                fill
+                sizes="(max-width: 768px) 100vw, 640px"
+                loading="eager"
+                className="object-cover object-top"
+                style={{
+                  opacity: i === (reduced ? 0 : active) ? 1 : 0,
+                  transition: reduced ? undefined : "opacity 500ms ease",
+                }}
+              />
+            ))}
+          </div>
+
+          <Reveal delay={0.1} className="mt-6">
             <p className="max-w-[38ch] text-[0.95rem] leading-relaxed text-white/60">
               {t("product.paragraph")}
             </p>
@@ -139,11 +189,11 @@ export function MobileProducts({ locale }: { locale: Locale }) {
           <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-2">
             {SHAPES.map((shape, i) => (
               <li
-                key={shape}
+                key={shape.word}
                 className="font-mono-spec text-[10px] tracking-[0.22em] uppercase transition-colors duration-300"
                 style={{ color: i === active ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.3)" }}
               >
-                {shape}
+                {shape.word}
               </li>
             ))}
           </ul>
