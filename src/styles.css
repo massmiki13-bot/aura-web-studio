@@ -842,3 +842,183 @@ html.has-custom-cursor
     animation: none;
   }
 }
+
+/* ── Mobile rebuild ──────────────────────────────────────────────────────
+   Additions only. Nothing above this line is edited, so the desktop
+   rendering is untouched by everything below.
+   ─────────────────────────────────────────────────────────────────────── */
+
+/* The travelling tick in the hero's vertical scroll cue. Animates transform
+   only, so it never leaves the compositor. */
+@keyframes hero-scroll-sweep {
+  0% {
+    transform: translate3d(0, -100%, 0);
+  }
+  100% {
+    transform: translate3d(0, 280%, 0);
+  }
+}
+
+.hero-scroll-rule > span {
+  animation: hero-scroll-sweep 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-rule > span {
+    animation: none;
+  }
+}
+
+/* Why `position: sticky` did nothing on a phone.
+ *
+ * The base layer sets `overflow-x: hidden` on html and body under 768px, to
+ * stop a stray wide element from giving the document a sideways scrollbar.
+ * `overflow: hidden` also makes the element a scroll container, and a sticky
+ * descendant sticks to its nearest scroll container — which here is <body>,
+ * an element that never itself scrolls. So the product section's pinned panel
+ * behaved exactly like a static one.
+ *
+ * `clip` does the same clipping without creating a scroll container, so the
+ * sticky panel binds to the viewport again. Declared after `hidden` rather
+ * than instead of it: a browser too old for `clip` ignores this line and
+ * keeps the original behaviour.
+ *
+ * Scoped to the same breakpoint as the rule it corrects — the desktop's own
+ * (min-width: 769px) block is not touched. */
+@media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+
+/* The drifting band of work under the phone masthead.
+ *
+ * -50% is exact rather than approximate: the track holds two identical runs,
+ * so when the first has travelled its own width the second sits precisely
+ * where the first began and the loop has no visible seam.
+ *
+ * `transform` only, and no JavaScript at all — the compositor runs this on
+ * its own thread, so it keeps moving smoothly even while the main thread is
+ * busy laying out the rest of the page. */
+@keyframes work-strip-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.work-strip {
+  animation: work-strip-drift 42s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-strip {
+    animation: none;
+  }
+}
+
+/* The armillary behind the phone masthead.
+ *
+ * Three rings in one perspective space. Each is a circle with a border, flat
+ * by default, tipped onto its own axis and then spun — so what you see is a
+ * genuine projection, near edge in front of the core and far edge behind it,
+ * not a drawing of one.
+ *
+ * Every animation is on `transform` alone, so all three run on the
+ * compositor. No layout, no paint, no main-thread work per frame. */
+.hero-armillary {
+  position: relative;
+  width: 15rem;
+  height: 15rem;
+  transform-style: preserve-3d;
+  perspective: 700px;
+  /* The whole assembly is tipped away from the viewer, which is what stops
+     the rings reading as flat circles when they happen to line up. */
+  transform: rotateX(64deg);
+}
+
+.hero-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Three speeds and three axes, none a multiple of another, so the assembly
+   never returns to the same pose — a repeating figure is what makes an
+   ambient object start to look like a loading spinner. */
+.hero-ring--a {
+  animation: hero-ring-spin-a 24s linear infinite;
+}
+
+.hero-ring--b {
+  inset: 12%;
+  border-color: rgba(255, 255, 255, 0.22);
+  animation: hero-ring-spin-b 17s linear infinite;
+}
+
+.hero-ring--c {
+  inset: 26%;
+  border-color: rgba(255, 255, 255, 0.12);
+  animation: hero-ring-spin-c 31s linear infinite;
+}
+
+@keyframes hero-ring-spin-a {
+  from {
+    transform: rotateZ(0deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateZ(360deg) rotateY(360deg);
+  }
+}
+
+@keyframes hero-ring-spin-b {
+  from {
+    transform: rotateX(58deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(58deg) rotateZ(-360deg);
+  }
+}
+
+@keyframes hero-ring-spin-c {
+  from {
+    transform: rotateY(70deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateY(70deg) rotateZ(360deg);
+  }
+}
+
+/* The lit centre. A radial gradient rather than a blurred box: a Gaussian on
+   this size is a full backing store to rasterise every frame, and the
+   gradient gives the same falloff for free. */
+.hero-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5.5rem;
+  height: 5.5rem;
+  margin: -2.75rem 0 0 -2.75rem;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 38% 34%,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(190, 185, 220, 0.2) 38%,
+    rgba(255, 255, 255, 0) 72%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ring--a,
+  .hero-ring--b,
+  .hero-ring--c {
+    animation: none;
+  }
+}

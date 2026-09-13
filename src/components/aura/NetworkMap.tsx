@@ -20,6 +20,7 @@ import {
   project as projectSouth,
 } from "@/data/southtyrol";
 import { southTyrolPins, italyPins, worldPins, workAt, type Pin } from "@/lib/map-network";
+import { useIsDesktopViewport } from "@/hooks/use-desktop-viewport";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------------ *
@@ -104,6 +105,35 @@ function MapPlate({
   const hq = placed.find((p) => p.hq) ?? placed[0];
   const sel = placed.find((p) => p.id === active) ?? placed[0];
   const lit = plate.litFor(sel);
+
+  /**
+   * On a phone, the outline is drawn as ONE path instead of one per shape.
+   *
+   * The Alto Adige plate is 282 comuni. On a wide screen that detail is the
+   * point; inside a 375px-wide plate each comune is a couple of pixels across
+   * — invisible as shape, and 282 elements for the browser to lay out, style
+   * and stroke on every frame of a scroll. Concatenating the `d` strings
+   * gives one element whose subpaths stroke identically, which is the same
+   * trick the projects rig uses to render its frame as three paths rather
+   * than thirty-five.
+   *
+   * What it gives up is the per-shape `is-lit` highlight, deliberately: a lit
+   * comune at this size is a smudge, and the pins and links carry the meaning
+   * anyway. Nothing is given up on the other plates — twenty regions and a
+   * hundred and seventy coastlines are already cheap — so they keep their own
+   * per-shape paths and their highlight at every width.
+   *
+   * Gated on `=== true` so the merge is what renders while the media query is
+   * still unmeasured: a phone must never paint the 282-element version, not
+   * even for one frame.
+   */
+  const isDesktop = useIsDesktopViewport();
+  const merge = isDesktop !== true && plate.shapes.length > 64;
+  const shapes = useMemo(
+    () =>
+      merge ? [{ name: "__merged", d: plate.shapes.map((s) => s.d).join(" ") }] : plate.shapes,
+    [merge, plate.shapes],
+  );
 
   /** The stroke starts when the plate is genuinely on screen. */
   useEffect(() => {
@@ -195,11 +225,11 @@ function MapPlate({
       >
         <g>
           {live &&
-            plate.shapes.map((shape, i) => (
+            shapes.map((shape, i) => (
               <path
                 key={shape.name}
                 d={shape.d}
-                className={cn("map-land", lit.has(shape.name) && "is-lit")}
+                className={cn("map-land", !merge && lit.has(shape.name) && "is-lit")}
                 pathLength={1}
                 style={{ "--i": i % 24 } as React.CSSProperties}
               />

@@ -64,7 +64,23 @@ export function ContactPage({ locale }: { locale: Locale }) {
             backgroundSize: "70px 80px",
           }}
         />
-        <SparklesCanvas className="absolute inset-0" count={320} />
+        {/* On a phone the sparkle layer is one screen tall, not the whole page.
+         *
+         * `inset-0` here spans the full document — 4,670px on a 375px-wide
+         * phone — which gave the canvas a 750×8,440 backing store: 6.3
+         * megapixels cleared and repainted on every animation frame, on the
+         * device least able to afford it. And because the layer covered the
+         * entire page it was always intersecting, so the observer that is
+         * supposed to pause the loop never once did.
+         *
+         * The dots are ambient texture behind the header; below the first
+         * screen they sit under opaque content and nobody has ever seen
+         * them. `md:` restores the original box, so the desktop rendering
+         * is unchanged. */}
+        <SparklesCanvas
+          className="absolute inset-x-0 top-0 !h-[100svh] md:inset-0 md:!h-full"
+          count={320}
+        />
       </div>
 
       <div className="relative max-w-7xl mx-auto w-full px-6 md:px-16 pt-32 pb-24 z-10 flex-1">
