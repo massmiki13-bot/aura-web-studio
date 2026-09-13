@@ -920,3 +920,105 @@ html.has-custom-cursor
     animation: none;
   }
 }
+
+/* The armillary behind the phone masthead.
+ *
+ * Three rings in one perspective space. Each is a circle with a border, flat
+ * by default, tipped onto its own axis and then spun — so what you see is a
+ * genuine projection, near edge in front of the core and far edge behind it,
+ * not a drawing of one.
+ *
+ * Every animation is on `transform` alone, so all three run on the
+ * compositor. No layout, no paint, no main-thread work per frame. */
+.hero-armillary {
+  position: relative;
+  width: 15rem;
+  height: 15rem;
+  transform-style: preserve-3d;
+  perspective: 700px;
+  /* The whole assembly is tipped away from the viewer, which is what stops
+     the rings reading as flat circles when they happen to line up. */
+  transform: rotateX(64deg);
+}
+
+.hero-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Three speeds and three axes, none a multiple of another, so the assembly
+   never returns to the same pose — a repeating figure is what makes an
+   ambient object start to look like a loading spinner. */
+.hero-ring--a {
+  animation: hero-ring-spin-a 24s linear infinite;
+}
+
+.hero-ring--b {
+  inset: 12%;
+  border-color: rgba(255, 255, 255, 0.22);
+  animation: hero-ring-spin-b 17s linear infinite;
+}
+
+.hero-ring--c {
+  inset: 26%;
+  border-color: rgba(255, 255, 255, 0.12);
+  animation: hero-ring-spin-c 31s linear infinite;
+}
+
+@keyframes hero-ring-spin-a {
+  from {
+    transform: rotateZ(0deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateZ(360deg) rotateY(360deg);
+  }
+}
+
+@keyframes hero-ring-spin-b {
+  from {
+    transform: rotateX(58deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(58deg) rotateZ(-360deg);
+  }
+}
+
+@keyframes hero-ring-spin-c {
+  from {
+    transform: rotateY(70deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateY(70deg) rotateZ(360deg);
+  }
+}
+
+/* The lit centre. A radial gradient rather than a blurred box: a Gaussian on
+   this size is a full backing store to rasterise every frame, and the
+   gradient gives the same falloff for free. */
+.hero-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5.5rem;
+  height: 5.5rem;
+  margin: -2.75rem 0 0 -2.75rem;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 38% 34%,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(190, 185, 220, 0.2) 38%,
+    rgba(255, 255, 255, 0) 72%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ring--a,
+  .hero-ring--b,
+  .hero-ring--c {
+    animation: none;
+  }
+}

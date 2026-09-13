@@ -67,10 +67,22 @@ export function SparklesCanvas({
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     resize();
-    particles = Array.from({ length: count }, makeParticle);
+
+    /**
+     * A phone gets a fraction of the field.
+     *
+     * The count a caller passes is chosen for a wide header; on a 375px
+     * screen the same number of dots is both denser than it was ever meant to
+     * look and several times the per-frame cost, on the device least able to
+     * pay it. Capped rather than scaled so a caller asking for few still gets
+     * few.
+     */
+    const onPhone = window.matchMedia("(max-width: 768px)").matches;
+    const used = onPhone ? Math.min(count, 90) : count;
+    particles = Array.from({ length: used }, makeParticle);
 
     let raf = 0;
-    let running = true;
+    let running = false;
     const tick = () => {
       ctx.clearRect(0, 0, w, h);
       for (const p of particles) {
@@ -84,25 +96,42 @@ export function SparklesCanvas({
       ctx.globalAlpha = 1;
       if (running) raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
 
-    // Pure perf optimization: stop the rAF loop while scrolled far away, and
-    // pick back up when it re-enters view. No visual difference once
-    // visible — it's already animating by the time it can be seen.
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        running = entry.isIntersecting;
-        if (running) raf = requestAnimationFrame(tick);
-        else cancelAnimationFrame(raf);
-      },
-      { rootMargin: "200px" },
-    );
+    /**
+     * start() and stop() are idempotent, and that is the whole point.
+     *
+     * This used to schedule a frame on mount AND schedule another every time
+     * the observer reported the canvas as visible, without cancelling the one
+     * already in flight. The observer fires once immediately on observe(), so
+     * a second loop started before the first frame had even run — and every
+     * later scroll away and back added one more. Each extra loop clears the
+     * canvas and redraws every particle again, so the cost grew the longer
+     * the visitor used the page, which is exactly what a page that "gets
+     * slower and then stops opening" feels like.
+     */
+    const start = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    };
+    const stop = () => {
+      if (!running) return;
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    // Stop the loop while scrolled far away, and pick back up when it
+    // re-enters view. No visual difference once visible — it is already
+    // animating by the time it can be seen.
+    const io = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()), {
+      rootMargin: "200px",
+    });
     io.observe(canvas);
 
     const onResize = rafDebounce(resize);
     window.addEventListener("resize", onResize);
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
       io.disconnect();
       onResize.cancel();
       window.removeEventListener("resize", onResize);

@@ -3,6 +3,7 @@
 import { useTranslation } from "react-i18next";
 
 import { MobileHeroField } from "@/components/mobile/home/HeroField";
+import { MobileHeroObject } from "@/components/mobile/home/HeroObject";
 import { MaskWords, Reveal } from "@/components/mobile/motion";
 
 /**
@@ -35,6 +36,15 @@ export function MobileHero() {
        * which is why the copy sits in its own layer rather than the canvas
        * being pushed behind with a negative index. */}
       <MobileHeroField className="pointer-events-auto absolute inset-0 z-0 h-full w-full" />
+
+      {/* The turning object, between the dot field and the words.
+       *
+       * High, not centred. `rotateX(64deg)` flattens the assembly to about
+       * 119px tall, and at any lower position its rings ran straight
+       * through the headline — a ruled line across a word is the one thing
+       * that makes type harder to read rather than better framed. Here it
+       * clears the badge with room to spare. */}
+      <MobileHeroObject className="pointer-events-none absolute top-[2%] left-1/2 z-0 -translate-x-1/2" />
       <Reveal delay={0.05} className="relative z-10">
         <p className="font-mono-spec text-[10px] tracking-[0.35em] text-white/40 uppercase">
           {t("hero.badge")}
