@@ -72,10 +72,13 @@ export function MobileProducts({ locale }: { locale: Locale }) {
 
   return (
     <section id="team" className="relative bg-black">
-      {/* The track is only as tall as it needs to be to give each shape a
-          comfortable beat — one extra viewport across all four, not one per
-          shape. That single decision is most of the 3,331px saved. */}
-      <div ref={trackRef} className="relative h-[220svh]">
+      {/* Track height sets how long each shape holds. The panel pins for
+          (track - viewport), so 240svh gives roughly 285px of scroll per
+          word: slow enough to read all four on a normal flick, and still a
+          fraction of the 3,331px this section used to cost. At 170svh the
+          whole cycle went past in 569px and you reached "Web App" before
+          you had read "Landing". */}
+      <div ref={trackRef} className="relative h-[240svh]">
         <div className="sticky top-0 flex min-h-[100svh] flex-col justify-center px-6 py-24">
           <Reveal>
             <span className="font-mono-spec text-[10px] tracking-[0.28em] text-white/35 uppercase">

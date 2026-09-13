@@ -848,14 +848,14 @@ html.has-custom-cursor
    rendering is untouched by everything below.
    ─────────────────────────────────────────────────────────────────────── */
 
-/* The travelling tick under the hero's "scroll" label. Animates transform
+/* The travelling tick in the hero's vertical scroll cue. Animates transform
    only, so it never leaves the compositor. */
 @keyframes hero-scroll-sweep {
   0% {
-    transform: translate3d(-100%, 0, 0);
+    transform: translate3d(0, -100%, 0);
   }
   100% {
-    transform: translate3d(280%, 0, 0);
+    transform: translate3d(0, 280%, 0);
   }
 }
 
@@ -866,5 +866,28 @@ html.has-custom-cursor
 @media (prefers-reduced-motion: reduce) {
   .hero-scroll-rule > span {
     animation: none;
+  }
+}
+
+/* Why `position: sticky` did nothing on a phone.
+ *
+ * The base layer sets `overflow-x: hidden` on html and body under 768px, to
+ * stop a stray wide element from giving the document a sideways scrollbar.
+ * `overflow: hidden` also makes the element a scroll container, and a sticky
+ * descendant sticks to its nearest scroll container — which here is <body>,
+ * an element that never itself scrolls. So the product section's pinned panel
+ * behaved exactly like a static one.
+ *
+ * `clip` does the same clipping without creating a scroll container, so the
+ * sticky panel binds to the viewport again. Declared after `hidden` rather
+ * than instead of it: a browser too old for `clip` ignores this line and
+ * keeps the original behaviour.
+ *
+ * Scoped to the same breakpoint as the rule it corrects — the desktop's own
+ * (min-width: 769px) block is not touched. */
+@media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: clip;
   }
 }

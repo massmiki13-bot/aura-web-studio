@@ -58,7 +58,7 @@ export function useReducedMotion(): boolean {
  * observer left attached to forty elements is forty things to re-evaluate on
  * every scroll.
  */
-function useHasEntered(amount = 0.2) {
+export function useHasEntered(amount = 0.2) {
   const ref = useRef<HTMLElement | null>(null);
   const [entered, setEntered] = useState(false);
 

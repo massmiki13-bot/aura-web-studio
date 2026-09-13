@@ -2,7 +2,7 @@
 
 import { Contact, Footer } from "@/components/aura/Contact";
 import { Nav } from "@/components/aura/Nav";
-import { MobileHero } from "@/components/mobile/home/Hero";
+import { MobileHero, MobileHeroCoda } from "@/components/mobile/home/Hero";
 import { MobileProducts } from "@/components/mobile/home/Product";
 import { MobileProjects } from "@/components/mobile/home/Projects";
 import { MobileServices } from "@/components/mobile/home/Services";
@@ -32,6 +32,7 @@ export function MobileHome({ locale }: { locale: Locale }) {
     <main className="bg-black text-white">
       <Nav />
       <MobileHero />
+      <MobileHeroCoda />
       <MobileServices />
       <MobileProjects locale={locale} />
       <MobileProducts locale={locale} />

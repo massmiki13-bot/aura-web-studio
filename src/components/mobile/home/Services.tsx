@@ -29,43 +29,40 @@ export function MobileServices() {
   const offers = t("services.mobileItems", { returnObjects: true }) as Offer[];
 
   return (
-    <section id="services" className="relative bg-black px-6 py-24">
+    <section id="services" className="relative bg-black px-6 py-28">
       {/* Process: three lines, each its own beat. Large type, no cards — this
           is the studio talking, and boxing it would make it read as a
           feature list. */}
-      <ol className="space-y-10">
+      <ol className="space-y-16 text-center">
         {steps.map((step, i) => (
           <li key={step.kicker}>
             <Reveal delay={i * 0.05}>
-              <span className="font-mono-spec text-[10px] tracking-[0.28em] text-white/35 uppercase">
+              <span className="font-mono-spec text-[10px] tracking-[0.35em] text-white/35 uppercase">
                 {step.kicker}
               </span>
             </Reveal>
-            <h3 className="font-display mt-2 text-[1.6rem] leading-[1.15] font-bold tracking-[-0.02em] text-white">
+            <h3 className="font-display mx-auto mt-3 max-w-[18ch] text-[1.75rem] leading-[1.14] font-bold tracking-[-0.025em] text-balance text-white">
               <MaskWords text={step.title} stagger={0.04} />
             </h3>
           </li>
         ))}
       </ol>
 
-      <div className="mt-20 h-px w-full bg-white/10" />
+      <div className="mx-auto mt-24 h-px w-16 bg-white/15" />
 
-      <ul className="mt-12 space-y-4">
+      <ul className="mt-16 divide-y divide-white/8">
         {offers.map((offer, i) => (
           <Reveal as="li" key={offer.title} delay={i * 0.06}>
-            <article className="flex gap-5 rounded-[1.25rem] border border-white/10 bg-neutral-950 p-6">
-              <span
-                aria-hidden
-                className="font-mono-spec pt-0.5 text-[11px] tracking-widest text-white/30 tabular-nums"
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div className="min-w-0">
-                <h4 className="font-display text-lg leading-tight font-bold tracking-tight text-white">
-                  {offer.title}
-                </h4>
-                <p className="mt-2 text-sm leading-relaxed text-white/55">{offer.desc}</p>
-              </div>
+            {/* A ruled list, not a stack of boxes. Four bordered cards in a
+                column is the default a template would produce; rules give the
+                same separation without drawing four competing rectangles. */}
+            <article className="py-7">
+              <h4 className="font-display text-[1.3rem] leading-tight font-bold tracking-tight text-white">
+                {offer.title}
+              </h4>
+              <p className="mt-2 max-w-[34ch] text-[0.95rem] leading-relaxed text-white/45">
+                {offer.desc}
+              </p>
             </article>
           </Reveal>
         ))}

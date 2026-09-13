@@ -7,21 +7,16 @@ import { MaskWords, Reveal } from "@/components/mobile/motion";
 /**
  * The phone masthead.
  *
- * What it replaces was the desktop hero with its WebGL layers switched off,
- * which left a gradient sphere, the word "Scorri", and no headline at all —
- * the title lived in a scroll-pinned second act that a phone visitor only
- * reached after roughly three screens of black. The first thing anyone saw of
- * the studio said nothing about it.
+ * Centred, black, and empty around the type on purpose. The first version of
+ * this had a large CSS orb behind the copy, inherited from the desktop's
+ * WebGL object; at phone size it filled half the screen as a soft purple
+ * smear and made the headline look like it was sitting on a stain. There is
+ * nothing decorative here now — the type is the design, and the air around it
+ * is what makes it read as expensive.
  *
- * So the order is inverted here: the claim arrives first, unprompted, in the
- * first frame. Both of the desktop's two acts are shown, stacked, because on
- * a phone they are two short paragraphs rather than two full screens — the
- * second one ("Estetica che converte") carries the commercial argument and
- * dropping it would be dropping content, which is not what was asked for.
- *
- * The orb stays, as a CSS gradient. It is the one piece of the desktop
- * identity that survives translation intact, and it costs nothing: no canvas,
- * no context, no runtime.
+ * Carries everything the desktop masthead carries, which the first pass did
+ * not: the tagline and both calls to action were missing, so the phone's
+ * opening screen had no way to reach the quote form or the work.
  */
 export function MobileHero() {
   const { t } = useTranslation();
@@ -29,81 +24,97 @@ export function MobileHero() {
   return (
     <section
       id="hero"
-      // min-h rather than h: at 100svh with a large accessibility font the
-      // stack would otherwise be taller than its own section and clip.
-      className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden bg-black px-6 pt-28 pb-12"
+      className="relative flex min-h-[100svh] flex-col items-center justify-center bg-black px-6 pt-24 pb-16 text-center"
     >
-      {/* The orb. Deliberately behind and off-centre: it frames the type
-          instead of competing with it, which is what it was doing when it sat
-          alone in the middle of an empty screen.
+      <Reveal delay={0.05}>
+        <p className="font-mono-spec text-[10px] tracking-[0.35em] text-white/40 uppercase">
+          {t("hero.badge")}
+        </p>
+      </Reveal>
 
-          -z-0 with the content at z-10 rather than `absolute inset-0` on a
-          wrapper, so it can bleed past the right edge without giving the
-          document a horizontal scrollbar — overflow-hidden on the section
-          clips it. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-24 -right-32 -z-0 size-[26rem] rounded-full opacity-70 blur-[2px]"
-        style={{
-          background:
-            "radial-gradient(circle at 32% 28%, rgba(255,255,255,0.92) 0%, rgba(168,160,205,0.45) 18%, rgba(60,54,96,0.55) 42%, rgba(8,8,12,0.95) 72%)",
-        }}
-      />
-      {/* A second, much wider wash low on the screen. Stops the type from
-          sitting on flat black, which is what made the section read as empty
-          rather than dark. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-40 -left-24 -z-0 size-[30rem] rounded-full opacity-40 blur-[90px]"
-        style={{ background: "radial-gradient(circle, rgba(120,110,180,0.55), transparent 70%)" }}
-      />
+      {/* One <h1>, as large as a 375px screen will carry without the longest
+          word in any of the four languages breaking the line badly.
+          leading-[1.06], not tighter: each word is clipped to its own line box
+          by MaskWords, and a line-height under 1 shears the descenders. */}
+      <h1 className="font-display mt-7 text-[2.9rem] leading-[1.06] font-bold tracking-[-0.035em] text-balance text-white">
+        <MaskWords text={t("hero.actTwoTitle")} delay={0.12} />
+      </h1>
 
-      <div className="relative z-10">
-        <Reveal delay={0.05}>
-          <p className="font-mono-spec text-[10px] tracking-[0.28em] text-white/45 uppercase">
-            {t("hero.badge")}
-          </p>
-        </Reveal>
+      {/* Both of the desktop masthead's lines, in its own order: the headline's
+          own subtitle first, then act one's promise. Two lines under a
+          headline is the most a screen this size carries before it stops
+          being a statement and becomes a paragraph — which is why the
+          remaining claim gets its own section below rather than a third
+          line here. */}
+      <Reveal delay={0.45} className="mt-6">
+        <p className="mx-auto max-w-[28ch] text-[1.05rem] leading-relaxed text-white/70">
+          {t("hero.actTwoSub")}
+        </p>
+        <p className="mx-auto mt-3 max-w-[32ch] text-sm leading-relaxed font-light text-white/40">
+          {t(
+            "hero.tagline",
+            "Progettiamo siti web su misura che elevano il valore percepito del tuo brand.",
+          )}
+        </p>
+      </Reveal>
 
-        {/* The one <h1> on the page. leading-[1.05], not tighter: MaskWords
-            clips each word to its own line box, and a line-height under 1
-            shears the descenders off. */}
-        <h1 className="font-display mt-5 text-[2.75rem] leading-[1.05] font-bold tracking-[-0.03em] text-white">
-          <MaskWords text={t("hero.actTwoTitle")} delay={0.15} />
-        </h1>
+      {/* Full-width stacked buttons rather than a wrapped row. A phone has one
+          thumb; two pills side by side on a 375px screen are both too narrow
+          to read and too small to hit comfortably. */}
+      <Reveal delay={0.6} className="mt-10 flex w-full max-w-[20rem] flex-col gap-3">
+        <a
+          href="#contact"
+          className="font-mono-spec flex h-14 items-center justify-center rounded-full bg-white text-[11px] font-medium tracking-[0.25em] text-black uppercase"
+        >
+          {t("hero.cta", "Richiedi un preventivo")}
+        </a>
+        <a
+          href="#projects"
+          className="font-mono-spec flex h-14 items-center justify-center rounded-full border border-white/15 text-[11px] tracking-[0.25em] text-white/80 uppercase"
+        >
+          {t("hero.secondaryCta", "Guarda i lavori")}
+        </a>
+      </Reveal>
 
-        <Reveal delay={0.5} className="mt-5">
-          <p className="max-w-[34ch] text-[0.95rem] leading-relaxed text-white/65">
-            {t("hero.actTwoSub")}
-          </p>
-        </Reveal>
+      {/* Pinned to the bottom edge rather than sitting in the stack, so the
+          copy above stays optically centred on the screen instead of being
+          pushed high by a cue almost nobody reads. */}
+      <Reveal delay={0.85} className="absolute inset-x-0 bottom-8 flex flex-col items-center gap-2">
+        <span className="font-mono-spec text-[9px] tracking-[0.35em] text-white/30 uppercase">
+          {t("hero.scroll")}
+        </span>
+        <span
+          aria-hidden
+          className="hero-scroll-rule relative h-8 w-px overflow-hidden bg-white/10"
+        >
+          <span className="absolute inset-x-0 top-0 h-3 bg-white/50" />
+        </span>
+      </Reveal>
+    </section>
+  );
+}
 
-        {/* Act two of the desktop hero, kept as a hairline-separated coda
-            rather than a second screen. */}
-        <Reveal delay={0.62} className="mt-8 border-t border-white/10 pt-6">
-          <p className="font-display text-xl leading-tight font-bold tracking-tight text-white/90">
-            {t("hero.actTwoTitle2")}
-          </p>
-          <p className="mt-2 max-w-[34ch] text-sm leading-relaxed text-white/55">
-            {t("hero.actTwoSub2")}
-          </p>
-        </Reveal>
+/**
+ * The desktop hero's second act, given its own screen.
+ *
+ * On the desktop this is a scroll-pinned reveal over the WebGL object; here it
+ * is simply the next thing you reach, with nothing else on screen. Keeping it
+ * as a separate beat rather than folding it under the masthead copy is what
+ * stops the opening from becoming a wall of four stacked claims.
+ */
+export function MobileHeroCoda() {
+  const { t } = useTranslation();
 
-        <Reveal delay={0.78} className="mt-10 flex items-center gap-3">
-          <span className="font-mono-spec text-[10px] tracking-[0.28em] text-white/40 uppercase">
-            {t("hero.scroll")}
-          </span>
-          {/* The line the eye follows down. A looping transform on a 1px rule
-              — no layout, no paint, and it stops itself under
-              prefers-reduced-motion via the class's own media query. */}
-          <span
-            aria-hidden
-            className="hero-scroll-rule relative h-px w-16 overflow-hidden bg-white/15"
-          >
-            <span className="absolute inset-y-0 left-0 w-6 bg-white/70" />
-          </span>
-        </Reveal>
-      </div>
+  return (
+    <section className="flex min-h-[70svh] flex-col justify-center bg-black px-6 py-24 text-center">
+      <h2 className="font-display text-[2.3rem] leading-[1.08] font-bold tracking-[-0.03em] text-balance text-white">
+        <MaskWords text={t("hero.actTwoTitle2")} />
+      </h2>
+      <Reveal delay={0.15} className="mt-5">
+        <p className="mx-auto max-w-[30ch] text-base leading-relaxed font-light text-white/50">
+          {t("hero.actTwoSub2")}
+        </p>
+      </Reveal>
     </section>
   );
 }
