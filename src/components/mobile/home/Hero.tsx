@@ -2,6 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 
+import { MobileHeroField } from "@/components/mobile/home/HeroField";
 import { MaskWords, Reveal } from "@/components/mobile/motion";
 
 /**
@@ -24,9 +25,17 @@ export function MobileHero() {
   return (
     <section
       id="hero"
-      className="relative flex min-h-[100svh] flex-col items-center justify-center bg-black px-6 pt-24 pb-16 text-center"
+      className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden bg-black px-6 pt-24 pb-16 text-center"
     >
-      <Reveal delay={0.05}>
+      {/* The interactive field, behind everything.
+       *
+       * inset-0 and z-0 with the copy lifted to z-10: the canvas has to
+       * cover the whole masthead to be worth touching, but every word
+       * above it must stay selectable and every button still tappable,
+       * which is why the copy sits in its own layer rather than the canvas
+       * being pushed behind with a negative index. */}
+      <MobileHeroField className="pointer-events-auto absolute inset-0 z-0 h-full w-full" />
+      <Reveal delay={0.05} className="relative z-10">
         <p className="font-mono-spec text-[10px] tracking-[0.35em] text-white/40 uppercase">
           {t("hero.badge")}
         </p>
@@ -36,7 +45,7 @@ export function MobileHero() {
           word in any of the four languages breaking the line badly.
           leading-[1.06], not tighter: each word is clipped to its own line box
           by MaskWords, and a line-height under 1 shears the descenders. */}
-      <h1 className="font-display mt-7 text-[2.9rem] leading-[1.06] font-bold tracking-[-0.035em] text-balance text-white">
+      <h1 className="font-display relative z-10 mt-7 text-[2.9rem] leading-[1.06] font-bold tracking-[-0.035em] text-balance text-white">
         <MaskWords text={t("hero.actTwoTitle")} delay={0.12} />
       </h1>
 
@@ -46,7 +55,7 @@ export function MobileHero() {
           being a statement and becomes a paragraph — which is why the
           remaining claim gets its own section below rather than a third
           line here. */}
-      <Reveal delay={0.45} className="mt-6">
+      <Reveal delay={0.45} className="relative z-10 mt-6">
         <p className="mx-auto max-w-[28ch] text-[1.05rem] leading-relaxed text-white/70">
           {t("hero.actTwoSub")}
         </p>
@@ -61,7 +70,7 @@ export function MobileHero() {
       {/* Full-width stacked buttons rather than a wrapped row. A phone has one
           thumb; two pills side by side on a 375px screen are both too narrow
           to read and too small to hit comfortably. */}
-      <Reveal delay={0.6} className="mt-10 flex w-full max-w-[20rem] flex-col gap-3">
+      <Reveal delay={0.6} className="relative z-10 mt-10 flex w-full max-w-[20rem] flex-col gap-3">
         <a
           href="#contact"
           className="font-mono-spec flex h-14 items-center justify-center rounded-full bg-white text-[11px] font-medium tracking-[0.25em] text-black uppercase"
@@ -79,7 +88,10 @@ export function MobileHero() {
       {/* Pinned to the bottom edge rather than sitting in the stack, so the
           copy above stays optically centred on the screen instead of being
           pushed high by a cue almost nobody reads. */}
-      <Reveal delay={0.85} className="absolute inset-x-0 bottom-8 flex flex-col items-center gap-2">
+      <Reveal
+        delay={0.85}
+        className="absolute inset-x-0 bottom-8 z-10 flex flex-col items-center gap-2"
+      >
         <span className="font-mono-spec text-[9px] tracking-[0.35em] text-white/30 uppercase">
           {t("hero.scroll")}
         </span>
