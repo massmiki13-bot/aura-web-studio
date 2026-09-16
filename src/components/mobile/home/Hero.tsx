@@ -59,21 +59,12 @@ export function MobileHero() {
         <MaskWords text={t("hero.actTwoTitle")} delay={0.12} />
       </h1>
 
-      {/* Both of the desktop masthead's lines, in its own order: the headline's
-          own subtitle first, then act one's promise. Two lines under a
-          headline is the most a screen this size carries before it stops
-          being a statement and becomes a paragraph — which is why the
-          remaining claim gets its own section below rather than a third
-          line here. */}
+      {/* The headline's own subtitle, and nothing else under it — a second
+          line here would turn the statement into a paragraph, which is why
+          any remaining claim gets its own section below instead. */}
       <Reveal delay={0.45} className="relative z-10 mt-6">
         <p className="mx-auto max-w-[28ch] text-[1.05rem] leading-relaxed text-white/70">
           {t("hero.actTwoSub")}
-        </p>
-        <p className="mx-auto mt-3 max-w-[32ch] text-sm leading-relaxed font-light text-white/40">
-          {t(
-            "hero.tagline",
-            "Progettiamo siti web su misura che elevano il valore percepito del tuo brand.",
-          )}
         </p>
       </Reveal>
 
@@ -93,24 +84,6 @@ export function MobileHero() {
         >
           {t("hero.secondaryCta", "Guarda i lavori")}
         </a>
-      </Reveal>
-
-      {/* Pinned to the bottom edge rather than sitting in the stack, so the
-          copy above stays optically centred on the screen instead of being
-          pushed high by a cue almost nobody reads. */}
-      <Reveal
-        delay={0.85}
-        className="absolute inset-x-0 bottom-8 z-10 flex flex-col items-center gap-2"
-      >
-        <span className="font-mono-spec text-[9px] tracking-[0.35em] text-white/30 uppercase">
-          {t("hero.scroll")}
-        </span>
-        <span
-          aria-hidden
-          className="hero-scroll-rule relative h-8 w-px overflow-hidden bg-white/10"
-        >
-          <span className="absolute inset-x-0 top-0 h-3 bg-white/50" />
-        </span>
       </Reveal>
     </section>
   );

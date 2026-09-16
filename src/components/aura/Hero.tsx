@@ -448,15 +448,6 @@ export function Hero() {
         >
           {t("hero.badge")}
         </p>
-        <p
-          data-hero-in
-          className="max-w-lg text-lg leading-relaxed font-light text-white/60 md:text-xl"
-        >
-          {t(
-            "hero.tagline",
-            "Progettiamo siti web su misura che elevano il valore percepito del tuo brand.",
-          )}
-        </p>
         <div
           data-hero-in
           className="mt-8 flex flex-wrap items-center justify-center gap-4 md:justify-start"
