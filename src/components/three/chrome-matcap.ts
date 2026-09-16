@@ -77,20 +77,3 @@ export function getChromeMatcap(): THREE.CanvasTexture {
   cached.colorSpace = THREE.SRGBColorSpace;
   return cached;
 }
-
-/**
- * Matcap lookup plus a fresnel lift, shared by every chrome surface here.
- *
- * `vNormal` and `vViewDir` are the varyings each vertex shader is expected to
- * provide. The slight cool tint on the last line is what keeps the metal from
- * reading as plain grey against a pure black page.
- */
-export const CHROME_FRAGMENT_BODY = /* glsl */ `
-  vec3 n = normalize(vNormal);
-  vec3 v = normalize(vViewDir);
-  vec2 muv = n.xy * 0.48 + 0.5;
-  vec3 col = texture2D(uMatcap, muv).rgb;
-  float fres = pow(1.0 - max(dot(n, v), 0.0), 3.0);
-  col += fres * 0.38;
-  col *= vec3(0.94, 0.96, 1.04);
-`;

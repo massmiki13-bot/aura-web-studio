@@ -176,6 +176,3 @@ export function workAt(pin: Pin) {
     .map((id) => allProjects.find((p) => p.id === id))
     .filter((p): p is NonNullable<typeof p> => Boolean(p));
 }
-
-/** Every project the Italian plates account for. */
-export const italyWorkCount = ITALY.reduce((n, p) => n + p.work.length, 0);
