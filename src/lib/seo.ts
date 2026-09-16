@@ -54,12 +54,6 @@ export const SITE_CONFIG = {
   company: "Aura Web Studio",
   companyEmail: "info@aura-webstudio.com",
   phone: "+39 334 1924697",
-  social: {
-    instagram: "https://instagram.com/aurawebstudio",
-    behance: "https://behance.net/aurawebstudio",
-    github: "https://github.com/aurawebstudio",
-    linkedin: "https://www.linkedin.com/in/michele-massardi-a72a38425/",
-  },
   location: {
     country: "IT",
     city: "Bolzano",
@@ -306,12 +300,6 @@ export function generateOrganizationSchema() {
       email: SITE_CONFIG.companyEmail,
       availableLanguage: ["it", "en", "de", "es"],
     },
-    sameAs: [
-      SITE_CONFIG.social.instagram,
-      SITE_CONFIG.social.behance,
-      SITE_CONFIG.social.github,
-      SITE_CONFIG.social.linkedin,
-    ],
     knowsLanguage: ["it", "en", "de", "es"],
     knowsAbout: [
       "Web design",
