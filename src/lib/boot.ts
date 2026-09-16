@@ -30,6 +30,14 @@
  * effect ordering.
  */
 
+/**
+ * Where the desktop site starts (Tailwind `md`). Below it `ViewportSwitch`
+ * renders the phone home, which has no `Intro` — so nothing there would ever
+ * take the curtain down, and everything behind the boot gate would wait for
+ * the failsafe. The intro decision has to use the same line.
+ */
+export const DESKTOP_QUERY = "(min-width: 768px)";
+
 /** Set on <html> before first paint by `INTRO_CURTAIN_SCRIPT`. */
 export const INTRO_PENDING_CLASS = "intro-pending";
 
@@ -55,7 +63,7 @@ export const INTRO_PENDING_CLASS = "intro-pending";
  * bundle after this point — a chunk that never arrives, a render that throws —
  * the curtain is not allowed to be the last thing a visitor sees.
  */
-export const INTRO_CURTAIN_SCRIPT = `(function(){try{var l=location,p=new URLSearchParams(l.search),v;if(p.has('nointro')){v=false}else if(p.has('intro')){v=true}else{v=l.pathname==='/'&&!matchMedia('(prefers-reduced-motion: reduce)').matches}window.__auraIntro=v;if(v){var d=document.documentElement;d.classList.add('${INTRO_PENDING_CLASS}');setTimeout(function(){d.classList.remove('${INTRO_PENDING_CLASS}')},12000)}}catch(e){}})();`;
+export const INTRO_CURTAIN_SCRIPT = `(function(){try{var l=location,p=new URLSearchParams(l.search),v;if(p.has('nointro')){v=false}else if(p.has('intro')){v=true}else{v=l.pathname==='/'&&matchMedia('${DESKTOP_QUERY}').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches}window.__auraIntro=v;if(v){var d=document.documentElement;d.classList.add('${INTRO_PENDING_CLASS}');setTimeout(function(){d.classList.remove('${INTRO_PENDING_CLASS}')},12000)}}catch(e){}})();`;
 
 declare global {
   interface Window {
@@ -75,6 +83,7 @@ function decideIntro(): boolean {
     if (params.has("nointro")) return false;
     if (params.has("intro")) return true;
     if (window.location.pathname !== "/") return false;
+    if (!window.matchMedia(DESKTOP_QUERY).matches) return false;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
     // Plays on every fresh load of the home page. Within a single document the
     // answer is still memoised (and markIntroSeen flips it), so a client-side

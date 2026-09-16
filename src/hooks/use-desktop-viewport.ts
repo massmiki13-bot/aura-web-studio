@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const DESKTOP_QUERY = "(min-width: 768px)"; // Tailwind's `md` breakpoint
+import { DESKTOP_QUERY } from "@/lib/boot";
 
 /**
  * Is the viewport at least `md` wide? `null` until measured on the client, so
