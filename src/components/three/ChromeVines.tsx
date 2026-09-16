@@ -412,15 +412,16 @@ function Vines({ inset }: { inset: number }) {
     apply();
 
     const DURATION = 7.2;
-    const clock = new THREE.Clock();
+    const clock = new THREE.Timer();
     let elapsed = 0;
     let started = reduced;
     let raf = 0;
 
-    const frame = () => {
+    const frame = (now: number) => {
       raf = requestAnimationFrame(frame);
+      clock.update(now);
       const d = Math.min(clock.getDelta(), 1 / 30);
-      const t = clock.elapsedTime;
+      const t = clock.getElapsed();
 
       if (started && progress < 1) {
         elapsed += d;
@@ -449,19 +450,20 @@ function Vines({ inset }: { inset: number }) {
      * The gold original kept requesting frames for the life of the page and
      * returned early inside the callback — which still costs a wake-up every
      * frame, forever, on every page it appears on. Here the rAF is cancelled
-     * outright and the clock is stopped so the breath does not jump forward
+     * outright and the clock is re-based so the breath does not jump forward
      * by however long the visitor was elsewhere.
      */
     const start = () => {
       if (raf) return;
-      clock.start();
+      // Timer only accumulates what `update()` measures, so re-basing it here
+      // drops the time spent away instead of counting it as one long frame.
+      clock.reset();
       raf = requestAnimationFrame(frame);
     };
     const stop = () => {
       if (!raf) return;
       cancelAnimationFrame(raf);
       raf = 0;
-      clock.stop();
     };
 
     const io = new IntersectionObserver(
