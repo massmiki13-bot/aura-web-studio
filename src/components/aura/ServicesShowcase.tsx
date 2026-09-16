@@ -12,14 +12,6 @@ import { SplineScene } from "./SplineScene";
 // the scene that used to fill the Services section — this row keeps its own.
 const ROBOT_SCENE = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
 
-function RowLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-4">
-      {children}
-    </p>
-  );
-}
-
 function RowHeading({ children }: { children: React.ReactNode }) {
   return (
     <h3 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-white mb-4">
@@ -48,7 +40,6 @@ export function ServicesShowcase() {
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
         <div className="flex flex-col md:flex-row h-full">
           <div className="flex-1 p-8 md:p-14 relative z-10 flex flex-col justify-center">
-            <RowLabel>{t("services3d.label", "Pagine ed esperienze 3D")}</RowLabel>
             <RowHeading>{t("services3d.title", "Ingegneria 3D, non decorazione.")}</RowHeading>
             <p className="text-white/55 max-w-md">
               {t(
@@ -79,7 +70,6 @@ export function ServicesShowcase() {
             <SeoIllustration />
           </div>
           <div className="flex-1 p-8 md:p-14 relative z-10 flex flex-col justify-center md:text-right md:items-end">
-            <RowLabel>{t("servicesSeo.label", "SEO & Performance")}</RowLabel>
             <RowHeading>{t("servicesSeo.title", "Architettura tecnica, non estetica.")}</RowHeading>
             <p className="text-white/55 max-w-md">
               {t(
@@ -96,7 +86,6 @@ export function ServicesShowcase() {
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
         <div className="flex flex-col md:flex-row h-full">
           <div className="flex-1 p-8 md:p-14 relative z-10 flex flex-col justify-center">
-            <RowLabel>{t("servicesPrivacy.label", "Privacy & Cookie Compliance")}</RowLabel>
             <RowHeading>
               {t("servicesPrivacy.title", "Conformità normativa, non un'opzione.")}
             </RowHeading>

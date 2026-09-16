@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { MaskWords, Reveal } from "@/components/mobile/motion";
 
 type Offer = { title: string; desc: string };
-type Step = { kicker: string; title: string };
+type Step = { title: string };
 
 /**
  * What the studio sells, and how it works.
@@ -34,14 +34,9 @@ export function MobileServices() {
           is the studio talking, and boxing it would make it read as a
           feature list. */}
       <ol className="space-y-16 text-center">
-        {steps.map((step, i) => (
-          <li key={step.kicker}>
-            <Reveal delay={i * 0.05}>
-              <span className="font-mono-spec text-[10px] tracking-[0.35em] text-white/35 uppercase">
-                {step.kicker}
-              </span>
-            </Reveal>
-            <h3 className="font-display mx-auto mt-3 max-w-[18ch] text-[1.75rem] leading-[1.14] font-bold tracking-[-0.025em] text-balance text-white">
+        {steps.map((step) => (
+          <li key={step.title}>
+            <h3 className="font-display mx-auto max-w-[18ch] text-[1.75rem] leading-[1.14] font-bold tracking-[-0.025em] text-balance text-white">
               <MaskWords text={step.title} stagger={0.04} />
             </h3>
           </li>

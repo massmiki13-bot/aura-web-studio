@@ -35,12 +35,7 @@ export function MobileProjects({ locale }: { locale: Locale }) {
   return (
     <section id="projects" className="relative bg-black py-28">
       <div className="px-6 text-center">
-        <Reveal>
-          <span className="font-mono-spec text-[10px] tracking-[0.35em] text-white/40 uppercase">
-            {t("projects.selectedWork")}
-          </span>
-        </Reveal>
-        <h2 className="font-display mt-4 text-[2.2rem] leading-[1.08] font-bold tracking-[-0.03em] text-balance text-white">
+        <h2 className="font-display text-[2.2rem] leading-[1.08] font-bold tracking-[-0.03em] text-balance text-white">
           <MaskWords text={t("projects.mobileTitle")} />
         </h2>
       </div>

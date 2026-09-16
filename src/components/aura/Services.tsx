@@ -146,9 +146,7 @@ function ServicesSteps() {
   // it has to reach the render rather than only the effect.
   const [reduced, setReduced] = useState(false);
 
-  const steps = tList<{ kicker: string; title: string }>(
-    t("services.steps", { returnObjects: true }),
-  );
+  const steps = tList<{ title: string }>(t("services.steps", { returnObjects: true }));
 
   useEffect(() => {
     setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);

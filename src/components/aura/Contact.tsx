@@ -15,7 +15,6 @@ import { getLocaleFromPathname } from "@/i18n";
 export function Contact() {
   const { t } = useTranslation();
   const locale = getLocaleFromPathname(usePathname());
-  const [focus, setFocus] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -91,9 +90,6 @@ ${email.trim()}`)}`;
 
       <div className="relative max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div>
-          <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-6">
-            {t("contact.label")}
-          </p>
           <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tighter text-white mb-6">
             {t("contact.headingPre")}
             <span className="text-gradient-aura italic pr-2">{t("contact.headingHighlight")}</span>
@@ -145,8 +141,6 @@ ${email.trim()}`)}`;
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                onFocus={() => setFocus("name")}
-                onBlur={() => setFocus(null)}
                 maxLength={120}
                 required
                 className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-primary"
@@ -160,8 +154,6 @@ ${email.trim()}`)}`;
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => setFocus("email")}
-                onBlur={() => setFocus(null)}
                 maxLength={200}
                 required
                 className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-primary"
@@ -175,8 +167,6 @@ ${email.trim()}`)}`;
                 rows={4}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                onFocus={() => setFocus("msg")}
-                onBlur={() => setFocus(null)}
                 maxLength={4000}
                 required
                 className="w-full bg-transparent border-b border-white/15 py-3 text-lg text-white outline-none transition-all focus:border-secondary resize-none"
@@ -295,7 +285,7 @@ export function Footer() {
           </ul>
         </div>
 
-        {/* Legal & Social */}
+        {/* Legal */}
         <div className="space-y-3">
           <p className="text-white/50">{t("footer.legal")}</p>
           <ul className="space-y-2.5">
@@ -308,48 +298,6 @@ export function Footer() {
                 scrolls to the top of the page and looks broken. Until there is
                 one, the privacy policy is the only legal document we actually
                 have. */}
-            <li className="pt-2 flex gap-4">
-              {/* Every one of these was `href="#"` too. They point at the
-                  profiles already declared as `sameAs` in the Organization
-                  schema (see @/lib/seo), so the footer and the structured data
-                  now agree instead of contradicting each other. */}
-              <a
-                href={SITE_CONFIG.social.instagram}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Instagram"
-                className="hover:text-primary transition-colors"
-              >
-                IG
-              </a>
-              <a
-                href={SITE_CONFIG.social.behance}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Behance"
-                className="hover:text-primary transition-colors"
-              >
-                BE
-              </a>
-              <a
-                href={SITE_CONFIG.social.github}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="GitHub"
-                className="hover:text-primary transition-colors"
-              >
-                GH
-              </a>
-              <a
-                href={SITE_CONFIG.social.linkedin}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="LinkedIn"
-                className="hover:text-primary transition-colors"
-              >
-                LI
-              </a>
-            </li>
           </ul>
         </div>
       </div>

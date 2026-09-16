@@ -44,9 +44,9 @@ const resources = {
       },
       services: {
         steps: [
-          { kicker: "Approccio", title: "Ogni progetto parte da una pagina bianca." },
-          { kicker: "Esecuzione", title: "Il dettaglio non è un extra. È il lavoro." },
-          { kicker: "Risultato", title: "Valore che cresce, progetto dopo progetto." },
+          { title: "Ogni progetto parte da una pagina bianca." },
+          { title: "Il dettaglio non è un extra. È il lavoro." },
+          { title: "Valore che cresce, progetto dopo progetto." },
         ],
         mobileItems: [
           {
@@ -68,7 +68,6 @@ const resources = {
         ],
       },
       projects: {
-        selectedWork: "Lavori selezionati",
         mobileTitle: "Case study cinematici.",
         caseStudies: "Aura — Case Studies",
         visit: "Visita il sito",
@@ -88,7 +87,6 @@ const resources = {
         onlineLabel: "online",
       },
       product: {
-        label: "Il Prodotto",
         headingPre: "Costruiamo siti ",
         headingHighlight: "su misura",
         headingPost: ".",
@@ -97,7 +95,6 @@ const resources = {
           "Niente template. Niente compromessi. Ogni progetto nasce dalle tue esigenze: landing che converte, vetrine eleganti, e-commerce performanti o web app custom — sempre con la stessa cura cinematica.",
         morphParagraph:
           "Scrolla e guarda come la stessa interfaccia diventa landing, vetrina, shop o web app. È così che lavoriamo: una base solida, modellata su di te.",
-        pricingLabel: "Piani e Prezzi",
         pricingHeadingLine1: "Soluzioni su misura.",
         pricingHeadingPre: "Piani ",
         pricingHeadingHighlight: "trasparenti",
@@ -106,7 +103,6 @@ const resources = {
         pricingCta: "Scopri i nostri piani →",
       },
       contact: {
-        label: "Contattaci",
         headingPre: "Hai in mente qualcosa di ",
         headingHighlight: "più",
         headingPost: "?",
@@ -219,7 +215,6 @@ const resources = {
         collaborators: "Collaboratori",
         collaboratorsLead: "Chi lavora con noi sui progetti, oltre confine e oltre lo studio.",
         backHome: "Torna alla Home",
-        label: "Il Team",
         titlePre: "Le persone dietro ad ",
         titleHighlight: "Aura",
         subtitle:
@@ -228,7 +223,6 @@ const resources = {
       },
       contactPage: {
         backHome: "Torna alla Home",
-        label: "Contatti Diretti",
         titlePre: "Parla direttamente con ",
         titleHighlight: "Aura",
         titlePost: ".",
@@ -280,9 +274,9 @@ const resources = {
       },
       services: {
         steps: [
-          { kicker: "Ansatz", title: "Jedes Projekt beginnt mit einem leeren Blatt." },
-          { kicker: "Umsetzung", title: "Das Detail ist kein Extra. Es ist die Arbeit." },
-          { kicker: "Ergebnis", title: "Wert, der wächst — Projekt für Projekt." },
+          { title: "Jedes Projekt beginnt mit einem leeren Blatt." },
+          { title: "Das Detail ist kein Extra. Es ist die Arbeit." },
+          { title: "Wert, der wächst — Projekt für Projekt." },
         ],
         mobileItems: [
           {
@@ -304,7 +298,6 @@ const resources = {
         ],
       },
       projects: {
-        selectedWork: "Ausgewählte Arbeiten",
         mobileTitle: "Filmreife Case Studies.",
         caseStudies: "Aura — Case Studies",
         visit: "Website ansehen",
@@ -324,7 +317,6 @@ const resources = {
         onlineLabel: "online",
       },
       product: {
-        label: "Das Produkt",
         headingPre: "Wir bauen ",
         headingHighlight: "maßgeschneiderte",
         headingPost: " Websites.",
@@ -333,7 +325,6 @@ const resources = {
           "Keine Templates. Keine Kompromisse. Jedes Projekt entsteht aus deinen Anforderungen: Landingpages, die konvertieren, elegante Schaufenster, performante E-Commerce-Shops oder individuelle Web-Apps — immer mit derselben filmischen Sorgfalt.",
         morphParagraph:
           "Scrolle und sieh, wie dieselbe Oberfläche zu Landingpage, Schaufenster, Shop oder Web-App wird. So arbeiten wir: ein solides Fundament, geformt nach dir.",
-        pricingLabel: "Pakete & Preise",
         pricingHeadingLine1: "Maßgeschneiderte Lösungen.",
         pricingHeadingPre: "Transparente ",
         pricingHeadingHighlight: "Pakete",
@@ -342,7 +333,6 @@ const resources = {
         pricingCta: "Entdecke unsere Pakete →",
       },
       contact: {
-        label: "Kontakt aufnehmen",
         headingPre: "Hast du etwas ",
         headingHighlight: "Größeres",
         headingPost: " im Sinn?",
@@ -456,7 +446,6 @@ const resources = {
         collaboratorsLead:
           "Wer mit uns an den Projekten arbeitet — über die Grenze und über das Studio hinaus.",
         backHome: "Zurück zur Startseite",
-        label: "Das Team",
         titlePre: "Die Menschen hinter ",
         titleHighlight: "Aura",
         subtitle:
@@ -465,7 +454,6 @@ const resources = {
       },
       contactPage: {
         backHome: "Zurück zur Startseite",
-        label: "Direkter Kontakt",
         titlePre: "Sprich direkt mit ",
         titleHighlight: "Aura",
         titlePost: ".",
@@ -518,9 +506,9 @@ const resources = {
       },
       services: {
         steps: [
-          { kicker: "Approach", title: "Every project starts from a blank page." },
-          { kicker: "Craft", title: "The detail isn't an extra. It's the work." },
-          { kicker: "Outcome", title: "Value that grows, project after project." },
+          { title: "Every project starts from a blank page." },
+          { title: "The detail isn't an extra. It's the work." },
+          { title: "Value that grows, project after project." },
         ],
         mobileItems: [
           {
@@ -542,7 +530,6 @@ const resources = {
         ],
       },
       projects: {
-        selectedWork: "Selected work",
         mobileTitle: "Cinematic case studies.",
         caseStudies: "Aura — Case Studies",
         visit: "Visit the site",
@@ -562,7 +549,6 @@ const resources = {
         onlineLabel: "live",
       },
       product: {
-        label: "The Product",
         headingPre: "We build ",
         headingHighlight: "bespoke",
         headingPost: " websites.",
@@ -571,7 +557,6 @@ const resources = {
           "No templates. No compromises. Every project starts from your needs: landing pages that convert, elegant showcases, high-performance e-commerce or custom web apps — always with the same cinematic care.",
         morphParagraph:
           "Scroll and watch the same interface become a landing page, showcase, shop or web app. That's how we work: a solid foundation, shaped around you.",
-        pricingLabel: "Pricing & Plans",
         pricingHeadingLine1: "Bespoke solutions.",
         pricingHeadingPre: "Transparent ",
         pricingHeadingHighlight: "plans",
@@ -580,7 +565,6 @@ const resources = {
         pricingCta: "Discover our plans →",
       },
       contact: {
-        label: "Get in touch",
         headingPre: "Got something ",
         headingHighlight: "more",
         headingPost: " in mind?",
@@ -694,7 +678,6 @@ const resources = {
         collaboratorsLead:
           "The people who work with us on projects, beyond the border and beyond the studio.",
         backHome: "Back to Home",
-        label: "The Team",
         titlePre: "The people behind ",
         titleHighlight: "Aura",
         subtitle:
@@ -703,7 +686,6 @@ const resources = {
       },
       contactPage: {
         backHome: "Back to Home",
-        label: "Direct Contacts",
         titlePre: "Talk directly to ",
         titleHighlight: "Aura",
         titlePost: ".",
@@ -755,9 +737,9 @@ const resources = {
       },
       services: {
         steps: [
-          { kicker: "Enfoque", title: "Cada proyecto empieza desde una página en blanco." },
-          { kicker: "Ejecución", title: "El detalle no es un extra. Es el trabajo." },
-          { kicker: "Resultado", title: "Valor que crece, proyecto a proyecto." },
+          { title: "Cada proyecto empieza desde una página en blanco." },
+          { title: "El detalle no es un extra. Es el trabajo." },
+          { title: "Valor que crece, proyecto a proyecto." },
         ],
         mobileItems: [
           {
@@ -779,7 +761,6 @@ const resources = {
         ],
       },
       projects: {
-        selectedWork: "Trabajos seleccionados",
         mobileTitle: "Case studies cinematográficos.",
         caseStudies: "Aura — Case Studies",
         visit: "Visitar el sitio",
@@ -799,7 +780,6 @@ const resources = {
         onlineLabel: "online",
       },
       product: {
-        label: "El Producto",
         headingPre: "Creamos sitios ",
         headingHighlight: "a medida",
         headingPost: ".",
@@ -808,7 +788,6 @@ const resources = {
           "Sin plantillas. Sin compromisos. Cada proyecto nace de tus necesidades: landings que convierten, escaparates elegantes, e-commerce de alto rendimiento o web apps a medida — siempre con el mismo cuidado cinematográfico.",
         morphParagraph:
           "Desplázate y observa cómo la misma interfaz se convierte en landing, escaparate, tienda o web app. Así trabajamos: una base sólida, moldeada a tu medida.",
-        pricingLabel: "Planes y Precios",
         pricingHeadingLine1: "Soluciones a medida.",
         pricingHeadingPre: "Planes ",
         pricingHeadingHighlight: "transparentes",
@@ -817,7 +796,6 @@ const resources = {
         pricingCta: "Descubre nuestros planes →",
       },
       contact: {
-        label: "Ponte en contacto",
         headingPre: "¿Tienes algo ",
         headingHighlight: "más",
         headingPost: " en mente?",
@@ -930,7 +908,6 @@ const resources = {
         collaboratorsLead:
           "Quienes trabajan con nosotros en los proyectos, más allá de la frontera y del estudio.",
         backHome: "Volver al Inicio",
-        label: "El Equipo",
         titlePre: "Las personas detrás de ",
         titleHighlight: "Aura",
         subtitle:
@@ -939,7 +916,6 @@ const resources = {
       },
       contactPage: {
         backHome: "Volver al Inicio",
-        label: "Contactos Directos",
         titlePre: "Habla directamente con ",
         titleHighlight: "Aura",
         titlePost: ".",

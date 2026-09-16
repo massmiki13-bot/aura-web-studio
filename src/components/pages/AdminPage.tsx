@@ -286,9 +286,6 @@ export function AdminPage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-wrap items-baseline justify-between gap-4 mb-8">
           <div>
-            <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-2">
-              Inbox
-            </p>
             <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tighter">
               Richieste ricevute
             </h1>

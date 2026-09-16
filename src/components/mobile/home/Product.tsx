@@ -100,13 +100,7 @@ export function MobileProducts({ locale }: { locale: Locale }) {
           you had read "Landing". */}
       <div ref={trackRef} className="relative h-[240svh]">
         <div className="sticky top-0 flex min-h-[100svh] flex-col justify-center px-6 py-24">
-          <Reveal>
-            <span className="font-mono-spec text-[10px] tracking-[0.28em] text-white/35 uppercase">
-              {t("product.label")}
-            </span>
-          </Reveal>
-
-          <h2 className="font-display mt-4 text-[2.1rem] leading-[1.08] font-bold tracking-[-0.03em] text-white">
+          <h2 className="font-display text-[2.1rem] leading-[1.08] font-bold tracking-[-0.03em] text-white">
             <MaskWords text={t("product.headingPre").trim()} />{" "}
             <span className="text-white/45">{t("product.headingHighlight")}</span>
             {t("product.headingPost")}
@@ -203,12 +197,7 @@ export function MobileProducts({ locale }: { locale: Locale }) {
       {/* Pricing hand-off. Its own block below the track, so it arrives after
           the morph has finished rather than fighting it for the same screen. */}
       <div id="pricing-cta" className="px-6 pt-8 pb-24">
-        <Reveal>
-          <span className="font-mono-spec text-[10px] tracking-[0.28em] text-white/35 uppercase">
-            {t("product.pricingLabel")}
-          </span>
-        </Reveal>
-        <h2 className="font-display mt-3 text-[1.9rem] leading-[1.1] font-bold tracking-[-0.03em] text-white">
+        <h2 className="font-display text-[1.9rem] leading-[1.1] font-bold tracking-[-0.03em] text-white">
           <MaskWords text={t("product.pricingHeadingLine1")} />
         </h2>
         <Reveal delay={0.08} className="mt-4">

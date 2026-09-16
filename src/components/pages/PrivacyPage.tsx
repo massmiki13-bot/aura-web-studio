@@ -36,9 +36,6 @@ export function PrivacyPage() {
         </div>
 
         <div className="mb-14">
-          <p className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-6">
-            Privacy & Cookie
-          </p>
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] mb-4">
             Privacy e Cookie Policy
           </h1>

@@ -76,14 +76,6 @@ export function TeamPage({ locale }: { locale: Locale }) {
 
         {/* Header */}
         <div className="max-w-3xl mb-20 space-y-6">
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary"
-          >
-            {t("team.label")}
-          </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}

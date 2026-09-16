@@ -31,15 +31,6 @@ export function Team() {
       </motion.div>
 
       <div className="relative px-6 md:px-16 max-w-7xl mx-auto">
-        <motion.p
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6 }}
-          className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-6"
-        >
-          {t("product.label")}
-        </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -69,18 +60,6 @@ export function Team() {
           id="pricing-cta"
           className="relative pt-32 pb-24 md:pt-96 overflow-hidden flex flex-col justify-center px-6 md:px-16 mt-44"
         >
-          <div className="relative w-full text-center flex flex-col items-center z-10">
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6 }}
-              className="font-mono-spec text-[10px] uppercase tracking-[0.3em] text-primary mb-6"
-            >
-              {t("product.pricingLabel")}
-            </motion.p>
-          </div>
-
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
