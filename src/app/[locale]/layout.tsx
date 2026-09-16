@@ -6,6 +6,7 @@ import { fontDisplay, fontSans } from "@/lib/fonts";
 import { I18nProvider } from "@/i18n/provider";
 import { LANGUAGES, isLanguageCode } from "@/i18n";
 import { INTRO_CURTAIN_SCRIPT } from "@/lib/boot";
+import { InlineScript } from "@/components/InlineScript";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { CustomCursor } from "@/components/CustomCursor";
 import { Toaster } from "@/components/ui/sonner";
@@ -76,14 +77,14 @@ export default async function RootLayout({
           — which gives the whole intro away. This adds `intro-pending` to
           <html> so the shim in styles.css holds black from the first frame.
 
-          A raw inline script as the first child of <body>, not next/script:
+          An inline script as the first child of <body>, not next/script:
           the parser runs it the moment it reaches it, before any of the
           markup below has been parsed, let alone painted. That ordering is a
           property of HTML itself rather than of a loading strategy, which is
           the only guarantee strong enough for something whose whole job is to
           beat the first paint.
         */}
-        <script dangerouslySetInnerHTML={{ __html: INTRO_CURTAIN_SCRIPT }} />
+        <InlineScript code={INTRO_CURTAIN_SCRIPT} />
 
         <I18nProvider locale={locale}>
           <SmoothScroll />
