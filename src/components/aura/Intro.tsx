@@ -848,7 +848,7 @@ export function Intro() {
             spot. Kept symmetric so that centre lines up with this gap. */}
         <div aria-hidden className="h-[30vh] max-h-[260px] min-h-[150px]" />
         <p className="intro-sub font-mono-spec mt-6 text-xs uppercase tracking-[0.42em] text-white/90">
-          {t("intro.tagline", "Il tuo brand, elevato")}
+          {t("intro.tagline", "Fatti scegliere prima ancora di parlare")}
         </p>
       </div>
 

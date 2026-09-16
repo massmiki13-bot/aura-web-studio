@@ -31,13 +31,13 @@ const resources = {
       },
       intro: {
         badge: "Creative Web Studio",
-        tagline: "Il tuo brand, elevato",
+        tagline: "Fatti scegliere prima ancora di parlare",
         skip: "Salta",
       },
       hero: {
         badge: "Creative Digital Solutions",
         scroll: "Scorri",
-        actTwoTitle: "Il tuo brand, elevato.",
+        actTwoTitle: "Fatti scegliere prima ancora di parlare.",
         actTwoSub: "Web design su misura per chi non si accontenta.",
         actTwoTitle2: "Estetica che converte.",
         actTwoSub2: "Performance, SEO e conversioni — di serie.",
@@ -261,13 +261,13 @@ const resources = {
       },
       intro: {
         badge: "Creative Web Studio",
-        tagline: "Deine Marke, auf neuem Niveau",
+        tagline: "Überzeuge, bevor du ein Wort sagst",
         skip: "Überspringen",
       },
       hero: {
         badge: "Creative Digital Solutions",
         scroll: "Scrollen",
-        actTwoTitle: "Deine Marke, auf neuem Niveau.",
+        actTwoTitle: "Überzeuge, bevor du ein Wort sagst.",
         actTwoSub: "Maßgeschneidertes Webdesign für alle, die sich nicht zufriedengeben.",
         actTwoTitle2: "Ästhetik, die konvertiert.",
         actTwoSub2: "Performance, SEO und Conversions — serienmäßig.",
@@ -493,13 +493,13 @@ const resources = {
       },
       intro: {
         badge: "Creative Web Studio",
-        tagline: "Your brand, elevated",
+        tagline: "Get chosen before you say a word",
         skip: "Skip",
       },
       hero: {
         badge: "Creative Digital Solutions",
         scroll: "Scroll",
-        actTwoTitle: "Your brand, elevated.",
+        actTwoTitle: "Get chosen before you say a word.",
         actTwoSub: "Bespoke web design for those who won't settle.",
         actTwoTitle2: "Design that converts.",
         actTwoSub2: "Performance, SEO and conversions — built in.",
@@ -724,13 +724,13 @@ const resources = {
       },
       intro: {
         badge: "Creative Web Studio",
-        tagline: "Tu marca, elevada",
+        tagline: "Que te elijan antes de decir una palabra",
         skip: "Saltar",
       },
       hero: {
         badge: "Creative Digital Solutions",
         scroll: "Desplázate",
-        actTwoTitle: "Tu marca, elevada.",
+        actTwoTitle: "Que te elijan antes de decir una palabra.",
         actTwoSub: "Diseño web a medida para quienes no se conforman.",
         actTwoTitle2: "Estética que convierte.",
         actTwoSub2: "Rendimiento, SEO y conversiones — de serie.",

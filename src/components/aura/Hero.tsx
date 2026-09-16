@@ -520,7 +520,7 @@ export function Hero() {
                 data-chrome-text
                 className="chrome-text font-display text-5xl leading-[0.95] font-semibold tracking-tighter sm:text-7xl md:text-8xl"
               >
-                {t("hero.actTwoTitle", "Il tuo brand, elevato.")}
+                {t("hero.actTwoTitle", "Fatti scegliere prima ancora di parlare.")}
               </h2>
               <p className="mt-6 max-w-md text-base leading-relaxed font-light text-white/60 md:text-lg">
                 {t("hero.actTwoSub", "Web design su misura per chi non si accontenta.")}
