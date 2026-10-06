@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
+import { JsonLd } from "@/components/JsonLd";
 import { WorksPage } from "@/components/pages/WorksPage";
-import { WORKS_SEO } from "@/lib/page-copy";
-import { pageMetadata, type Locale } from "@/lib/seo";
+import { BREADCRUMB_LABEL, WORKS_SEO } from "@/lib/page-copy";
+import { generateBreadcrumbSchema, pageMetadata, type Locale } from "@/lib/seo";
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -13,5 +14,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { locale } = await params;
-  return <WorksPage locale={locale} />;
+  return (
+    <>
+      <JsonLd
+        data={generateBreadcrumbSchema(locale, [
+          { name: BREADCRUMB_LABEL.lavori[locale], subPath: "lavori" },
+        ])}
+      />
+      <WorksPage locale={locale} />
+    </>
+  );
 }

@@ -19,7 +19,7 @@ import { DEFAULT_LOCALE } from "@/lib/seo";
  * for the sake of a message the visitor is about to navigate away from.
  */
 export const metadata: Metadata = {
-  title: "Pagina non trovata — Aura Web Studio",
+  title: "Pagina non trovata | Aura Web Studio",
   robots: { index: false, follow: false },
 };
 

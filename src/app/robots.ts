@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { absoluteUrl } from "@/lib/seo";
+import { IS_INDEXABLE, absoluteUrl } from "@/lib/seo";
 
 /**
  * robots.txt, generated from the same SITE_CONFIG as everything else — so the
@@ -8,6 +8,11 @@ import { absoluteUrl } from "@/lib/seo";
  * a string in a static file that someone has to remember to update.
  */
 export default function robots(): MetadataRoute.Robots {
+  // Preview and development deployments: closed to every crawler, and no
+  // sitemap advertised. The pages also send noindex (see rootMetadata) —
+  // this stops them being fetched in the first place.
+  if (!IS_INDEXABLE) return { rules: [{ userAgent: "*", disallow: "/" }] };
+
   return {
     rules: [
       {

@@ -842,7 +842,7 @@ export function Intro() {
         <p className="intro-badge font-mono-spec mb-7 text-[10px] uppercase tracking-[0.5em] text-white/80">
           {t("intro.badge", "Creative Web Studio")}
         </p>
-        <h1 className="sr-only">AURA</h1>
+        <p className="sr-only">AURA</p>
         {/* Reserves the wordmark's place in the column; the dust itself is
             drawn by the full-screen canvas layer above, centred on the same
             spot. Kept symmetric so that centre lines up with this gap. */}

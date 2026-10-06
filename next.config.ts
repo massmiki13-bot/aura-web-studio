@@ -1,5 +1,10 @@
 import type { NextConfig } from "next";
 
+// Kept in step with RAW_BASE_URL in src/lib/seo.ts, which cannot be imported
+// here: this file is loaded before the "@/..." path alias exists.
+const CANONICAL_HOST = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://aura-webstudio.com")
+  .host;
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Nothing gained by telling the world what the server runs on.
@@ -34,6 +39,23 @@ const nextConfig: NextConfig = {
   // is both smaller and much faster to bundle.
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion", "@react-three/drei"],
+  },
+
+  // One host. The site is canonical on the bare domain, but the www alias is
+  // attached to the same deployment and answered 200 with identical content —
+  // a second copy of every page, held together only by the canonical tag.
+  // Derived from NEXT_PUBLIC_SITE_URL so it follows the domain, and inert if
+  // the canonical host is ever the www one.
+  async redirects() {
+    if (CANONICAL_HOST.startsWith("www.")) return [];
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: `www.${CANONICAL_HOST}` }],
+        destination: `https://${CANONICAL_HOST}/:path*`,
+        permanent: true,
+      },
+    ];
   },
 
   async headers() {

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
+import { JsonLd } from "@/components/JsonLd";
 import { PrivacyPage } from "@/components/pages/PrivacyPage";
-import { pageMetadata, DEFAULT_LOCALE } from "@/lib/seo";
+import { generateBreadcrumbSchema, pageMetadata, DEFAULT_LOCALE } from "@/lib/seo";
 
 /**
  * Italian only. The policy is a legal document that exists in one language,
@@ -24,5 +25,14 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function Page() {
-  return <PrivacyPage />;
+  return (
+    <>
+      <JsonLd
+        data={generateBreadcrumbSchema(DEFAULT_LOCALE, [
+          { name: "Privacy e Cookie Policy", subPath: "privacy" },
+        ])}
+      />
+      <PrivacyPage />
+    </>
+  );
 }

@@ -15,9 +15,9 @@ import { LOCALES, DEFAULT_LOCALE, absoluteUrl, localizedPath } from "@/lib/seo";
  * in their <link rel="alternate"> tags. Search engines accept either; stating
  * both is what makes the cluster unambiguous.
  *
- * Private routes (/admin, /auth) and /privacy are absent on purpose: the first
- * two are noindex, and the third is a single-language legal page with no
- * alternates and no reason to compete for crawl budget.
+ * Private routes (/admin, /auth) are absent on purpose: both are noindex.
+ * /privacy is listed once, without a cluster — it is a single-language legal
+ * page with no alternates to point at.
  */
 
 /** Logical sub-paths that exist, translated, in every locale. */
@@ -32,10 +32,12 @@ const ROUTES = [
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
-  return ROUTES.flatMap((route) => {
-    const languages = Object.fromEntries(
-      LOCALES.map((l) => [l, absoluteUrl(localizedPath(l, route.subPath))]),
-    );
+  const localized = ROUTES.flatMap((route) => {
+    const languages = {
+      ...Object.fromEntries(LOCALES.map((l) => [l, absoluteUrl(localizedPath(l, route.subPath))])),
+      // The same fallback the pages declare in their own hreflang tags.
+      "x-default": absoluteUrl(localizedPath(DEFAULT_LOCALE, route.subPath)),
+    };
 
     return LOCALES.map((locale) => ({
       url: absoluteUrl(localizedPath(locale, route.subPath)),
@@ -47,4 +49,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages },
     }));
   });
+
+  return [
+    ...localized,
+    {
+      url: absoluteUrl(localizedPath(DEFAULT_LOCALE, "privacy")),
+      lastModified,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+  ];
 }

@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return pageMetadata({
     subPath: "",
     locale,
-    // Stated absolutely rather than through the "%s — Aura Web Studio"
+    // Stated absolutely rather than through the "%s | Aura Web Studio"
     // template: the Italian default already carries the brand, and the
     // translated ones are written to stand alone.
     absoluteTitle: HOME_TITLE[locale] ?? SITE_CONFIG.defaultTitle,

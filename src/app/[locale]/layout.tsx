@@ -7,6 +7,7 @@ import { fontDisplay, fontSans } from "@/lib/fonts";
 import { I18nProvider } from "@/i18n/provider";
 import { LANGUAGES, isLanguageCode } from "@/i18n";
 import { INTRO_CURTAIN_SCRIPT } from "@/lib/boot";
+import { JsonLd } from "@/components/JsonLd";
 import { InlineScript } from "@/components/InlineScript";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { CustomCursor } from "@/components/CustomCursor";
@@ -98,14 +99,8 @@ export default async function RootLayout({
 
         {/* Structured data. Rendered once for the whole site, from the same
             SITE_CONFIG the metadata is built from, so the two cannot drift. */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(generateOrganizationSchema()) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(generateWebsiteSchema()) }}
-        />
+        <JsonLd data={generateOrganizationSchema()} />
+        <JsonLd data={generateWebsiteSchema()} />
 
         {/* Google tag (GA4 property linked to Google Ads). */}
         <Script
