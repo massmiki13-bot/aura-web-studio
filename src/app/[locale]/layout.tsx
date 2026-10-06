@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 
 import "@/styles.css";
 import { fontDisplay, fontSans } from "@/lib/fonts";
@@ -31,6 +32,8 @@ import {
  * onto this segment by @/proxy — so the URL a visitor sees never contains the
  * locale that this layout is keyed on.
  */
+
+const GA_ID = "G-CB7FGKKMX8";
 
 export const metadata = rootMetadata;
 export const viewport = rootViewport;
@@ -103,6 +106,15 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(generateWebsiteSchema()) }}
         />
+
+        {/* Google tag (GA4 property linked to Google Ads). */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
+        </Script>
       </body>
     </html>
   );
