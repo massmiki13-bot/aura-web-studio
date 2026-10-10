@@ -28,7 +28,7 @@ export const members: TeamMember[] = [
     phone: "+39 334 1924697",
     pec: "michele.mass@pec.it",
     email: "mass.miki13@gmail.com",
-    vat: "",
+    vat: "03353150216",
     accent: "oklch(0.85 0.005 260)",
   },
   {
@@ -39,7 +39,7 @@ export const members: TeamMember[] = [
     phone: "+39 339 5717099",
     pec: "driussi.emanuele0@pec.it",
     email: "emadriu07@gmail.com",
-    vat: "",
+    vat: "03353950219",
     accent: "oklch(0.75 0.005 260)",
   },
   {
@@ -50,7 +50,7 @@ export const members: TeamMember[] = [
     phone: "+39 345 7354180",
     pec: "parisileonardo15@pec.it",
     email: "parisileonardo15@gmail.com",
-    vat: "",
+    vat: "03356630214",
     accent: "oklch(0.65 0.005 260)",
   },
 ];
