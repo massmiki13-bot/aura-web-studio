@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { Nav } from "@/components/aura/Nav";
 import { Footer } from "@/components/aura/Contact";
 import { SITE_CONFIG } from "@/lib/seo";
+import { members } from "@/lib/team-members";
 
 const LAST_UPDATED = "29 luglio 2026";
 
@@ -42,13 +43,41 @@ export function PrivacyPage() {
           <p className="text-white/50 text-sm font-light">Ultimo aggiornamento: {LAST_UPDATED}</p>
         </div>
 
-        <Section title="1. Titolare del trattamento">
+        {/* Aura is a brand, not a legal entity: there is no single company and
+            no single VAT number behind it. The page names the three
+            professionals instead, each with their own number, because that is
+            who actually receives and handles the data. */}
+        <Section title="1. Chi tratta i tuoi dati">
           <p>
-            Il Titolare del trattamento dei dati raccolti tramite questo sito è{" "}
-            <strong className="text-white">{SITE_CONFIG.company}</strong>, con sede in{" "}
-            {SITE_CONFIG.location.street}, {SITE_CONFIG.location.city} (
-            {SITE_CONFIG.location.region}
-            ), Italia — P.IVA 03353150216.
+            <strong className="text-white">{SITE_CONFIG.company}</strong> è un marchio con cui si
+            identificano tre liberi professionisti indipendenti. Non è una società, né
+            un&apos;associazione professionale: non esiste un soggetto giuridico unico dietro questo
+            sito, e ciascuno dei tre esercita la propria attività in modo autonomo, con la propria
+            partita IVA e nel proprio esclusivo interesse.
+          </p>
+          <p>
+            I dati che invii tramite questo sito sono trattati dai tre professionisti, ciascuno in
+            qualità di titolare autonomo del trattamento per i dati che riceve e per il rapporto che
+            ne nasce:
+          </p>
+          <ul className="list-disc pl-5 space-y-2">
+            {members.map((m) => (
+              <li key={m.email}>
+                <strong className="text-white">
+                  {m.name} {m.surname}
+                </strong>
+                {m.vat ? ` — P.IVA ${m.vat}` : ""} —{" "}
+                <a href={`mailto:${m.email}`} className="text-primary hover:underline">
+                  {m.email}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p>
+            Ogni incarico ha un solo referente fra i tre, che lo contrattualizza e lo fattura con la
+            propria partita IVA e che risponde in via esclusiva del trattamento dei dati relativi a
+            quel rapporto. Operiamo da {SITE_CONFIG.location.city} ({SITE_CONFIG.location.region}),
+            senza una sede aperta al pubblico.
           </p>
           <p>
             Per qualsiasi richiesta relativa al trattamento dei tuoi dati personali, puoi

@@ -213,13 +213,16 @@ const resources = {
       },
       team: {
         collaborators: "Collaboratori",
-        collaboratorsLead: "Chi lavora con noi sui progetti, oltre confine e oltre lo studio.",
+        collaboratorsLead: "Chi collabora con noi sui progetti, anche oltre confine.",
         backHome: "Torna alla Home",
         titlePre: "Le persone dietro ad ",
         titleHighlight: "Aura",
         subtitle:
-          "Siamo in tre. Pochi, affiatati e ossessionati dai dettagli. Ecco chi siamo e come raggiungerci.",
+          "Tre liberi professionisti che lavorano sotto lo stesso nome. Nessuna società in mezzo: scegli la persona e parli direttamente con chi farà il lavoro.",
         pec: "PEC",
+        vat: "P. IVA",
+        independent:
+          "Aura è un marchio condiviso, non una società e non uno studio associato. Ognuno di noi ha la propria partita IVA, lavora in autonomia, fattura in proprio e risponde del proprio lavoro.",
       },
       contactPage: {
         backHome: "Torna alla Home",
@@ -227,12 +230,14 @@ const resources = {
         titleHighlight: "Aura",
         titlePost: ".",
         subtitle:
-          "Nessun centralino, nessun modulo anonimo: qui trovi i contatti diretti dei tre fondatori. Rispondiamo rapidamente, di persona o da remoto.",
+          "Nessun centralino, nessun modulo anonimo: qui trovi i contatti diretti dei tre professionisti. Scrivi o chiama la persona che preferisci, ti risponde direttamente lei.",
+        independent:
+          "Ogni progetto ha un solo referente fra noi tre: è la persona con cui firmi, che ti fattura con la propria partita IVA e che risponde del lavoro. Non c’è un’azienda da contattare, ci siamo noi.",
         availabilityBadge: "Sempre disponibili",
         availabilityTitle: "Operativi h24, da remoto.",
         availabilityDesc:
           "Scrivici o chiamaci in qualsiasi momento: monitoriamo i contatti costantemente e rispondiamo rapidamente. Se preferisci parlarne di persona, siamo sempre disponibili per un incontro dal vivo — anche più di uno, finché il progetto non è chiaro al 100%.",
-        mapTitle: "Con sede a Bolzano, operativi ovunque.",
+        mapTitle: "Da Bolzano, operativi ovunque.",
         mapItaly: "Italia",
         mapSouthTyrol: "Alto Adige",
         mapSouthTyrolCaption:
@@ -246,7 +251,7 @@ const resources = {
         mapItalyCaption: "Ogni punto è una città dove un sito che abbiamo costruito è online.",
         mapWorldCaption: "Lavoriamo da remoto: il fuso orario non è mai stato il problema.",
         mapCaption:
-          "Il nostro studio nasce in Alto Adige, ma lavoriamo da remoto con clienti in tutto il mondo — sempre disponibili anche per un incontro dal vivo quando serve.",
+          "Siamo nati in Alto Adige e lavoriamo da remoto con clienti in tutto il mondo — sempre disponibili anche per un incontro dal vivo quando serve.",
       },
     },
   },
@@ -443,14 +448,16 @@ const resources = {
       },
       team: {
         collaborators: "Mitarbeiter",
-        collaboratorsLead:
-          "Wer mit uns an den Projekten arbeitet — über die Grenze und über das Studio hinaus.",
+        collaboratorsLead: "Wer mit uns an den Projekten arbeitet, auch über die Grenze hinaus.",
         backHome: "Zurück zur Startseite",
         titlePre: "Die Menschen hinter ",
         titleHighlight: "Aura",
         subtitle:
-          "Wir sind zu dritt. Klein, eingespielt und besessen von Details. Hier sind wir und so erreichst du uns.",
+          "Drei Freiberufler, die unter demselben Namen arbeiten. Keine Gesellschaft dazwischen: Du wählst die Person und sprichst direkt mit der, die die Arbeit macht.",
         pec: "PEC",
+        vat: "USt-IdNr.",
+        independent:
+          "Aura ist eine gemeinsame Marke, keine Gesellschaft und keine Bürogemeinschaft. Jeder von uns hat seine eigene Umsatzsteuernummer, arbeitet eigenständig, stellt selbst Rechnungen und haftet für die eigene Arbeit.",
       },
       contactPage: {
         backHome: "Zurück zur Startseite",
@@ -458,12 +465,14 @@ const resources = {
         titleHighlight: "Aura",
         titlePost: ".",
         subtitle:
-          "Keine Zentrale, kein anonymes Formular: hier findest du die direkten Kontakte der drei Gründer. Wir antworten schnell, persönlich oder aus der Ferne.",
+          "Keine Zentrale, kein anonymes Formular: hier findest du die direkten Kontakte der drei Freiberufler. Schreib oder ruf die Person an, die du willst — sie antwortet dir selbst.",
+        independent:
+          "Jedes Projekt hat genau einen Ansprechpartner von uns dreien: die Person, mit der du den Vertrag schliesst, die mit ihrer eigenen Umsatzsteuernummer abrechnet und für die Arbeit haftet. Es gibt kein Unternehmen, das du kontaktierst — es gibt uns.",
         availabilityBadge: "Immer erreichbar",
         availabilityTitle: "Rund um die Uhr erreichbar, remote.",
         availabilityDesc:
           "Schreib oder ruf uns jederzeit an: wir überwachen unsere Kontakte ständig und antworten schnell. Wenn du lieber persönlich sprichst, sind wir jederzeit für ein Treffen vor Ort verfügbar — auch mehrmals, bis das Projekt zu 100% klar ist.",
-        mapTitle: "Mit Sitz in Bozen, überall einsatzbereit.",
+        mapTitle: "Von Bozen aus, überall einsatzbereit.",
         mapItaly: "Italien",
         mapSouthTyrol: "Südtirol",
         mapSouthTyrolCaption:
@@ -478,7 +487,7 @@ const resources = {
           "Jeder Punkt ist eine Stadt, in der eine von uns gebaute Website online ist.",
         mapWorldCaption: "Wir arbeiten remote: die Zeitzone war noch nie das Problem.",
         mapCaption:
-          "Unser Studio ist in Südtirol zuhause, aber wir arbeiten remote mit Kunden auf der ganzen Welt — und sind jederzeit auch für ein persönliches Treffen verfügbar, wenn es hilft.",
+          "Wir sind in Südtirol zuhause, arbeiten aber remote mit Kunden auf der ganzen Welt — und sind jederzeit auch für ein persönliches Treffen verfügbar, wenn es hilft.",
       },
     },
   },
@@ -675,14 +684,16 @@ const resources = {
       },
       team: {
         collaborators: "Collaborators",
-        collaboratorsLead:
-          "The people who work with us on projects, beyond the border and beyond the studio.",
+        collaboratorsLead: "The people who work with us on projects, across the border too.",
         backHome: "Back to Home",
         titlePre: "The people behind ",
         titleHighlight: "Aura",
         subtitle:
-          "There are three of us. Small, tight-knit and obsessed with detail. Here's who we are and how to reach us.",
+          "Three self-employed professionals working under one name. No company in between: pick the person and you talk straight to whoever does the work.",
         pec: "PEC",
+        vat: "VAT no.",
+        independent:
+          "Aura is a shared name, not a company and not a partnership. Each of us has their own VAT number, works independently, invoices in their own name and answers for their own work.",
       },
       contactPage: {
         backHome: "Back to Home",
@@ -690,12 +701,14 @@ const resources = {
         titleHighlight: "Aura",
         titlePost: ".",
         subtitle:
-          "No switchboard, no anonymous form: here are the direct contacts of the three founders. We reply quickly, in person or remotely.",
+          "No switchboard, no anonymous form: here are the direct contacts of the three professionals. Write to or call whoever you prefer — they answer you themselves.",
+        independent:
+          "Every project has a single point of contact among the three of us: the person you sign with, who invoices under their own VAT number and answers for the work. There is no company to contact — there is us.",
         availabilityBadge: "Always available",
         availabilityTitle: "Available 24/7, remotely.",
         availabilityDesc:
           "Message or call us anytime: we monitor our contacts constantly and reply quickly. If you'd rather talk in person, we're always available for a face-to-face meeting — more than one if needed, until the project is 100% clear.",
-        mapTitle: "Based in Bolzano, reachable everywhere.",
+        mapTitle: "From Bolzano, reachable everywhere.",
         mapItaly: "Italy",
         mapSouthTyrol: "South Tyrol",
         mapSouthTyrolCaption:
@@ -709,7 +722,7 @@ const resources = {
         mapItalyCaption: "Every dot is a town where a site we built is live.",
         mapWorldCaption: "We work remotely: the time zone has never been the problem.",
         mapCaption:
-          "Our studio is rooted in South Tyrol, but we work remotely with clients around the world — always available for a face-to-face meeting too, whenever it helps.",
+          "We are rooted in South Tyrol, but we work remotely with clients around the world — always available for a face-to-face meeting too, whenever it helps.",
       },
     },
   },
@@ -906,13 +919,16 @@ const resources = {
       team: {
         collaborators: "Colaboradores",
         collaboratorsLead:
-          "Quienes trabajan con nosotros en los proyectos, más allá de la frontera y del estudio.",
+          "Quienes colaboran con nosotros en los proyectos, también más allá de la frontera.",
         backHome: "Volver al Inicio",
         titlePre: "Las personas detrás de ",
         titleHighlight: "Aura",
         subtitle:
-          "Somos tres. Pocos, compenetrados y obsesionados con los detalles. Estos somos y así puedes contactarnos.",
+          "Tres profesionales autónomos que trabajan bajo el mismo nombre. Sin ninguna empresa de por medio: eliges a la persona y hablas directamente con quien hará el trabajo.",
         pec: "PEC",
+        vat: "NIF/IVA",
+        independent:
+          "Aura es una marca compartida, no una sociedad ni un despacho asociado. Cada uno de nosotros tiene su propio número de IVA, trabaja de forma autónoma, factura por su cuenta y responde de su propio trabajo.",
       },
       contactPage: {
         backHome: "Volver al Inicio",
@@ -920,12 +936,14 @@ const resources = {
         titleHighlight: "Aura",
         titlePost: ".",
         subtitle:
-          "Sin centralita, sin formularios anónimos: aquí tienes los contactos directos de los tres fundadores. Respondemos rápido, en persona o a distancia.",
+          "Sin centralita, sin formularios anónimos: aquí tienes los contactos directos de los tres profesionales. Escribe o llama a quien prefieras: te responde esa misma persona.",
+        independent:
+          "Cada proyecto tiene un único responsable entre los tres: la persona con la que firmas, que te factura con su propio número de IVA y que responde del trabajo. No hay una empresa a la que llamar: estamos nosotros.",
         availabilityBadge: "Siempre disponibles",
         availabilityTitle: "Disponibles 24/7, a distancia.",
         availabilityDesc:
           "Escríbenos o llámanos cuando quieras: supervisamos los contactos constantemente y respondemos rápido. Si prefieres hablar en persona, siempre estamos disponibles para una reunión presencial — más de una si hace falta, hasta que el proyecto esté 100% claro.",
-        mapTitle: "Con sede en Bolzano, disponibles en todas partes.",
+        mapTitle: "Desde Bolzano, disponibles en todas partes.",
         mapItaly: "Italia",
         mapSouthTyrol: "Alto Adigio",
         mapSouthTyrolCaption:
@@ -940,7 +958,7 @@ const resources = {
           "Cada punto es una ciudad donde un sitio que hemos construido está online.",
         mapWorldCaption: "Trabajamos en remoto: la zona horaria nunca ha sido el problema.",
         mapCaption:
-          "Nuestro estudio nace en el Alto Adigio, pero trabajamos a distancia con clientes de todo el mundo — siempre disponibles también para una reunión presencial cuando haga falta.",
+          "Nacimos en el Alto Adigio, pero trabajamos a distancia con clientes de todo el mundo — siempre disponibles también para una reunión presencial cuando haga falta.",
       },
     },
   },

@@ -236,8 +236,7 @@ export function Footer() {
           </a>
           <p className="text-white/60 normal-case tracking-normal text-xs">{t("footer.tagline")}</p>
           <p className="text-white/30 normal-case tracking-normal text-xs">
-            {SITE_CONFIG.location.street}, {SITE_CONFIG.location.city} —{" "}
-            {SITE_CONFIG.location.region}
+            {SITE_CONFIG.location.city} — {SITE_CONFIG.location.region}
           </p>
         </div>
 

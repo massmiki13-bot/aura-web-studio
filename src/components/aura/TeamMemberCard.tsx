@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Phone, Mail, FileText } from "lucide-react";
+import { Phone, Mail, FileText, Receipt } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { roles, type TeamMember } from "@/lib/team-members";
 
@@ -100,6 +100,21 @@ export function TeamMemberCard({ member: m, index }: { member: TeamMember; index
             </span>
           </a>
         </li>
+
+        {/* Each person invoices under their own VAT number: the three of them
+            are independent professionals, not one company, and the site has
+            to say so. Not a link — there is nothing to open. */}
+        {m.vat && (
+          <li className="flex items-center gap-3 text-white/70">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/5 border border-white/10">
+              <Receipt className="h-3.5 w-3.5" />
+            </span>
+            <span className="text-sm font-light break-all">
+              <span className="text-white/40">{t("team.vat")}: </span>
+              {m.vat}
+            </span>
+          </li>
+        )}
       </ul>
     </motion.div>
   );

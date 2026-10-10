@@ -93,6 +93,19 @@ export function TeamPage({ locale }: { locale: Locale }) {
           >
             {t("team.subtitle")}
           </motion.p>
+
+          {/* Aura is a name three self-employed professionals work under, not
+              a company. Saying it plainly here (and repeating it on the
+              contact page) is what the collaboration agreement requires, and
+              it is what the VAT numbers on the cards below are evidence of. */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="mt-6 max-w-2xl border-l border-white/15 pl-4 font-mono-spec text-[11px] uppercase leading-relaxed tracking-[0.18em] text-white/45"
+          >
+            {t("team.independent")}
+          </motion.p>
         </div>
 
         {/* Members Grid */}

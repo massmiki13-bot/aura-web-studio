@@ -6,6 +6,16 @@ export type TeamMember = {
   phone: string;
   pec: string;
   email: string;
+  /**
+   * The professional's own VAT number, 11 digits, no country prefix.
+   *
+   * Aura is not a company: it is three self-employed professionals, each
+   * invoicing under their own number, and the collaboration agreement
+   * requires the site to publish those three numbers rather than imply a
+   * single business. Empty means "not supplied yet" and nothing is rendered —
+   * better a missing line than a wrong tax ID under someone's name.
+   */
+  vat: string;
   accent: string;
 };
 
@@ -18,6 +28,7 @@ export const members: TeamMember[] = [
     phone: "+39 334 1924697",
     pec: "michele.mass@pec.it",
     email: "mass.miki13@gmail.com",
+    vat: "",
     accent: "oklch(0.85 0.005 260)",
   },
   {
@@ -28,6 +39,7 @@ export const members: TeamMember[] = [
     phone: "+39 339 5717099",
     pec: "driussi.emanuele0@pec.it",
     email: "emadriu07@gmail.com",
+    vat: "",
     accent: "oklch(0.75 0.005 260)",
   },
   {
@@ -38,6 +50,7 @@ export const members: TeamMember[] = [
     phone: "+39 345 7354180",
     pec: "parisileonardo15@pec.it",
     email: "parisileonardo15@gmail.com",
+    vat: "",
     accent: "oklch(0.65 0.005 260)",
   },
 ];

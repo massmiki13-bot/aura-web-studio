@@ -121,7 +121,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
             className="flex items-center gap-2 font-mono-spec text-[11px] uppercase tracking-[0.25em] text-white/40"
           >
             <MapPin className="h-3.5 w-3.5 text-primary" />
-            {SITE_CONFIG.location.street} · {SITE_CONFIG.location.city}
+            {SITE_CONFIG.location.city} · {SITE_CONFIG.location.region}
           </motion.p>
         </div>
 
@@ -178,6 +178,17 @@ export function ContactPage({ locale }: { locale: Locale }) {
           </p>
           <LazyNetworkMap />
         </motion.div>
+
+        {/* Who you are actually contracting with: three separate
+            professionals, each with their own VAT number on their card. */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.35 }}
+          className="mb-8 max-w-3xl border-l border-white/15 pl-4 font-mono-spec text-[11px] uppercase leading-relaxed tracking-[0.18em] text-white/45"
+        >
+          {t("contactPage.independent")}
+        </motion.p>
 
         {/* Founders Grid */}
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl">

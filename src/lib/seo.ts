@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 
 import { LANGUAGES, DEFAULT_LANGUAGE, type LanguageCode } from "@/i18n";
+import { members, roles } from "./team-members";
 
 /**
  * SEO configuration and metadata builders — the single source of truth for
@@ -70,19 +71,16 @@ export const SITE_CONFIG = {
   company: "Aura Web Studio",
   companyEmail: "info@aura-webstudio.com",
   phone: "+39 334 1924697",
+  /**
+   * Where the three work from, not a registered office. There is no shared
+   * address — no company, no premises — so only the city and region are
+   * published; a street address here would be a claim nobody could back up.
+   */
   location: {
     country: "IT",
     city: "Bolzano",
     region: "Trentino-Alto Adige",
-    street: "Via Maso della Pieve",
-    // TODO(dati aziendali): numero civico e CAP mancano. Aggiungi il civico a
-    // `street` e valorizza `postalCode`: senza, l'indirizzo nel JSON-LD è
-    // incompleto e non combacia con la scheda Google Business Profile.
-    postalCode: "",
   },
-  // TODO(dati aziendali): partita IVA, con prefisso paese ("IT" + 11 cifre).
-  // Vuota = il campo `vatID` non viene emesso.
-  vatId: "",
   // TODO(dati aziendali): URL completi dei profili social ufficiali
   // (Instagram, LinkedIn, Facebook, Google Business Profile…). Vuoto = `sameAs`
   // non viene emesso. Solo profili realmente dell'agenzia.
@@ -355,10 +353,18 @@ export function generateOrganizationSchema() {
       addressCountry: SITE_CONFIG.location.country,
       addressRegion: SITE_CONFIG.location.region,
       addressLocality: SITE_CONFIG.location.city,
-      streetAddress: SITE_CONFIG.location.street,
-      ...(SITE_CONFIG.location.postalCode ? { postalCode: SITE_CONFIG.location.postalCode } : {}),
     },
-    ...(SITE_CONFIG.vatId ? { vatID: SITE_CONFIG.vatId } : {}),
+    // Aura is a shared name, not a legal entity, so there is no single VAT
+    // number to publish at this level. The tax identity belongs to each
+    // professional, and that is where search engines are pointed too.
+    member: members.map((m) => ({
+      "@type": "Person",
+      name: `${m.name} ${m.surname}`,
+      jobTitle: roles[m.roleKey],
+      email: m.email,
+      telephone: m.phone.replace(/\s/g, ""),
+      ...(m.vat ? { vatID: `IT${m.vat}` } : {}),
+    })),
     ...(SITE_CONFIG.socialProfiles.length ? { sameAs: [...SITE_CONFIG.socialProfiles] } : {}),
     areaServed: [
       { "@type": "City", name: "Bolzano" },
