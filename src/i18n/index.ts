@@ -67,6 +67,110 @@ const resources = {
           },
         ],
       },
+      apps: {
+        label: "// App su misura",
+        titlePre: "Costruiamo ",
+        titleHighlight: "app su misura",
+        titlePost: ", con l'AI dentro.",
+        steps: [
+          {
+            title: "Niente template, niente moduli preconfezionati.",
+            desc: "L'app parte da come lavori davvero: funzioni, passaggi e vincoli sono i tuoi, non quelli di un prodotto nato per qualcun altro.",
+          },
+          {
+            title: "Ogni funzione è costruita su richiesta.",
+            desc: "Quello che ti serve viene sviluppato, quello che non ti serve non esiste. L'app resta semplice da usare perché contiene solo il tuo lavoro.",
+          },
+          {
+            title: "Un agente AI dentro l'app, non incollato sopra.",
+            desc: "Non un chatbot in un angolo: l'agente lavora sui tuoi dati e ti risponde nel punto esatto in cui ti serve, dentro l'app.",
+          },
+          {
+            title: "Dal telefono al desktop, con i tuoi dati che restano tuoi.",
+            desc: "Un'unica base pensata per essere usata ovunque lavori, senza che i tuoi dati finiscano dentro il prodotto di qualcun altro.",
+          },
+        ],
+        cta: "Parliamo della tua app",
+        note: "Sviluppo su richiesta, dalla prima riga di codice.",
+        backHome: "Torna alla Home",
+        heroLead:
+          "Progettiamo e sviluppiamo applicazioni su misura, con un agente AI che vive dentro l'app e lavora sui tuoi dati. Nessun template adattato: ogni funzione nasce da come lavori tu.",
+        ctaSecondary: "Vedi i piani",
+        processLabel: "// Come lavoriamo",
+        processTitle: "Dalla prima chiamata all'app che usi ogni giorno.",
+        process: [
+          {
+            title: "Guardiamo come lavori oggi",
+            desc: "Prima di scrivere una riga di codice capiamo i tuoi passaggi reali, dove perdi tempo e cosa non si può toccare. L'app si costruisce su questo, non su un'idea generica del tuo settore.",
+          },
+          {
+            title: "Decidiamo insieme cosa serve davvero",
+            desc: "Scegliamo le funzioni una per una. Quello che non ti serve resta fuori: è ciò che tiene l'app semplice da usare anche fra due anni.",
+          },
+          {
+            title: "Costruiamo, e tu la usi mentre cresce",
+            desc: "Ti consegniamo una versione funzionante presto e la facciamo evolvere con te. Vedi i progressi e correggi la rotta prima che sia costoso farlo.",
+          },
+          {
+            title: "Resta tua, e continuiamo a seguirla",
+            desc: "Codice e dati sono tuoi. Noi restiamo per manutenzione, aggiornamenti e nuove funzioni, al ritmo che decidi tu.",
+          },
+        ],
+        agentLabel: "// L'agente dentro",
+        agentTitle: "Un agente AI dentro l'app, non incollato sopra.",
+        agentLead:
+          "Non è un chatbot in un angolo dello schermo che risponde a domande generiche. È un agente che conosce i tuoi dati e il contesto in cui ti trovi, e che fa il lavoro al posto tuo dove ti servirebbe più tempo.",
+        agentPoints: [
+          {
+            title: "Lavora sui tuoi dati",
+            desc: "Legge quello che c'è già nell'app — clienti, ordini, documenti, storico — invece di chiederti di ripetergli tutto ogni volta.",
+          },
+          {
+            title: "Prepara il lavoro al posto tuo",
+            desc: "Compila, riassume, controlla e propone: tu correggi e confermi, invece di partire ogni volta da una pagina vuota.",
+          },
+          {
+            title: "Risponde nel punto in cui sei",
+            desc: "Vive dentro la schermata su cui stai lavorando e tiene il contesto, così non devi spiegargli dove ti trovi.",
+          },
+          {
+            title: "Segue le tue regole",
+            desc: "Impara il tuo modo di fare le cose e i tuoi vincoli, e resta dentro quelli. Decidi tu cosa può fare da solo e cosa deve passare da te.",
+          },
+        ],
+        buildLabel: "// Cosa possiamo costruire",
+        buildTitle: "Un'app per il lavoro che hai, non per quello medio del settore.",
+        buildItems: [
+          {
+            title: "Gestionali interni",
+            desc: "Il centro del tuo lavoro quotidiano: anagrafiche, pratiche, stati di avanzamento e tutto quello che oggi vive in fogli di calcolo sparsi.",
+          },
+          {
+            title: "Prenotazioni e agende",
+            desc: "Calendari, disponibilità e conferme automatiche, con le regole del tuo modo di lavorare e non quelle di un servizio generico.",
+          },
+          {
+            title: "Magazzino e ordini",
+            desc: "Carichi, scarichi, fornitori e scorte sotto controllo, con gli avvisi quando qualcosa sta per finire.",
+          },
+          {
+            title: "Portali per i tuoi clienti",
+            desc: "Un'area dove i tuoi clienti trovano documenti, stato dei lavori e richieste, senza scriverti per ogni aggiornamento.",
+          },
+          {
+            title: "Dashboard e report",
+            desc: "I numeri che contano davvero, letti in un colpo d'occhio e pronti da esportare quando servono a qualcun altro.",
+          },
+          {
+            title: "Automazioni con AI",
+            desc: "I passaggi ripetitivi affidati all'agente: documenti, email, controlli e riassunti preparati e messi in coda per la tua approvazione.",
+          },
+        ],
+        buildNote: "// Questi sono esempi. L'app viene costruita sul tuo caso.",
+        ctaTitle: "Raccontaci come lavori. Al resto pensiamo noi.",
+        ctaLead:
+          "Una chiamata basta per capire se ha senso costruirla e cosa serve davvero. Nessun preventivo a scatola chiusa.",
+      },
       projects: {
         mobileTitle: "Case study cinematici.",
         caseStudies: "Aura — Case Studies",
@@ -301,6 +405,110 @@ const resources = {
             desc: "Deine Website spricht die Sprache deiner Kunden, wo auch immer sie sind.",
           },
         ],
+      },
+      apps: {
+        label: "// Apps nach Mass",
+        titlePre: "Wir bauen ",
+        titleHighlight: "Apps nach Mass",
+        titlePost: " — mit KI darin.",
+        steps: [
+          {
+            title: "Keine Templates, keine vorgefertigten Module.",
+            desc: "Die App geht von deiner tatsächlichen Arbeitsweise aus: Funktionen, Abläufe und Grenzen sind deine, nicht die eines Produkts für jemand anderen.",
+          },
+          {
+            title: "Jede Funktion wird auf Anfrage gebaut.",
+            desc: "Was du brauchst, wird entwickelt; was du nicht brauchst, gibt es nicht. Die App bleibt einfach, weil sie nur deine Arbeit enthält.",
+          },
+          {
+            title: "Ein KI-Agent in der App, nicht obendrauf geklebt.",
+            desc: "Kein Chatbot in der Ecke: Der Agent arbeitet mit deinen Daten und antwortet genau dort, wo du ihn brauchst — in der App.",
+          },
+          {
+            title: "Vom Handy bis zum Desktop, und deine Daten bleiben deine.",
+            desc: "Eine einzige Basis, überall einsetzbar, ohne dass deine Daten im Produkt eines anderen landen.",
+          },
+        ],
+        cta: "Sprechen wir über deine App",
+        note: "Entwicklung auf Anfrage, ab der ersten Zeile Code.",
+        backHome: "Zur Startseite",
+        heroLead:
+          "Wir entwerfen und entwickeln massgeschneiderte Anwendungen, mit einem KI-Agenten, der in der App lebt und mit deinen Daten arbeitet. Kein angepasstes Template: Jede Funktion entsteht aus deiner Arbeitsweise.",
+        ctaSecondary: "Preise ansehen",
+        processLabel: "// Wie wir arbeiten",
+        processTitle: "Vom ersten Gespräch zur App, die du täglich benutzt.",
+        process: [
+          {
+            title: "Wir schauen, wie du heute arbeitest",
+            desc: "Vor der ersten Zeile Code verstehen wir deine echten Abläufe, wo Zeit verloren geht und was unantastbar ist. Darauf wird die App gebaut, nicht auf eine allgemeine Vorstellung deiner Branche.",
+          },
+          {
+            title: "Wir entscheiden gemeinsam, was wirklich gebraucht wird",
+            desc: "Wir wählen die Funktionen einzeln aus. Was du nicht brauchst, bleibt draussen — genau das hält die App auch in zwei Jahren noch einfach.",
+          },
+          {
+            title: "Wir bauen, und du benutzt sie schon währenddessen",
+            desc: "Du bekommst früh eine lauffähige Version und wir entwickeln sie mit dir weiter. Du siehst den Fortschritt und korrigierst den Kurs, bevor es teuer wird.",
+          },
+          {
+            title: "Sie bleibt deine, und wir bleiben dran",
+            desc: "Code und Daten gehören dir. Wir bleiben für Wartung, Updates und neue Funktionen — in dem Takt, den du vorgibst.",
+          },
+        ],
+        agentLabel: "// Der Agent darin",
+        agentTitle: "Ein KI-Agent in der App, nicht obendrauf geklebt.",
+        agentLead:
+          "Kein Chatbot in der Ecke, der allgemeine Fragen beantwortet. Ein Agent, der deine Daten und deinen Kontext kennt und die Arbeit dort übernimmt, wo dir am meisten Zeit fehlt.",
+        agentPoints: [
+          {
+            title: "Arbeitet mit deinen Daten",
+            desc: "Er liest, was ohnehin in der App steht — Kunden, Aufträge, Dokumente, Historie — statt sich alles jedes Mal neu erklären zu lassen.",
+          },
+          {
+            title: "Bereitet die Arbeit für dich vor",
+            desc: "Er füllt aus, fasst zusammen, prüft und schlägt vor: Du korrigierst und bestätigst, statt jedes Mal vor einer leeren Seite zu sitzen.",
+          },
+          {
+            title: "Antwortet genau dort, wo du bist",
+            desc: "Er lebt in der Ansicht, an der du gerade arbeitest, und behält den Kontext — du musst ihm nicht erklären, wo du stehst.",
+          },
+          {
+            title: "Hält sich an deine Regeln",
+            desc: "Er lernt deine Arbeitsweise und deine Grenzen und bleibt darin. Du entscheidest, was er allein darf und was über dich läuft.",
+          },
+        ],
+        buildLabel: "// Was wir bauen können",
+        buildTitle: "Eine App für deine Arbeit, nicht für den Durchschnitt der Branche.",
+        buildItems: [
+          {
+            title: "Interne Verwaltungssysteme",
+            desc: "Das Zentrum deines Alltags: Stammdaten, Vorgänge, Status und alles, was heute in verstreuten Tabellen lebt.",
+          },
+          {
+            title: "Buchungen und Kalender",
+            desc: "Termine, Verfügbarkeiten und automatische Bestätigungen — nach deinen Regeln, nicht nach denen eines Standarddienstes.",
+          },
+          {
+            title: "Lager und Bestellungen",
+            desc: "Zugänge, Abgänge, Lieferanten und Bestände im Griff, mit Hinweis, wenn etwas zur Neige geht.",
+          },
+          {
+            title: "Portale für deine Kunden",
+            desc: "Ein Bereich, in dem deine Kunden Dokumente, Projektstand und Anfragen finden, ohne dir für jedes Update zu schreiben.",
+          },
+          {
+            title: "Dashboards und Auswertungen",
+            desc: "Die Zahlen, auf die es ankommt, auf einen Blick und exportbereit, wenn sie jemand anderes braucht.",
+          },
+          {
+            title: "Automatisierungen mit KI",
+            desc: "Wiederkehrende Schritte übernimmt der Agent: Dokumente, E-Mails, Prüfungen und Zusammenfassungen, vorbereitet und zur Freigabe bereitgelegt.",
+          },
+        ],
+        buildNote: "// Das sind Beispiele. Gebaut wird auf deinen Fall.",
+        ctaTitle: "Erzähl uns, wie du arbeitest. Um den Rest kümmern wir uns.",
+        ctaLead:
+          "Ein Gespräch reicht, um zu sehen, ob es sich lohnt und was wirklich gebraucht wird. Kein Angebot ins Blaue.",
       },
       projects: {
         mobileTitle: "Filmreife Case Studies.",
@@ -538,6 +746,110 @@ const resources = {
           },
         ],
       },
+      apps: {
+        label: "// Custom apps",
+        titlePre: "We build ",
+        titleHighlight: "custom apps",
+        titlePost: ", with the AI inside.",
+        steps: [
+          {
+            title: "No templates, no prepackaged modules.",
+            desc: "The app starts from how you actually work: the features, the steps and the constraints are yours, not those of a product built for someone else.",
+          },
+          {
+            title: "Every feature is built on request.",
+            desc: "What you need gets developed; what you don't need isn't there. The app stays simple to use because it only contains your work.",
+          },
+          {
+            title: "An AI agent inside the app, not pasted on top.",
+            desc: "Not a chatbot in the corner: the agent works on your data and answers exactly where you need it, inside the app.",
+          },
+          {
+            title: "From phone to desktop, and your data stays yours.",
+            desc: "One base, made to be used wherever you work, with nothing of yours ending up inside somebody else's product.",
+          },
+        ],
+        cta: "Let's talk about your app",
+        note: "Built on request, from the first line of code.",
+        backHome: "Back home",
+        heroLead:
+          "We design and build custom applications, with an AI agent that lives inside the app and works on your data. No adapted template: every feature comes from the way you work.",
+        ctaSecondary: "See the plans",
+        processLabel: "// How we work",
+        processTitle: "From the first call to the app you use every day.",
+        process: [
+          {
+            title: "We look at how you work today",
+            desc: "Before a line of code we learn your real steps, where the time goes and what cannot be touched. The app is built on that, not on a generic idea of your industry.",
+          },
+          {
+            title: "We decide together what is actually needed",
+            desc: "We pick the features one by one. What you don't need stays out — that is what keeps the app simple to use two years from now.",
+          },
+          {
+            title: "We build, and you use it as it grows",
+            desc: "You get a working version early and we evolve it with you. You see the progress and correct course before doing so gets expensive.",
+          },
+          {
+            title: "It stays yours, and we stay with it",
+            desc: "The code and the data are yours. We stay on for maintenance, updates and new features, at the pace you set.",
+          },
+        ],
+        agentLabel: "// The agent inside",
+        agentTitle: "An AI agent inside the app, not pasted on top.",
+        agentLead:
+          "Not a chatbot in the corner answering generic questions. An agent that knows your data and the context you are in, and does the work where you most need the time back.",
+        agentPoints: [
+          {
+            title: "Works on your data",
+            desc: "It reads what is already in the app — clients, orders, documents, history — instead of asking you to explain it all over again.",
+          },
+          {
+            title: "Prepares the work for you",
+            desc: "It fills in, summarises, checks and proposes: you correct and confirm, instead of starting from an empty page every time.",
+          },
+          {
+            title: "Answers where you are",
+            desc: "It lives in the screen you are working on and keeps the context, so you never have to tell it where you are.",
+          },
+          {
+            title: "Follows your rules",
+            desc: "It learns how you do things and the limits you set, and stays inside them. You decide what it can do alone and what goes through you.",
+          },
+        ],
+        buildLabel: "// What we can build",
+        buildTitle: "An app for the work you actually have, not the industry average.",
+        buildItems: [
+          {
+            title: "Internal management tools",
+            desc: "The centre of your working day: records, jobs, progress and everything that lives in scattered spreadsheets today.",
+          },
+          {
+            title: "Bookings and calendars",
+            desc: "Availability, scheduling and automatic confirmations, run by your rules rather than those of a generic service.",
+          },
+          {
+            title: "Stock and orders",
+            desc: "Incoming, outgoing, suppliers and stock under control, with a warning before something runs out.",
+          },
+          {
+            title: "Portals for your clients",
+            desc: "A place where your clients find documents, job status and requests, without writing to you for every update.",
+          },
+          {
+            title: "Dashboards and reports",
+            desc: "The numbers that actually matter, readable at a glance and ready to export when somebody else needs them.",
+          },
+          {
+            title: "AI automations",
+            desc: "The repetitive steps handed to the agent: documents, emails, checks and summaries, prepared and queued for your approval.",
+          },
+        ],
+        buildNote: "// These are examples. The app gets built around your case.",
+        ctaTitle: "Tell us how you work. We'll take care of the rest.",
+        ctaLead:
+          "One call is enough to see whether it is worth building and what is actually needed. No quote in the dark.",
+      },
       projects: {
         mobileTitle: "Cinematic case studies.",
         caseStudies: "Aura — Case Studies",
@@ -772,6 +1084,110 @@ const resources = {
             desc: "Tu sitio habla el idioma de tus clientes, estén donde estén.",
           },
         ],
+      },
+      apps: {
+        label: "// Apps a medida",
+        titlePre: "Creamos ",
+        titleHighlight: "apps a medida",
+        titlePost: ", con la IA dentro.",
+        steps: [
+          {
+            title: "Sin plantillas, sin módulos prefabricados.",
+            desc: "La app parte de cómo trabajas de verdad: las funciones, los pasos y los límites son los tuyos, no los de un producto pensado para otro.",
+          },
+          {
+            title: "Cada función se construye a petición.",
+            desc: "Lo que necesitas se desarrolla; lo que no necesitas no existe. La app sigue siendo sencilla porque solo contiene tu trabajo.",
+          },
+          {
+            title: "Un agente de IA dentro de la app, no pegado encima.",
+            desc: "No es un chatbot en una esquina: el agente trabaja con tus datos y responde justo donde lo necesitas, dentro de la app.",
+          },
+          {
+            title: "Del móvil al escritorio, y tus datos siguen siendo tuyos.",
+            desc: "Una única base pensada para usarse donde trabajes, sin que tus datos acaben dentro del producto de otro.",
+          },
+        ],
+        cta: "Hablemos de tu app",
+        note: "Desarrollo a petición, desde la primera línea de código.",
+        backHome: "Volver al inicio",
+        heroLead:
+          "Diseñamos y desarrollamos aplicaciones a medida, con un agente de IA que vive dentro de la app y trabaja con tus datos. Ninguna plantilla adaptada: cada función nace de cómo trabajas tú.",
+        ctaSecondary: "Ver los planes",
+        processLabel: "// Cómo trabajamos",
+        processTitle: "De la primera llamada a la app que usas cada día.",
+        process: [
+          {
+            title: "Miramos cómo trabajas hoy",
+            desc: "Antes de la primera línea de código entendemos tus pasos reales, dónde se pierde el tiempo y qué no se puede tocar. La app se construye sobre eso, no sobre una idea genérica de tu sector.",
+          },
+          {
+            title: "Decidimos juntos qué hace falta de verdad",
+            desc: "Elegimos las funciones una a una. Lo que no necesitas se queda fuera: es lo que mantiene la app sencilla también dentro de dos años.",
+          },
+          {
+            title: "Construimos, y tú la usas mientras crece",
+            desc: "Te entregamos pronto una versión funcional y la hacemos evolucionar contigo. Ves el avance y corriges el rumbo antes de que salga caro.",
+          },
+          {
+            title: "Sigue siendo tuya, y seguimos a tu lado",
+            desc: "El código y los datos son tuyos. Nosotros nos quedamos para mantenimiento, actualizaciones y nuevas funciones, al ritmo que marques.",
+          },
+        ],
+        agentLabel: "// El agente dentro",
+        agentTitle: "Un agente de IA dentro de la app, no pegado encima.",
+        agentLead:
+          "No es un chatbot en una esquina que responde preguntas genéricas. Es un agente que conoce tus datos y el contexto en el que estás, y que hace el trabajo donde más falta te hace el tiempo.",
+        agentPoints: [
+          {
+            title: "Trabaja con tus datos",
+            desc: "Lee lo que ya está en la app — clientes, pedidos, documentos, histórico — en vez de pedirte que se lo expliques todo cada vez.",
+          },
+          {
+            title: "Prepara el trabajo por ti",
+            desc: "Rellena, resume, comprueba y propone: tú corriges y confirmas, en lugar de empezar siempre desde una página en blanco.",
+          },
+          {
+            title: "Responde justo donde estás",
+            desc: "Vive en la pantalla en la que estás trabajando y mantiene el contexto, así no tienes que explicarle dónde te encuentras.",
+          },
+          {
+            title: "Sigue tus reglas",
+            desc: "Aprende tu forma de hacer las cosas y tus límites, y se queda dentro. Tú decides qué puede hacer solo y qué pasa por ti.",
+          },
+        ],
+        buildLabel: "// Qué podemos construir",
+        buildTitle: "Una app para el trabajo que tienes, no para la media del sector.",
+        buildItems: [
+          {
+            title: "Gestión interna",
+            desc: "El centro de tu día a día: fichas, expedientes, estados de avance y todo lo que hoy vive en hojas de cálculo dispersas.",
+          },
+          {
+            title: "Reservas y agendas",
+            desc: "Calendarios, disponibilidad y confirmaciones automáticas, con las reglas de tu forma de trabajar y no las de un servicio genérico.",
+          },
+          {
+            title: "Almacén y pedidos",
+            desc: "Entradas, salidas, proveedores y existencias bajo control, con avisos cuando algo está a punto de acabarse.",
+          },
+          {
+            title: "Portales para tus clientes",
+            desc: "Un espacio donde tus clientes encuentran documentos, estado de los trabajos y solicitudes, sin escribirte por cada novedad.",
+          },
+          {
+            title: "Paneles e informes",
+            desc: "Los números que de verdad importan, de un vistazo y listos para exportar cuando los necesita otra persona.",
+          },
+          {
+            title: "Automatizaciones con IA",
+            desc: "Los pasos repetitivos los asume el agente: documentos, correos, comprobaciones y resúmenes, preparados y en cola para tu aprobación.",
+          },
+        ],
+        buildNote: "// Estos son ejemplos. La app se construye sobre tu caso.",
+        ctaTitle: "Cuéntanos cómo trabajas. Del resto nos ocupamos nosotros.",
+        ctaLead:
+          "Basta una llamada para ver si merece la pena construirla y qué hace falta de verdad. Sin presupuestos a ciegas.",
       },
       projects: {
         mobileTitle: "Case studies cinematográficos.",

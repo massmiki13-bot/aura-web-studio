@@ -131,8 +131,32 @@ export const WORKS_SEO: Record<Locale, SeoCopy> = {
  * result shows in place of the URL path, so they are the nav's words rather
  * than the keyword-bearing page titles above.
  */
+export const APPS_SEO: Record<Locale, SeoCopy> = {
+  it: {
+    title: "App su Misura con AI — Sviluppo Applicazioni Bolzano",
+    description:
+      "Sviluppiamo app su misura per il tuo modo di lavorare, con un agente AI integrato. Niente template: ogni funzione è costruita su richiesta.",
+  },
+  de: {
+    title: "Massgeschneiderte Apps mit KI — App-Entwicklung Bozen",
+    description:
+      "Wir entwickeln Apps nach Mass für Ihre Arbeitsweise, mit integriertem KI-Agenten. Keine Templates: jede Funktion wird auf Anfrage gebaut.",
+  },
+  en: {
+    title: "Custom Apps with AI — App Development in Bolzano",
+    description:
+      "We build custom apps around the way you actually work, with an AI agent inside. No templates: every feature is built on request.",
+  },
+  es: {
+    title: "Apps a Medida con IA — Desarrollo de Aplicaciones Bolzano",
+    description:
+      "Desarrollamos apps a medida para tu forma de trabajar, con un agente de IA integrado. Sin plantillas: cada función se construye a petición.",
+  },
+};
+
 export const BREADCRUMB_LABEL = {
   lavori: { it: "Lavori", de: "Projekte", en: "Work", es: "Trabajos" },
+  app: { it: "App", de: "Apps", en: "Apps", es: "Apps" },
   pricing: { it: "Prezzi", de: "Preise", en: "Pricing", es: "Precios" },
   team: { it: "Team", de: "Team", en: "Team", es: "Equipo" },
   contact: { it: "Contatti", de: "Kontakt", en: "Contact", es: "Contacto" },
