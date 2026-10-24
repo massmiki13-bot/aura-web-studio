@@ -12,6 +12,7 @@ import { SITE_CONFIG, localizedPath } from "@/lib/seo";
 import { ChromeVines } from "@/components/three/ChromeVines";
 import { getLocaleFromPathname } from "@/i18n";
 import { SERVICES_SUBPATH, SERVICES_UI } from "@/lib/services";
+import { COOKIE_UI, openCookiePreferences } from "@/components/CookieConsent";
 
 export function Contact() {
   const { t } = useTranslation();
@@ -301,6 +302,15 @@ export function Footer() {
               <Link href="/privacy" className="hover:text-primary transition-colors">
                 {t("footer.privacy")}
               </Link>
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={openCookiePreferences}
+                className="cursor-pointer text-left hover:text-primary transition-colors"
+              >
+                {COOKIE_UI[locale].prefs}
+              </button>
             </li>
             {/* No terms page exists yet, so this was `href="#"` — a link that
                 scrolls to the top of the page and looks broken. Until there is

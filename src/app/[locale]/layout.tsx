@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import Script from "next/script";
 
 import "@/styles.css";
 import { fontDisplay, fontSans } from "@/lib/fonts";
@@ -12,6 +11,7 @@ import { InlineScript } from "@/components/InlineScript";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { CustomCursor } from "@/components/CustomCursor";
 import { Toaster } from "@/components/ui/sonner";
+import { CookieConsent } from "@/components/CookieConsent";
 import {
   rootMetadata,
   rootViewport,
@@ -33,8 +33,6 @@ import {
  * onto this segment by @/proxy — so the URL a visitor sees never contains the
  * locale that this layout is keyed on.
  */
-
-const GA_ID = "G-CB7FGKKMX8";
 
 export const metadata = rootMetadata;
 export const viewport = rootViewport;
@@ -95,21 +93,14 @@ export default async function RootLayout({
           <CustomCursor />
           {children}
           <Toaster theme="dark" position="bottom-right" />
+          {/* Cookie banner; also the only loader of the Google tag (GA4 + Ads). */}
+          <CookieConsent locale={locale} />
         </I18nProvider>
 
         {/* Structured data. Rendered once for the whole site, from the same
             SITE_CONFIG the metadata is built from, so the two cannot drift. */}
         <JsonLd data={generateOrganizationSchema()} />
         <JsonLd data={generateWebsiteSchema()} />
-
-        {/* Google tag (GA4 property linked to Google Ads). */}
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="gtag-init" strategy="afterInteractive">
-          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
-        </Script>
       </body>
     </html>
   );

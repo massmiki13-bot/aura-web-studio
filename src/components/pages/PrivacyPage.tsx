@@ -5,7 +5,7 @@ import { Footer } from "@/components/aura/Contact";
 import { SITE_CONFIG } from "@/lib/seo";
 import { members } from "@/lib/team-members";
 
-const LAST_UPDATED = "29 luglio 2026";
+const LAST_UPDATED = "24 ottobre 2026";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -108,6 +108,10 @@ export function PrivacyPage() {
             Non raccogliamo dati particolari (art. 9 GDPR — es. dati sanitari, religiosi, politici)
             e non effettuiamo profilazione automatizzata dei visitatori.
           </p>
+          <p>
+            Solo con il tuo consenso raccogliamo anche dati di navigazione in forma statistica,
+            tramite gli strumenti descritti al punto 7.
+          </p>
         </Section>
 
         <Section title="3. Perché li trattiamo">
@@ -148,6 +152,12 @@ export function PrivacyPage() {
             nella sua qualità di responsabile del trattamento, unicamente per l'erogazione del
             servizio tecnico.
           </p>
+          <p>
+            Solo se presti il consenso tramite il banner cookie, i dati di navigazione descritti al
+            punto 7 sono raccolti da Google Ireland Limited (Google Analytics e Google Ads). Google
+            può trasferire tali dati negli Stati Uniti, dove è certificata ai sensi dell&apos;EU-US
+            Data Privacy Framework.
+          </p>
         </Section>
 
         <Section title="6. I tuoi diritti">
@@ -180,17 +190,14 @@ export function PrivacyPage() {
 
         <Section title="7. Cookie e tecnologie simili">
           <p>
-            Questo sito{" "}
-            <strong className="text-white">
-              non utilizza cookie di profilazione o di marketing
-            </strong>{" "}
-            e non installa strumenti di analisi statistica di terze parti (es. Google Analytics).
-            Non è quindi necessario alcun banner di raccolta del consenso per finalità
-            pubblicitarie.
+            Questo sito non utilizza cookie di profilazione propri. Utilizza strumenti tecnici,
+            sempre attivi, e strumenti di misurazione di terze parti, attivati{" "}
+            <strong className="text-white">solo se li accetti</strong> tramite il banner che compare
+            alla prima visita.
           </p>
           <p>
-            Utilizziamo esclusivamente tecnologie di memorizzazione locale (cookie
-            tecnici/localStorage), strettamente necessarie al funzionamento del sito:
+            <strong className="text-white">Strumenti tecnici</strong> (non richiedono consenso, art.
+            122 Codice Privacy):
           </p>
           <ul className="list-disc pl-5 space-y-2">
             <li>
@@ -198,15 +205,46 @@ export function PrivacyPage() {
               (localStorage) per ricordare la lingua scelta durante la navigazione.
             </li>
             <li>
+              <strong className="text-white">Scelta sui cookie</strong> (aura-cookie-consent,
+              localStorage): ricorda se hai accettato o rifiutato, per 6 mesi.
+            </li>
+            <li>
               <strong className="text-white">Sessione di accesso riservato</strong>: un token
               tecnico utilizzato esclusivamente dal personale {SITE_CONFIG.company} per accedere
-              all'area amministrativa protetta del sito; non riguarda i visitatori pubblici.
+              all&apos;area amministrativa protetta del sito; non riguarda i visitatori pubblici.
             </li>
           </ul>
           <p>
-            Trattandosi di strumenti strettamente necessari all'erogazione del servizio richiesto
-            (art. 122 Codice Privacy), il loro utilizzo non richiede consenso preventivo. Puoi in
-            ogni momento cancellare questi dati dalle impostazioni del tuo browser.
+            <strong className="text-white">Strumenti di misurazione</strong> (solo con il tuo
+            consenso):
+          </p>
+          <ul className="list-disc pl-5 space-y-2">
+            <li>
+              <strong className="text-white">Google Analytics 4</strong> (cookie _ga e _ga_*, durata
+              fino a 2 anni): statistiche aggregate sulle visite, come pagine viste, provenienza e
+              dispositivo. Gli indirizzi IP non vengono registrati.
+            </li>
+            <li>
+              <strong className="text-white">Google Ads</strong> (cookie _gcl_*, durata fino a 90
+              giorni): misura se una visita arriva da un nostro annuncio e se porta a una richiesta
+              di contatto.
+            </li>
+          </ul>
+          <p>
+            Base giuridica: il tuo consenso (art. 6, par. 1, lett. a GDPR). Se rifiuti o non fai
+            alcuna scelta, questi strumenti non vengono caricati e il sito funziona normalmente.
+            Puoi cambiare scelta in qualsiasi momento dal link{" "}
+            <strong className="text-white">«Preferenze cookie»</strong> in fondo a ogni pagina; se
+            revochi il consenso, i relativi cookie vengono cancellati. Informativa di Google:{" "}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary hover:underline"
+            >
+              policies.google.com/privacy
+            </a>
+            .
           </p>
         </Section>
 
