@@ -92,7 +92,7 @@ export const SITE_CONFIG = {
    * in the filename because social platforms cache a preview image by its URL:
    * bump it whenever the artwork changes, or the old card keeps being served.
    */
-  ogImagePath: "/og/aura-web-studio-v2.png",
+  ogImagePath: "/og/aura-web-studio-v3.png",
   ogImageAlt: "Aura Web Studio — Web design e sviluppo siti web a Bolzano, Alto Adige",
   ogImageWidth: 1200,
   ogImageHeight: 630,
