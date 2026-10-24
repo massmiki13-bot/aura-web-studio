@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { LOCALES, DEFAULT_LOCALE, absoluteUrl, localizedPath } from "@/lib/seo";
+import { SERVICES, SERVICES_SUBPATH, serviceSubPath } from "@/lib/services";
 
 /**
  * The sitemap, generated rather than hand-maintained.
@@ -26,6 +27,12 @@ const ROUTES = [
   { subPath: "lavori", priority: 0.9, changeFrequency: "monthly" as const },
   { subPath: "app", priority: 0.9, changeFrequency: "monthly" as const },
   { subPath: "pricing", priority: 0.9, changeFrequency: "monthly" as const },
+  { subPath: SERVICES_SUBPATH, priority: 0.9, changeFrequency: "monthly" as const },
+  ...SERVICES.map((s) => ({
+    subPath: serviceSubPath(s.slug),
+    priority: 0.8,
+    changeFrequency: "monthly" as const,
+  })),
   { subPath: "team", priority: 0.7, changeFrequency: "yearly" as const },
   { subPath: "contact", priority: 0.8, changeFrequency: "yearly" as const },
 ];

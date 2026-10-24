@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { featuredProjects } from "@/components/aura/projects-data";
 import { MaskWords, Reveal, useHasEntered, useReducedMotion } from "@/components/mobile/motion";
-import type { Locale } from "@/lib/seo";
+import { localizedPath, type Locale } from "@/lib/seo";
 
 /**
  * The five featured projects.
@@ -49,7 +49,7 @@ export function MobileProjects({ locale }: { locale: Locale }) {
       <div className="mt-16 px-6">
         <Reveal>
           <Link
-            href={`/${locale}/lavori`}
+            href={localizedPath(locale, "lavori")}
             className="font-mono-spec flex h-14 items-center justify-center rounded-full border border-white/15 text-[11px] tracking-[0.25em] text-white/80 uppercase"
           >
             {t("projects.seeAll")}

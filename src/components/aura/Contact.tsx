@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { SITE_CONFIG, localizedPath } from "@/lib/seo";
 import { ChromeVines } from "@/components/three/ChromeVines";
 import { getLocaleFromPathname } from "@/i18n";
+import { SERVICES_SUBPATH, SERVICES_UI } from "@/lib/services";
 
 export function Contact() {
   const { t } = useTranslation();
@@ -259,6 +260,14 @@ export function Footer() {
             </li>
             <li>
               <Link
+                href={localizedPath(locale, SERVICES_SUBPATH)}
+                className="hover:text-primary transition-colors"
+              >
+                {SERVICES_UI[locale].navLabel}
+              </Link>
+            </li>
+            <li>
+              <Link
                 href={localizedPath(locale, "pricing")}
                 className="hover:text-primary transition-colors"
               >
@@ -305,6 +314,8 @@ export function Footer() {
         <span>© 2026 Aura Web Studio</span>
         <Link
           href="/auth"
+          rel="nofollow"
+          prefetch={false}
           className="-my-4 inline-flex items-center py-4 transition-colors hover:text-white/60"
         >
           Area personale

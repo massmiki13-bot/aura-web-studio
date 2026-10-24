@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { MaskWords, Reveal, useReducedMotion } from "@/components/mobile/motion";
-import type { Locale } from "@/lib/seo";
+import { localizedPath, type Locale } from "@/lib/seo";
 
 /**
  * What the studio builds, and what it costs to start.
@@ -207,7 +207,7 @@ export function MobileProducts({ locale }: { locale: Locale }) {
         </Reveal>
         <Reveal delay={0.14} className="mt-8">
           <Link
-            href={`/${locale}/pricing`}
+            href={localizedPath(locale, "pricing")}
             className="flex items-center justify-between rounded-[1.25rem] border border-white/10 bg-neutral-950 px-6 py-5"
           >
             <span className="font-display text-base font-bold tracking-tight text-white">
