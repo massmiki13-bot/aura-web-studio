@@ -22,9 +22,9 @@ export type SeoCopy = { title: string; description: string };
  * SITE_CONFIG.defaultTitle, which is the canonical brand title for the site.
  */
 export const HOME_TITLE: Partial<Record<Locale, string>> = {
-  de: "Webdesign in Bozen & Premium Webseiten-Entwicklung",
-  en: "Web Design in Bolzano & Premium Website Development",
-  es: "Diseño Web en Bolzano y Desarrollo Web Premium",
+  de: "Webdesign Bozen & Südtirol | Aura Web Studio",
+  en: "Web Design Bolzano & South Tyrol | Aura Web Studio",
+  es: "Diseño Web en Bolzano | Aura Web Studio",
 };
 
 export const HOME_DESCRIPTION: Record<Locale, string> = {

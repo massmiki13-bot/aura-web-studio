@@ -44,7 +44,7 @@ export const SITE_CONFIG = {
   baseUrl: RAW_BASE_URL.replace(/\/+$/, ""),
   name: "Aura Web Studio",
   /** Title shown for the homepage and used as the brand suffix on subpages. */
-  defaultTitle: "Aura Web Studio — Web Design a Bolzano & Sviluppo Siti Web Premium",
+  defaultTitle: "Web Design Bolzano — Siti Web su Misura | Aura Web Studio",
   titleSuffix: "Aura Web Studio",
   description:
     "Agenzia di web design a Bolzano: siti web professionali ed esperienze digitali cinematiche per hospitality, ristoranti e brand, in Alto Adige e in Italia.",

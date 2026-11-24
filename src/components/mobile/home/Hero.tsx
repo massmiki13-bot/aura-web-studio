@@ -20,8 +20,20 @@ import { MaskWords, Reveal } from "@/components/mobile/motion";
  * not: the tagline and both calls to action were missing, so the phone's
  * opening screen had no way to reach the quote form or the work.
  */
+/**
+ * Read by screen readers and search engines at the start of the <h1>, not
+ * shown. The visible headline is a promise with no searchable words in it, so
+ * on its own the page's main heading never said what or where the studio is.
+ */
+const HEADING_CONTEXT: Record<string, string> = {
+  it: "Aura Web Studio, web design a Bolzano: ",
+  de: "Aura Web Studio, Webdesign in Bozen und Südtirol: ",
+  en: "Aura Web Studio, web design in Bolzano: ",
+  es: "Aura Web Studio, diseño web en Bolzano: ",
+};
+
 export function MobileHero() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <section
@@ -56,6 +68,7 @@ export function MobileHero() {
           leading-[1.06], not tighter: each word is clipped to its own line box
           by MaskWords, and a line-height under 1 shears the descenders. */}
       <h1 className="font-display relative z-10 mt-7 text-[2.9rem] leading-[1.06] font-bold tracking-[-0.035em] text-balance text-white">
+        <span className="sr-only">{HEADING_CONTEXT[i18n.language] ?? HEADING_CONTEXT.it}</span>
         <MaskWords text={t("hero.actTwoTitle")} delay={0.12} />
       </h1>
 
